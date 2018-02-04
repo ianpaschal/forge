@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">src/managers/PluginManager.js | Forge</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="A real time strategy sandbox engine."><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Forge"><meta property="twitter:description" content="A real time strategy sandbox engine."></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/foo/bar"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Engine.js~Engine.html">Engine</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#core">core</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Component.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Entity.js~Entity.html">Entity</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/Player.js~Player.html">Player</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/core/World.js~World.html">World</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#managers">managers</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/managers/PluginManager.js~PluginManager.html">PluginManager</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#systems">systems</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/systems/rendering.js~rendering.html">rendering</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/utils/Log.js~Log.html">Log</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-validatePackage">validatePackage</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-walkDirSync">walkDirSync</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/managers/PluginManager.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/*
+	The plugin manager is a singleton which loads plugins depending on the plugin
+	order. This order is loaded from preferences, and then any no-longer existing
+	packages are removed from the list, and any new packages are added to the
+	list. the user can re-order the list, which, on save, will reload all plugins.
+*/
+
+import FS from &quot;fs&quot;;
+import Path from &quot;path&quot;;
+
+export default class {
+	constructor( init = true ) {
+
+		this._pluginDir = Path.resolve( __dirname, &quot;../../plugins/&quot; );
+
+		// It&apos;s possible to avoid running the init method, but default is to do it:
+		if ( !init ) {
+			return this;
+		}
+		this._init();
+	}
+
+	// ---------------------------------------------------------------------------
+	// PRIAVTE:
+	// ---------------------------------------------------------------------------
+	_init() {
+		this.findPlugins( this._pluginDir, ( pluginData ) =&gt; {
+			console.log( pluginData );
+		});
+	}
+	_registerAssembly( json ) {
+		// Do nothing.
+	}
+
+	_registerComponent( json ) {
+		// Do nothing.
+	}
+
+	_registerAnimationClip() {
+
+	}
+
+	_registerAsset( json ) {
+		this._assets.push( json );
+	}
+
+	// ---------------------------------------------------------------------------
+	// PUBLIC:
+	// ---------------------------------------------------------------------------
+	/**
+		* @param {number} dir - this is a value.
+		* @param {function} callback - this is a value.
+		* @return {array} result of the sum value.
+	*/
+	findPlugins( dir, callback ) {
+
+		// Keep track of how many plugins have been loaded:
+		let loaded = 0;
+		const pluginData = [], items = FS.readdirSync( dir );
+
+		// For each found item in the plugins directory, load it:
+		items.forEach( ( item ) =&gt; {
+
+			// If the item is a .DS_Store file, skip it, but still mark as processed:
+			if ( item == &quot;.DS_Store&quot; ) {
+				loaded++;
+				return;
+			}
+
+			// Read the package.json file, and add it to the pluginData array:
+			const path = Path.join( dir, item, &quot;package.json&quot; );
+			FS.readFile( path, &quot;utf8&quot;, ( err, data ) =&gt; {
+				if ( err ) {
+					throw err;
+				}
+				pluginData.push( JSON.parse( data ) );
+				loaded++;
+
+				// When we&apos;ve loaded as many files as were found, it&apos;s time to return:
+				if ( loaded === items.length ) {
+					if ( typeof callback === &quot;function&quot; ) {
+						callback( pluginData );
+					}
+					return pluginData;
+				}
+			});
+		});
+	}
+
+	loadPlugins( plugins ) {
+		const assetTypes = [ &quot;texture&quot;, &quot;sound&quot;, &quot;model&quot; ];
+		let registered = 0;
+		plugins.forEach( ( plugin )=&gt;{
+			plugin.contents.forEach( ( item )=&gt;{
+				if ( this._scanFor( item.type, assetTypes ) ) {
+					this._registerAsset( item );
+				}
+			});
+			registered++;
+			if ( registered === plugins.length ) {
+				console.log( Util.inspect( this._assets, { depth: null, colors: true }) );
+			}
+		});
+	};
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.4)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
