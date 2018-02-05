@@ -10,7 +10,8 @@
   "scripts": {
     "start": "electron .",
     "pack": "webpack -d",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
   },
   "repository": {
     "type": "git",
@@ -38,12 +39,11 @@
     "electron": "^1.8.2-beta.4",
     "electron-builder": "^19.56.2",
     "electron-reload": "^1.0.2",
-    "esdoc": "^1.0.4",
-    "esdoc-brand-plugin": "^1.0.0",
-    "esdoc-standard-plugin": "^1.0.0",
     "eslint": "^4.17.0",
     "eslint-plugin-import": "^2.8.0",
     "file-loader": "^0.9.0",
+    "jsdoc": "^3.5.5",
+    "minami": "^1.2.3",
     "vue-loader": "^9.5.1",
     "webpack": "^2.1.0-beta.22"
   }
