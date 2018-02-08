@@ -36,8 +36,8 @@ window.onload = function() {
 				for ( const event of keyboardEvents ) {
 					// window.addEventListener( event, handleKeyboard, false );
 				}
-
 				app.load();
+				app.createEntity( "greek-villager-female" );
 			});
 		},
 		beforeDestroy() {

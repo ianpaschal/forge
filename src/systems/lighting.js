@@ -1,6 +1,5 @@
-const Three = require( "three" );
-const OrbitControls = require( "three-orbit-controls" )( Three );
-const store = require( "../ui/store" );
+import * as Three from "three";
+import store from "../ui/store";
 
 export default class {
 	constructor() {

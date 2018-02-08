@@ -26,9 +26,7 @@
 			Sidebar
 		},
 		data: function() {
-			return {
-				// iconPath: "../assets/svg/icon-import.svg"
-			};
+			return {};
 		},
 		methods: {
 

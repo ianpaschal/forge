@@ -1,6 +1,8 @@
 // Forge is distributed under the MIT license.
 
 import UUID from "uuid/v4";
+import * as Three from "three";
+import store from "../ui/store";
 
 /** Class representing an Entity. */
 class Entity {
@@ -20,9 +22,7 @@ class Entity {
 		* @param {Component} component
 		*/
 	addComponent( component ) {
-
 		// Check if component is a valid type of component
-
 		if ( !this.components[ component.id ] ) {
 			this.components[ component.id ] = component;
 		}
@@ -30,6 +30,7 @@ class Entity {
 			return "Component already exists!";
 		}
 	}
+
 	/**
 		* Get the components within this entity.
 		* @return {number} The x value.
@@ -64,6 +65,36 @@ class Entity {
 		else {
 			return "Component with id " + id + "doesn't exist";
 		}
+	}
+
+	/**
+		* Copy an assembly into the entity.
+		* @param {Assembly} - Assembly to clone into the new entity.
+		*/
+	copyAssembly( assembly ) {
+		this.components = assembly.getComponents();
+	}
+
+	spawn( position = new Three.Vector3( 0, 0, 0 ) ) {
+
+		console.log( "spanwing a dude" );
+		// Create the model
+		const loader = new Three.JSONLoader();
+		const path = "../../plugins/age-of-mythology/model/greek-villager-female-walk.js";
+		loader.load( path, ( geometry, materials ) => {
+			const mesh = new Three.Mesh( geometry, new Three.MeshLambertMaterial({
+				color: 0x999999
+			}) );
+
+			// store.state.scene.add( mesh );
+
+			mesh.material.morphTargets = true;
+			mesh.position.copy( position );
+		});
+
+		// Add it to the scene.
+
+		// Register a mixer
 	}
 }
 

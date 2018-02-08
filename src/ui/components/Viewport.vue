@@ -1,18 +1,20 @@
 <template>
-	<div class="viewport frame-mid"></div>
+	<div class='viewport frame-mid'>
+		<!-- <p v-if='debug'>
+			{{ fps }}
+		</p> -->
+	</div>
 </template>
 
 <script>
+	import * as Three from "three";
 	import OrbitControlModule from "three-orbit-controls";
 
-	const Three = require( "three" );
 	const OrbitControls = OrbitControlModule( Three );
 
 	export default {
 		name: "Viewport",
-		components: {
-
-		},
+		components: {},
 		data() {
 			return {
 				styleObject: {},
@@ -61,6 +63,13 @@
 			}
 		}
 	};
+	/*
+	_resize( e ) {
+		this._camera.aspect = window.innerWidth / window.innerHeight;
+		this._camera.updateProjectionMatrix();
+		this._renderer.setSize( window.innerWidth, window.innerHeight );
+	}
+	*/
 </script>
 
 <style scoped>

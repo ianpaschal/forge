@@ -8,7 +8,8 @@
 import FS from "fs";
 import Path from "path";
 
-export default class {
+/** Class representing an Entity. */
+class PluginManager {
 	constructor( init = true ) {
 
 		this._pluginDir = Path.resolve( __dirname, "../../plugins/" );
@@ -47,6 +48,7 @@ export default class {
 
 	/**
 		* Scans the plugins directory for installed plugins.
+		* @protected
 		* @param {function} callback - Function executed using the results of the scan.
 		* @return {array} result of the sum value.
 	*/
@@ -113,3 +115,5 @@ export default class {
 		});
 	};
 }
+
+export default PluginManager;

@@ -1,9 +1,15 @@
-const Vue = require( "vue/dist/vue.common.js" );
-const Vuex = require( "vuex" );
+// Forge is distributed under the MIT license.
+
+import Vue from "vue";
+import Vuex from "vuex";
+import FS from "fs";
+import Path from "path";
+
 const Three = require( "three" );
 
 Vue.use( Vuex );
-module.exports = new Vuex.Store({
+
+export default new Vuex.Store({
 	state: {
 		scene: new Three.Scene()
 	},

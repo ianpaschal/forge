@@ -1,9 +1,15 @@
 // Forge is distributed under the MIT license.
-
+/**
+	* @namespace Engine
+	*/
 import FS from "fs";
 import Path from "path";
 import Util from "util";
+
+// Core:
+import Assembly from "./Assembly";
 import Component from "./Component";
+import Entity from "./Entity";
 import Player from "./Player";
 import World from "./World";
 import walkDirSync from "../utils/walkDirSync";
@@ -44,6 +50,9 @@ class Engine {
 		this._sounds = [];
 		this._textures = [];
 
+		// Entities:
+		this._entities = [];
+
 		// Timing:
 		this._running = false;
 		this._fixedStep = 10;
@@ -62,6 +71,50 @@ class Engine {
 			this._world = this.loadSavedWorld( source );
 		}
 
+		// Fake load:
+		const fakeAssembly = {
+			id: "greek-villager-female",
+			components: {
+				activity: {
+					current: "walk",
+					next: "idle"
+				},
+				animation: [
+					{
+						id: "idle",
+						model: "greek-villager-female-idle",
+						duration: 1000
+					},
+					{
+						id: "walk",
+						"model": "greek-villager-female-walk",
+						"duration": 2000
+					},
+					{
+						id: "forage",
+						model: "greek-villager-female-forage",
+						duration: 2000
+					}
+				],
+				"name": "Villager",
+				"position": {
+					x: 0,
+					y: 0,
+					z: 0
+				},
+				"walk": {
+					speed: 1,
+					target: {
+						x: 20,
+						y: 20,
+						z: 0
+					}
+				}
+			}
+		};
+
+		this._registerAssembly( fakeAssembly );
+
 		// On finished, start:
 		this.start();
 	}
@@ -72,6 +125,31 @@ class Engine {
 		setInterval( this.loop.bind( this ), 1000 / 60 );
 	}
 
+	/**
+		* This function will eventually be renamed 'update'. This is because each
+		* system actually controls its own update loop.
+		*
+		* This allows systems to be more deterministic. Some systems which use fixed
+		* timesteps get called on a regular basis. Although they may not execute
+		* exactly on schedule, so time is accumulated and then simulated in fixed
+		* steps, with a step being removed from the accumulator each time.
+		*
+		* Variable step systems, however, simply collect accumulated time and
+		* simulate some action based on that variable delta and eventually remove
+		* all accumulated time each loop.
+		*
+		* Systems which use fixed steps:
+		* - Resources
+		* - Physics
+		* - Comabat
+		* - Ai
+		*
+		* Systems which use variable steps:
+		* - Animation
+		* - Sound
+		*
+		* See http://gameprogrammingpatterns.com/game-loop.html
+		*/
 	loop() {
 		//if ( this._running ) {
 
@@ -120,6 +198,26 @@ class Engine {
 
 	_registerAssembly( json ) {
 		// Do nothing.
+
+		const id = json.id;
+
+		this._assemblies[ id ] = new Assembly( json );
+
+		console.log( this._assemblies );
+		/*
+		json.components.forEach( ( component ) => {
+
+			// Replce with references to already loaded components:
+
+			const registeredComponent = this._components[ component.id ];
+			if ( registeredComponent ) {
+				this._assemblies[ id ].addComponent( registeredComponent, component );
+			} else {
+
+			}
+
+		});
+		*/
 	}
 
 	_registerComponent( json ) {
@@ -172,6 +270,30 @@ class Engine {
 
 	_scanFor( term, arr ) {
 		return ( arr.indexOf( term ) > -1 );
+	}
+
+	createEntity( id ) {
+		const entity = new Entity();
+		entity.copyAssembly( this._assemblies[ id ] );
+		entity.spawn();
+		this._entities.push( entity );
+
+		/*
+			New entities must be registered with all systems for which they may interact.
+
+			For example, they are added into the scene by default.
+
+			So bad example.
+
+			But for example, their are registered with the sound system.
+			They are registered with the combat system.
+
+			For example, the combat system does nothing but takes a note of the entity.
+			It keeps this handy and will only send back an updated copy
+
+			The alternative system would be that each loop of the system fetches all entities.
+
+		*/
 	}
 
 }
