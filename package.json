@@ -1,5 +1,6 @@
 {
   "name": "forge",
+  "productName": "Forge",
   "title": "Forge Engine",
   "version": "0.0.0",
   "description": "A real-time-strategy ECS sandbox.",
