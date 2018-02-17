@@ -1,25 +1,21 @@
 /*
-	Description
-
 	Forge is distributed under the MIT license.
 */
 import Vue from "vue";
 import Vuex from "vuex";
-import Engine from "./core/Engine";
 
-// UI state store:
+// The two main data sources, the game engine and UI store:
+import forge from "./forge";
 import store from "./ui/store";
 
 // Components:
 import Frame from "./ui/components/Frame.vue";
 
-let app;
-window.onload = function() {
-	app = new Engine();
+window.onload = () => {
 	new Vue({
 		el: "#vue-wrapper",
 		store: store,
-		data: function() {
+		data() {
 			return {
 				windowWidth: 0,
 				windowHeight: 0
@@ -36,8 +32,8 @@ window.onload = function() {
 				for ( const event of keyboardEvents ) {
 					// window.addEventListener( event, handleKeyboard, false );
 				}
-				app.load();
-				app.createEntity( "greek-villager-female" );
+				// forge.load();
+				forge.createEntity( "greek-villager-female" );
 			});
 		},
 		beforeDestroy() {

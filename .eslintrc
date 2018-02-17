@@ -4,6 +4,10 @@
     "es6": true,
     "node": true
   },
+  "plugins": [
+    "html",
+    "vue"
+  ],
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "module"
@@ -11,7 +15,7 @@
   "rules": {
 
     // indentation
-    "indent": [ 2, "tab" ],
+    "indent": [ 2, "tab", { "SwitchCase": 1 } ],
 
     // spacing
     "space-in-parens": [ 2, "always", { "exceptions": ["{}"] } ],

@@ -36,7 +36,7 @@ export default class {
 					map: texture
 				});
 				const plane = new Three.Mesh( new Three.PlaneGeometry( 1024, 1024 ), material );
-				store.state.scene.add( plane );
+				// forge.getScene().add( plane );
 			},
 
 			// onProgress callback currently not supported

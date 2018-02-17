@@ -5,6 +5,7 @@
 import FS from "fs";
 import Path from "path";
 import Util from "util";
+import * as Three from "three";
 
 // Core:
 import Assembly from "./Assembly";
@@ -20,8 +21,8 @@ import LightingSystem from "../systems/lighting";
 import SoundSystem from "../systems/sound";
 
 // Managers:
-import PluginManager from "../managers/PluginManager.js";
-// import validatePackage from "./utils/validatePackage.js";
+import ContentManager from "../managers/ContentManager.js";
+import PreferenceManager from "../managers/PreferenceManager";
 
 /** Core singleton representing an instance of the Forge Engine. */
 class Engine {
@@ -32,11 +33,12 @@ class Engine {
 	constructor() {
 		console.log( "Initializing a new Engine." );
 
-		// Create systems:
-		this._systems = {};
-		this._systems.animation = new AnimationSystem();
-		this._systems.lighting = new LightingSystem();
-		this._systems.sound = new SoundSystem();
+		// Create manager instances which can be used by the interface:
+		this.contentManager = new ContentManager();
+		this.preferenceManager = new PreferenceManager();
+
+		this._scene = new Three.Scene();
+		this._systems = [];
 
 		// Load assets:
 		/*
@@ -54,75 +56,136 @@ class Engine {
 		this._entities = [];
 
 		// Timing:
+		/*
+			Later this will be controlled by the PreferenceManager
+		*/
 		this._running = false;
 		this._fixedStep = 10;
 		this._savedFixedTime = 0;
 		this._savedFrameTime = 0;
 		this._maxFPS = 60;
+		this._lastFrameTime = null;
 	}
 
-	load( source ) {
+	registerSystem() {
 
-		// If no source is provided, generate a new world:
-		if ( !source ) {
-			console.warn( "World is missing, a new one will be generated!" );
-			this._world = new World();
-		} else {
-			this._world = this.loadSavedWorld( source );
+	}
+	registerSystems( systems ) {
+		systems.forEach( ( system ) => {
+			system.init( this );
+			this._systems.push( system );
+		});
+	}
+	loadAssets( callback ) {
+		const stack = this.contentManager.getStack();
+		if ( !stack ) {
+			console.error( "No asset stack to load from!" );
+			return;
 		}
-
-		// Fake load:
-		const fakeAssembly = {
-			id: "greek-villager-female",
-			components: {
-				activity: {
-					current: "walk",
-					next: "idle"
-				},
-				animation: [
-					{
-						id: "idle",
-						model: "greek-villager-female-idle",
-						duration: 1000
-					},
-					{
-						id: "walk",
-						"model": "greek-villager-female-walk",
-						"duration": 2000
-					},
-					{
-						id: "forage",
-						model: "greek-villager-female-forage",
-						duration: 2000
-					}
-				],
-				"name": "Villager",
-				"position": {
-					x: 0,
-					y: 0,
-					z: 0
-				},
-				"walk": {
-					speed: 1,
-					target: {
-						x: 20,
-						y: 20,
-						z: 0
-					}
-				}
+		stack.forEach( ( asset ) => {
+			/*
+				TODO: Replace with this.register[asset.type](asset);
+			*/
+			switch( asset.type ) {
+				case "animation":
+					this.registerAnimation( asset );
+					break;
+				case "assembly":
+					break;
+				case "component":
+					break;
+				case "texture":
+					this.registerTexture( asset );
+					break;
+				case "sound":
+					this.registerSound( asset );
+					break;
+				case "model":
+					this.registerModel( asset );
+					break;
 			}
-		};
+		});
+		if ( typeof callback === "function" ) {
+			return callback();
+		}
+		return;
+	}
 
-		this._registerAssembly( fakeAssembly );
+	loadWorld() {
 
-		// On finished, start:
-		this.start();
+	}
+
+	generateWorld( ) {
+		console.info( "Generating a new world." );
+		const mesh = new Three.Mesh( new Three.PlaneGeometry( 1024, 1024 ), new Three.MeshLambertMaterial({
+			color: 0x999999
+		}) );
+
+		// store.state.scene.add( mesh );
+
+		const loader = new Three.TextureLoader();
+
+		let material;
+
+		const scope = this;
+
+		// load a resource
+		loader.load(
+			// resource URL
+			"../assets/texture/TexturesCom_SoilSand0187_1_seamless_S.jpg",
+
+			// onLoad callback
+			function ( texture ) {
+				// in this example we create the material when the texture is loaded
+				texture.wrapS = Three.RepeatWrapping;
+				texture.wrapT = Three.RepeatWrapping;
+
+				// how many times to repeat in each direction; the default is (1,1),
+				//   which is probably why your example wasn't working
+				texture.repeat.set( 64, 64 );
+
+				material = new Three.MeshBasicMaterial({
+					map: texture
+				});
+				const plane = new Three.Mesh( new Three.PlaneGeometry( 1024, 1024 ), material );
+				scope._scene.add( plane );
+			},
+
+			// onProgress callback currently not supported
+			undefined,
+
+			// onError callback
+			function ( err ) {
+				console.error( "An error happened." );
+			}
+		);
+		return this;
+	}
+
+	getScene() {
+		return this._scene;
+	}
+
+	init( source ) {
+		this.loadAssets( () => {
+			// If no source is provided, generate a new world:
+			if ( !source ) {
+				console.warn( "World is missing, a new one will be generated!" );
+				this.generateWorld();
+			} else {
+				this.loadWorld( source );
+			}
+			this._systems.forEach( ( system )=>{
+				system.init();
+			});
+			this.start();
+		});
 	}
 
 	start() {
 		this._lastFrameTime = performance.now();
-		//this._running = true;
-		setInterval( this.loop.bind( this ), 1000 / 60 );
+		this._running = true;
+		setInterval( this.update.bind( this ), 1000 / 60 );
 	}
 
 	/**
@@ -150,15 +213,22 @@ class Engine {
 		*
 		* See http://gameprogrammingpatterns.com/game-loop.html
 		*/
-	loop() {
-		//if ( this._running ) {
+	update() {
+		if ( this._running ) {
+			/**
+				* Update all time. Fixed time is used for fixed step calculations while
+				* frame time is used for rendering (variable).
+				*/
+			const now = performance.now();
+			const delta = now - this._lastFrameTime;
+			// this._savedFixedTime += delta;
+			this._lastFrameTime = now;
 
-		// Update all time. Fixed time is used for fixed step calculations while
-		// frame time is used for rendering (variable).
-		const now = performance.now();
-		const delta = now - this._lastFrameTime;
-		this._savedFixedTime += delta;
-		this._lastFrameTime = now;
+			this._systems.forEach( ( system ) => {
+				system.update( delta );
+			});
+		}
+		/*
 
 		// Update fixed step systems:
 		if ( this._savedFixedTime >= this._fixedStep ) {
@@ -169,19 +239,16 @@ class Engine {
 			this._savedFixedTime -= this._fixedStep;
 		}
 
-		this._systems.animation.update( delta );
-		this._systems.lighting.update( delta );
-		/*
 				If savedFrameTime has increased more than the expected amount of time
 				one frame should take, render a frame, and remove the elapsed time this
 				loop.
-			*/
+
 		if ( this._savedFrameTime > 1000 / this._maxFPS ) {
 
 			// Remove simulated time:
 			this._savedFrameTime -= delta;
 		}
-
+		*/
 		// Loop the loop:
 		// this.loop();
 		//}
@@ -194,6 +261,10 @@ class Engine {
 		this._running = false;
 	}
 
+	createEntity( assemblyID ) {
+
+	}
+	/*
 	//==================================================
 
 	_registerAssembly( json ) {
@@ -204,7 +275,7 @@ class Engine {
 		this._assemblies[ id ] = new Assembly( json );
 
 		console.log( this._assemblies );
-		/*
+
 		json.components.forEach( ( component ) => {
 
 			// Replce with references to already loaded components:
@@ -217,7 +288,7 @@ class Engine {
 			}
 
 		});
-		*/
+
 	}
 
 	_registerComponent( json ) {
@@ -293,41 +364,18 @@ class Engine {
 
 			The alternative system would be that each loop of the system fetches all entities.
 
-		*/
 	}
 
+	createScene() {
+		this._scene = new Three.Scene();
+	}
+	getScene() {
+		if ( !this._scene ) {
+			this.createScene();
+		}
+		return this._scene;
+	}
+	*/
 }
 
 export default Engine;
-/*
-// -----------------------------------------------------------------------------
-// USER CONFIGURATION (Editable by user):
-// -----------------------------------------------------------------------------
-FORGE.usrcfg = {};
-FORGE.usrcfg.dir = "./user";
-
-// -----------------------------------------------------------------------------
-// ENGINE CONFIGURATION:
-// -----------------------------------------------------------------------------
-FORGE.cfg = {};
-
-// Loop:
-FORGE.cfg.fixedStep = 1000;
-
-// Graphics:
-FORGE.cfg.renderDistance = 2048;
-FORGE.cfg.renderWidth = undefined;
-FORGE.cfg.renderHeight = undefined;
-FORGE.cfg.antialias = false;
-FORGE.cfg.pixelRatio = 1;
-FORGE.cfg.maxFPS = 60;
-FORGE.cfg.shadowMapSize = 2048;
-FORGE.cfg.resX = 960;
-FORGE.cfg.resY = 640;
-
-// Sound:
-
-// Terrain:
-FORGE.cfg.tileSize = 256;
-FORGE.cfg.tileRes = 64;
-*/

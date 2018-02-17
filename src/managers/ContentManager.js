@@ -9,17 +9,17 @@ import FS from "fs";
 import Path from "path";
 
 /** Class representing an Entity. */
-class PluginManager {
+class ContentManager {
 	constructor( init = true ) {
 
-		this._pluginDir = Path.resolve( __dirname, "../../plugins/" );
+		// this._pluginDir = Path.resolve( __dirname, "../../plugins/" );
 		this._plugins = [];
 
 		// It's possible to avoid running the init method, but default is to do it:
 		if ( !init ) {
 			return this;
 		}
-		this._init();
+		// this._init();
 	}
 
 	_init() {
@@ -114,6 +114,10 @@ class PluginManager {
 			}
 		});
 	};
+
+	getStack() {
+		return [];
+	}
 }
 
-export default PluginManager;
+export default ContentManager;

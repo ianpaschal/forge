@@ -26,6 +26,7 @@
   "homepage": "https://github.com/ianpaschal/forge#readme",
   "dependencies": {
     "electron-build": "0.0.3",
+    "open-color": "^1.6.2",
     "prettyjson": "^1.2.1",
     "stats-js": "^1.0.0-alpha1",
     "three": "^0.87.1",
@@ -41,7 +42,9 @@
     "electron-builder": "^19.56.2",
     "electron-reload": "^1.0.2",
     "eslint": "^4.17.0",
+    "eslint-plugin-html": "^4.0.2",
     "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-vue": "^4.2.2",
     "file-loader": "^0.9.0",
     "jsdoc": "^3.5.5",
     "minami": "^1.2.3",

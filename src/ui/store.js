@@ -11,7 +11,7 @@ Vue.use( Vuex );
 
 export default new Vuex.Store({
 	state: {
-		scene: new Three.Scene()
+		view: "MainMenu"
 	},
 	getters: {},
 	mutations: {},

@@ -1,5 +1,5 @@
 import * as Three from "three";
-import store from "../ui/store";
+import forge from "../forge";
 
 /**
 	* description of UI.
@@ -14,9 +14,11 @@ class AnimationSystem {
 		this.walking = undefined;
 		this._savedTime = 0;
 		this._maxFPS = 60;
+	}
 
+	init( engine ) {
 		const loader = new Three.JSONLoader();
-
+		console.log( "IN ANIMATION:", forge );
 		const scope = this;
 
 		const paths = [];
@@ -44,7 +46,7 @@ class AnimationSystem {
 				walkAction.play();
 				// forageAction.play();
 
-				store.state.scene.add( mesh );
+				forge.getScene().add( mesh );
 				mesh.position.x = paths.indexOf( path ) * 2;
 				scope._mixers.push( mixer );
 				if ( paths.indexOf( path ) === 1 ) {

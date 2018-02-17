@@ -1,0 +1,117 @@
+<template>
+	<div id='view-block' class='view frame-mid'>
+
+
+		<div class='centered-content'>
+			<div id='title-block'>
+				<h1>FORGE</h1>
+				<h2>A really great game, dude.</h2>
+			</div>
+			<div id='menu-block' v-bind:style='{ width: menuWidth + "px" }'>
+				<div id='main-menu' class='menu-list'>
+					<MenuButton
+						class='menu-button'
+						v-for='item in mainMenu'
+						v-bind:label='item.name'
+						v-on:click='buttonAction(e, item.action)'
+					/>
+				</div>
+				<div id='single-player-menu' class='menu-list' v-show='menuOpen'>
+					<MenuButton
+						v-for='item in subMenuItems'
+						transition='fade'
+						stagger='100'
+						v-bind:label='item.name'
+						v-bind:key='item.name'
+						v-on:click='buttonAction(e, item.action)'
+					/>
+				</div>
+			</div>
+
+		</div>
+
+
+	</div>
+</template>
+
+<script>
+	import MenuButton from "./MenuButton.vue";
+	export default {
+		name: "MainMenu",
+		components: {
+			MenuButton
+		},
+		data() {
+			return {
+
+				menuOpen: false,
+				subMenuItems: [],
+
+				mainMenu: [
+					{ name: "Single Player", action: ()=>{this.openSubMenu("singlePlayerMenu")} },
+					{ name: "Multiplayer", action: ()=>{this.openSubMenu("multiPlayerMenu")} },
+					{ name: "Plugins", action: ()=>{this.$emit("switchView", "Plugins")} },
+					{ name: "Preferences", action: "None" },
+					{ name: "Editor", action: "None" },
+					{ name: "Credits", action: "None" },
+					{ name: "Quit Game", action: this.quit }
+				],
+				singlePlayerMenu: [
+					{ name: "Resume Game", action: ()=>{this.$emit("switchView", "Play")} },
+					{ name: "New Game", action: ()=>{this.$emit("switchView", "Play")} },
+					{ name: "Load Game", action: "null" }
+				],
+				multiPlayerMenu: [
+					{ name: "LAN", action: "null" },
+					{ name: "Internet", action: "null" }
+				]
+			};
+		},
+		methods: {
+			buttonAction( e, action ) {
+				const sfx = new Audio('../ui/sounds/menu-select.wav');
+				sfx.play();
+				action();
+			},
+			openSubMenu(menu) {
+				this.menuOpen = true;
+				this.subMenuItems = this[menu]
+			},
+			quit() {
+				const remote = require('electron').remote;
+				let w = remote.getCurrentWindow();
+				w.close();
+			}
+		}
+	}
+</script>
+
+<style>
+	#view-block {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	#title-block {
+		text-align: center;
+		height: 128px;
+		padding: 24px;
+		box-sizing: border-box;
+		background-color: #000;
+		width: 512px;
+	}
+	#menu-block {
+		height: 50%;
+		background-color: pink;
+		display: flex;
+		align-items: center;
+	}
+	.menu-list {
+		width: 256px;
+		background-color: blue;
+		margin: 0 auto;
+		backface-visibility: hidden;
+		padding-left: 8px;
+		box-sizing: border-box;
+	}
+</style>
