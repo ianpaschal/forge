@@ -5,6 +5,7 @@
 import FS from "fs";
 import Path from "path";
 import Util from "util";
+import { remote } from "electron";
 
 // Core:
 import Assembly from "./Assembly";
@@ -43,7 +44,10 @@ class Engine {
 			For now, we don't worry about fancy plugin loading. Just worry about
 			creating the world/environment.
 		*/
-		this.pluginDir = Path.resolve( __dirname, "../plugins/" );
+		this._userDir = remote.app.getPath( "userData" );
+		this._saveDir = Path.resolve( this._userDir, "Saves" );
+		this._pluginDir = Path.resolve( this._userDir, "Plugins" );
+
 		this._assemblies = [];
 		this._components = [];
 		this._models = [];
@@ -70,6 +74,41 @@ class Engine {
 		} else {
 			this._world = this.loadSavedWorld( source );
 		}
+
+		let loaded = 0;
+		const pluginData = [],
+			items = FS.readdirSync( this._pluginDir );
+
+		// For each found item in the plugins directory, load it:
+		items.forEach( ( item ) => {
+
+			// If the item is a .DS_Store file, skip it, but still mark as processed:
+			if ( item == ".DS_Store" ) {
+				loaded++;
+				return;
+			}
+
+			// Read the package.json file, and add it to the pluginData array:
+			const path = Path.join( this._pluginDir, item, "package.json" );
+			FS.readFile( path, "utf8", ( err, data ) => {
+				if ( err ) {
+					throw err;
+				}
+				pluginData.push( JSON.parse( data ) );
+				loaded++;
+
+				// When we've loaded as many files as were found, it's time to return:
+				if ( loaded === items.length ) {
+					console.log( pluginData );
+					/*
+					if ( typeof callback === "function" ) {
+						callback( pluginData );
+					}
+					return pluginData;
+					*/
+				}
+			});
+		});
 
 		// Fake load:
 		const fakeAssembly = {
