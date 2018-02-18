@@ -35,6 +35,8 @@
 </template>
 
 <script>
+// const { dialog } = require( "electron" ).remote;
+// import { remote } from "electron";
 	import MenuButton from "./MenuButton.vue";
 	export default {
 		name: "MainMenu",
@@ -48,17 +50,17 @@
 				subMenuItems: [],
 
 				mainMenu: [
-					{ name: "Single Player", action: ()=>{this.openSubMenu("singlePlayerMenu")} },
-					{ name: "Multiplayer", action: ()=>{this.openSubMenu("multiPlayerMenu")} },
-					{ name: "Plugins", action: ()=>{this.$emit("switchView", "Plugins")} },
-					{ name: "Preferences", action: "None" },
-					{ name: "Editor", action: "None" },
-					{ name: "Credits", action: "None" },
-					{ name: "Quit Game", action: this.quit }
+					{ name: "Single Player", action: () => { this.openSubMenu( "singlePlayerMenu")} },
+					{ name: "Multiplayer",   action: () => { this.openSubMenu( "multiPlayerMenu")} },
+					{ name: "Plugins",       action: () => { this.$store.commit( "view", "Plugins")} },
+					{ name: "Preferences",   action: () => { this.$store.commit( "view", "Preferences")} },
+					{ name: "Editor",        action: this.quit },
+					{ name: "Credits",       action: () => { this.$store.commit( "view", "Credits")} },
+					{ name: "Quit Game",     action: this.quit }
 				],
 				singlePlayerMenu: [
-					{ name: "Resume Game", action: ()=>{this.$emit("switchView", "Play")} },
-					{ name: "New Game", action: ()=>{this.$emit("switchView", "Play")} },
+					{ name: "Resume Game",   action: () => { this.$store.commit( "view", "Play")} },
+					{ name: "New Game",      action: () => { this.$store.commit("view", "Play")} },
 					{ name: "Load Game", action: "null" }
 				],
 				multiPlayerMenu: [
@@ -69,8 +71,6 @@
 		},
 		methods: {
 			buttonAction( e, action ) {
-				const sfx = new Audio('../ui/sounds/menu-select.wav');
-				sfx.play();
 				action();
 			},
 			openSubMenu(menu) {
@@ -81,12 +81,25 @@
 				const remote = require('electron').remote;
 				let w = remote.getCurrentWindow();
 				w.close();
+			},
+			loadFile() {
+			/*
+				const paths = dialog.showOpenDialog({
+					defaultPath: "/Users/Ian/Desktop",
+					buttonLabel: "Import",
+					properties: [ "openFile", "openDirectory", "multiSelections" ],
+					filters: [
+						{ name: "Custom File Type", extensions: [ "obj", "stl" ] }
+					]
+				});
+				this.$store.dispatch( "loadFile", paths[ 0 ] );
+			*/
 			}
 		}
 	}
 </script>
 
-<style>
+<style scoped>
 	#view-block {
 		display: flex;
 		align-items: center;

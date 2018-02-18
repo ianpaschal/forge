@@ -1,5 +1,5 @@
 import * as Three from "three";
-import forge from "../forge";
+import capitalize from "../utils/capitalize";
 
 /**
 	* description of UI.
@@ -8,21 +8,31 @@ import forge from "../forge";
 	* @class
 	*/
 class AnimationSystem {
+
 	constructor() {
-		console.log( "Created a new rendering system." );
+		this.name = "rendering";
 		this._mixers = [];
 		this.walking = undefined;
 		this._savedTime = 0;
 		this._maxFPS = 60;
+		console.log( "Created a new " + this.name + " system." );
+		return this;
 	}
 
 	init( engine ) {
+		if( !engine ) {
+			console.warn( capitalize( this.name ) + ": Attempted to initalize system without an engine!" );
+			return;
+		}
+		console.log( capitalize( this.name ) + ": Linked system to engine." );
+		
 		const loader = new Three.JSONLoader();
-		console.log( "IN ANIMATION:", forge );
+		// console.log( "IN ANIMATION:", forge );
 		const scope = this;
 
 		const paths = [];
-		paths.push( "../../plugins/age-of-mythology/model/greek-villager-female.js" );
+		// paths.push( "../../plugins/age-of-mythology/model/greek-villager-female.js" );
+		/*
 		paths.forEach( ( path ) => {
 			loader.load( path, ( geometry, materials ) => {
 				for ( var i = 0; i < materials.length; i++ ) {
@@ -46,7 +56,7 @@ class AnimationSystem {
 				walkAction.play();
 				// forageAction.play();
 
-				forge.getScene().add( mesh );
+				// forge.getScene().add( mesh );
 				mesh.position.x = paths.indexOf( path ) * 2;
 				scope._mixers.push( mixer );
 				if ( paths.indexOf( path ) === 1 ) {
@@ -54,6 +64,7 @@ class AnimationSystem {
 				}
 			});
 		});
+		*/
 	}
 
 	/**

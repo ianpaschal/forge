@@ -1,7 +1,10 @@
 // Forge is distributed under the MIT license.
+
 /**
 	* @namespace Engine
 	*/
+
+// External modules:
 import FS from "fs";
 import Path from "path";
 import Util from "util";
@@ -14,11 +17,6 @@ import Entity from "./Entity";
 import Player from "./Player";
 import World from "./World";
 import walkDirSync from "../utils/walkDirSync";
-
-// Systems:
-import AnimationSystem from "../systems/animation";
-import LightingSystem from "../systems/lighting";
-import SoundSystem from "../systems/sound";
 
 // Managers:
 import ContentManager from "../managers/ContentManager.js";
@@ -33,27 +31,28 @@ class Engine {
 	constructor() {
 		console.log( "Initializing a new Engine." );
 
+		this._scene = new Three.Scene();
+
+		// Load assets:
 		// Create manager instances which can be used by the interface:
 		this.contentManager = new ContentManager();
 		this.preferenceManager = new PreferenceManager();
-
-		this._scene = new Three.Scene();
-		this._systems = [];
-
-		// Load assets:
 		/*
 			For now, we don't worry about fancy plugin loading. Just worry about
 			creating the world/environment.
 		*/
 		this.pluginDir = Path.resolve( __dirname, "../plugins/" );
+
+		// ECS Storage:
+		this._entities = [];
+		this._systems = [];
+
+		// Static Resources:
 		this._assemblies = [];
 		this._components = [];
 		this._models = [];
 		this._sounds = [];
 		this._textures = [];
-
-		// Entities:
-		this._entities = [];
 
 		// Timing:
 		/*
@@ -67,15 +66,21 @@ class Engine {
 		this._lastFrameTime = null;
 	}
 
-	registerSystem() {
-
+	/**
+		* Register a system with the engine (so it can be updated later).
+		* Used internally by `.registerSystems()`
+		*/
+	registerSystem( system ) {
+		system.init( this );
+		this._systems.push( system );
 	}
+
 	registerSystems( systems ) {
 		systems.forEach( ( system ) => {
-			system.init( this );
-			this._systems.push( system );
+			this.registerSystem( system );
 		});
 	}
+
 	loadAssets( callback ) {
 		const stack = this.contentManager.getStack();
 		if ( !stack ) {
@@ -132,7 +137,7 @@ class Engine {
 		// load a resource
 		loader.load(
 			// resource URL
-			"../assets/texture/TexturesCom_SoilSand0187_1_seamless_S.jpg",
+			"../resources/textures/TexturesCom_SoilSand0187_1_seamless_S.jpg",
 
 			// onLoad callback
 			function ( texture ) {
@@ -175,9 +180,6 @@ class Engine {
 			} else {
 				this.loadWorld( source );
 			}
-			this._systems.forEach( ( system )=>{
-				system.init();
-			});
 			this.start();
 		});
 	}

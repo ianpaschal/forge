@@ -1,5 +1,5 @@
 import * as Three from "three";
-import store from "../ui/store";
+// import store from "../ui/store";
 
 export default class {
 

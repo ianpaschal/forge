@@ -14,7 +14,7 @@
 		},
 		methods: {
 			hover() {
-				const sfx = new Audio('../ui/sounds/button-hover.wav');
+				const sfx = new Audio('../resources/sounds/button-hover.wav');
 				sfx.play();
 			}
 		}
@@ -29,9 +29,13 @@
 		margin-bottom: 8px;
 		text-align: left;
 		box-sizing: border-box;
-		padding: 8px;
+		padding: 7px;
 		line-height: 16px;
 		font-size: 13px;
+		background: transparent;
+		border: solid 1px grey;
+		color: grey;
+		border-radius: 4px;
 	}
 	.menu-button:last-child {
 		margin-bottom: 0;

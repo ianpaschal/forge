@@ -1,5 +1,5 @@
 import * as Three from "three";
-// import forge from "../forge";
+import capitalize from "../utils/capitalize";
 
 /**
 	* description of UI.
@@ -8,17 +8,19 @@ import * as Three from "three";
 	* @class
 	*/
 class LightingSystem {
+
 	constructor() {
-		console.log( "Created a new lighting system." );
+		this.name = "lighting";
+		console.log( "Created a new " + this.name + " system." );
+		return this;
 	}
 
 	init( engine ) {
 		if( !engine ) {
-			console.warn( "Attempted to initalize system without an engine!" );
+			console.warn( capitalize( this.name ) + ": Attempted to initalize system without an engine!" );
 			return;
 		}
-
-		console.log( "Linked lighting system to engine." );
+		console.log( capitalize( this.name ) + ": Linked system to engine." );
 
 		this._engine = engine;
 		this._scene = this._engine.getScene();

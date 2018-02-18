@@ -6,10 +6,10 @@ import Vuex from "vuex";
 
 // The two main data sources, the game engine and UI store:
 import forge from "./forge";
-import store from "./ui/store";
+import store from "./store";
 
 // Components:
-import Frame from "./ui/components/Frame.vue";
+import App from "./components/App.vue";
 
 window.onload = () => {
 	new Vue({
@@ -21,7 +21,7 @@ window.onload = () => {
 				windowHeight: 0
 			};
 		},
-		render: ( h ) => h( Frame ),
+		render: ( h ) => h( App ),
 		beforeMount() {
 			window.addEventListener( "resize", this.getWindowWidth );
 			window.addEventListener( "resize", this.getWindowHeight );
@@ -30,10 +30,8 @@ window.onload = () => {
 			this.$nextTick( function() {
 				const keyboardEvents = [ "keydown", "keyup" ];
 				for ( const event of keyboardEvents ) {
-					// window.addEventListener( event, handleKeyboard, false );
+					window.addEventListener( event, this.handleKeyboard, false );
 				}
-				// forge.load();
-				forge.createEntity( "greek-villager-female" );
 			});
 		},
 		beforeDestroy() {
@@ -41,11 +39,14 @@ window.onload = () => {
 			window.removeEventListener( "resize", this.getWindowHeight );
 		},
 		methods: {
-			getWindowWidth: function( e ) {
+			getWindowWidth( e ) {
 				this.windowWidth = document.documentElement.clientWidth;
 			},
-			getWindowHeight: function( e ) {
+			getWindowHeight( e ) {
 				this.windowHeight = document.documentElement.clientHeight;
+			},
+			handleKeyboard( e ) {
+				return;
 			}
 		}
 	});

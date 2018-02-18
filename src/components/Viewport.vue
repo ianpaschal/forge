@@ -8,7 +8,7 @@
 
 <script>
 	import * as Three from "three";
-	import forge from "../../forge";
+	import forge from "../forge";
 	import OrbitControlModule from "three-orbit-controls";
 
 	const OrbitControls = OrbitControlModule( Three );

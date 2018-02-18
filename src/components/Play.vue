@@ -3,7 +3,7 @@
 		<Viewport></Viewport>
 		<div class='frame-top'></div>
 		<div class='frame-bottom'></div>
-		<Overlay v-if='paused' @switchView='switchView' />
+		<Overlay v-if='paused' @unpause='togglePause'/>
 	</div>
 </template>
 
@@ -28,13 +28,8 @@
 		},
 		methods: {
 			togglePause() {
-				console.log("PAUSING");
 				this.paused = !this.paused;
 			}
-		},
-		switchView(arg) {
-			console.log(arg)
-			this.$emit("switchView", arg )
 		}
 	};
 </script>
