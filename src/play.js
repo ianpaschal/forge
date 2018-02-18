@@ -1,31 +1,27 @@
 /*
-	Description
-
 	Forge is distributed under the MIT license.
 */
 import Vue from "vue";
 import Vuex from "vuex";
-import Engine from "./core/Engine";
 
-// UI state store:
-import store from "./ui/store";
+// The two main data sources, the game engine and UI store:
+import forge from "./forge";
+import store from "./store";
 
 // Components:
-import Frame from "./ui/components/Frame.vue";
+import App from "./components/App.vue";
 
-let app;
-window.onload = function() {
-	app = new Engine();
+window.onload = () => {
 	new Vue({
 		el: "#vue-wrapper",
 		store: store,
-		data: function() {
+		data() {
 			return {
 				windowWidth: 0,
 				windowHeight: 0
 			};
 		},
-		render: ( h ) => h( Frame ),
+		render: ( h ) => h( App ),
 		beforeMount() {
 			window.addEventListener( "resize", this.getWindowWidth );
 			window.addEventListener( "resize", this.getWindowHeight );
@@ -34,10 +30,8 @@ window.onload = function() {
 			this.$nextTick( function() {
 				const keyboardEvents = [ "keydown", "keyup" ];
 				for ( const event of keyboardEvents ) {
-					// window.addEventListener( event, handleKeyboard, false );
+					window.addEventListener( event, this.handleKeyboard, false );
 				}
-				app.load();
-				app.createEntity( "greek-villager-female" );
 			});
 		},
 		beforeDestroy() {
@@ -45,11 +39,14 @@ window.onload = function() {
 			window.removeEventListener( "resize", this.getWindowHeight );
 		},
 		methods: {
-			getWindowWidth: function( e ) {
+			getWindowWidth( e ) {
 				this.windowWidth = document.documentElement.clientWidth;
 			},
-			getWindowHeight: function( e ) {
+			getWindowHeight( e ) {
 				this.windowHeight = document.documentElement.clientHeight;
+			},
+			handleKeyboard( e ) {
+				return;
 			}
 		}
 	});

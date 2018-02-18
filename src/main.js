@@ -15,8 +15,10 @@ function createPlayWindow() {
 
 	// Create the browser window.
 	windows.play = new BrowserWindow({
-		width: 800,
-		height: 600,
+		minHeight: 600,
+		minWidth: 800,
+		width: 1024,
+		height: 768,
 		center: true,
 		resizable: true,
 		frame: true,

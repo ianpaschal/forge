@@ -1,5 +1,5 @@
 <template>
-	<div class='viewport frame-mid'>
+	<div id='viewport'>
 		<!-- <p v-if='debug'>
 			{{ fps }}
 		</p> -->
@@ -8,6 +8,7 @@
 
 <script>
 	import * as Three from "three";
+	import forge from "../forge";
 	import OrbitControlModule from "three-orbit-controls";
 
 	const OrbitControls = OrbitControlModule( Three );
@@ -58,7 +59,7 @@
 		},
 		methods: {
 			loop() {
-				this.renderer.render( this.$store.state.scene, this.camera );
+				this.renderer.render( forge.getScene(), this.camera );
 				requestAnimationFrame( this.loop );
 			}
 		}
@@ -72,17 +73,14 @@
 	*/
 </script>
 
-<style scoped>
-	.frame-mid {
+<style>
+	#viewport {
 		width: 100%;
-		flex: 1 auto;
-		display: flex;
-		flex-direction: row;
 		height: 100%;
+		position: absolute;
 	}
-	.viewport {
+	canvas {
+		width: 100%;
 		height: 100%;
-		flex: 1 auto;
-		background-color: var(--background-viewport);
 	}
 </style>

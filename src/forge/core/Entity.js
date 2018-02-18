@@ -2,7 +2,7 @@
 
 import UUID from "uuid/v4";
 import * as Three from "three";
-import store from "../ui/store";
+// import store from "../ui/store";
 
 /** Class representing an Entity. */
 class Entity {
