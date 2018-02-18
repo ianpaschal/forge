@@ -8,11 +8,7 @@
 import FS from "fs";
 import Path from "path";
 import Util from "util";
-<<<<<<< HEAD:src/forge/core/Engine.js
 import * as Three from "three";
-=======
-import { remote } from "electron";
->>>>>>> master:src/core/Engine.js
 
 // Core:
 import Assembly from "./Assembly";
@@ -45,7 +41,6 @@ class Engine {
 			For now, we don't worry about fancy plugin loading. Just worry about
 			creating the world/environment.
 		*/
-<<<<<<< HEAD:src/forge/core/Engine.js
 		this.pluginDir = Path.resolve( __dirname, "../plugins/" );
 
 		// ECS Storage:
@@ -53,12 +48,6 @@ class Engine {
 		this._systems = [];
 
 		// Static Resources:
-=======
-		this._userDir = remote.app.getPath( "userData" );
-		this._saveDir = Path.resolve( this._userDir, "Saves" );
-		this._pluginDir = Path.resolve( this._userDir, "Plugins" );
-
->>>>>>> master:src/core/Engine.js
 		this._assemblies = [];
 		this._components = [];
 		this._models = [];
@@ -127,7 +116,6 @@ class Engine {
 		return;
 	}
 
-<<<<<<< HEAD:src/forge/core/Engine.js
 	loadWorld() {
 
 	}
@@ -174,82 +162,6 @@ class Engine {
 			// onError callback
 			function ( err ) {
 				console.error( "An error happened." );
-=======
-		let loaded = 0;
-		const pluginData = [],
-			items = FS.readdirSync( this._pluginDir );
-
-		// For each found item in the plugins directory, load it:
-		items.forEach( ( item ) => {
-
-			// If the item is a .DS_Store file, skip it, but still mark as processed:
-			if ( item == ".DS_Store" ) {
-				loaded++;
-				return;
-			}
-
-			// Read the package.json file, and add it to the pluginData array:
-			const path = Path.join( this._pluginDir, item, "package.json" );
-			FS.readFile( path, "utf8", ( err, data ) => {
-				if ( err ) {
-					throw err;
-				}
-				pluginData.push( JSON.parse( data ) );
-				loaded++;
-
-				// When we've loaded as many files as were found, it's time to return:
-				if ( loaded === items.length ) {
-					console.log( pluginData );
-					/*
-					if ( typeof callback === "function" ) {
-						callback( pluginData );
-					}
-					return pluginData;
-					*/
-				}
-			});
-		});
-
-		// Fake load:
-		const fakeAssembly = {
-			id: "greek-villager-female",
-			components: {
-				activity: {
-					current: "walk",
-					next: "idle"
-				},
-				animation: [
-					{
-						id: "idle",
-						model: "greek-villager-female-idle",
-						duration: 1000
-					},
-					{
-						id: "walk",
-						"model": "greek-villager-female-walk",
-						"duration": 2000
-					},
-					{
-						id: "forage",
-						model: "greek-villager-female-forage",
-						duration: 2000
-					}
-				],
-				"name": "Villager",
-				"position": {
-					x: 0,
-					y: 0,
-					z: 0
-				},
-				"walk": {
-					speed: 1,
-					target: {
-						x: 20,
-						y: 20,
-						z: 0
-					}
-				}
->>>>>>> master:src/core/Engine.js
 			}
 		);
 		return this;
