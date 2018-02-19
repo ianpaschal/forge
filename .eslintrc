@@ -4,9 +4,7 @@
     "es6": true,
     "node": true
   },
-  "plugins": [
-    "vue"
-  ],
+  "plugins": [],
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "module"
