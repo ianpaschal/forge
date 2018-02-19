@@ -3,14 +3,13 @@
 /**
 	* Class representing an Assembly.
 	*/
-class Assembly {
+class System {
 
 	/**
 		* Create a Component.
-		* @param {Object} json - The x value.
 		*/
 	constructor( json ) {
-		console.log( "New Assembly made" );
+		console.log( "New system created." );
 
 		this._components = json.components;
 		console.log( this );
@@ -22,4 +21,4 @@ class Assembly {
 
 }
 
-export default Assembly;
+export default System;
