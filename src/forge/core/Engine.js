@@ -112,6 +112,14 @@ class Engine {
 				});
 				const plane = new Three.Mesh( new Three.PlaneGeometry( 1024, 1024 ), material );
 				scope._scene.add( plane );
+				// Generate test entities:
+				for ( let i = 0; i < 1000; i++ ) {
+					const mesh = new Three.Mesh( new Three.BoxGeometry( 2, 2, 2 ), new Three.MeshBasicMaterial({color: 0xffff00}));
+					mesh.position.x = 512 * Math.random() - 256;
+					mesh.position.y = 512 * Math.random() - 256;
+					mesh.position.z = 1;
+					scope._scene.add( mesh );
+				}
 			},
 
 			// onProgress callback currently not supported
@@ -191,6 +199,14 @@ class Engine {
 
 	_scanFor( term, arr ) {
 		return ( arr.indexOf( term ) > -1 );
+	}
+
+	getSelection( max, min, camera ) {
+		
+	}
+
+	getLocation( mouse, camera ) {
+
 	}
 }
 

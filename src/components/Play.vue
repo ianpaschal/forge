@@ -8,7 +8,7 @@
 </template>
 
 <script>
-	import Viewport from "./Viewport.vue";
+	import Viewport from "./Viewport";
 	import Overlay from "./Overlay.vue";
 	// import forge from "../../forge";
 	export default {
