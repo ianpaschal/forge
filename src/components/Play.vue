@@ -10,7 +10,6 @@
 <script>
 	import Viewport from "./Viewport";
 	import Overlay from "./Overlay.vue";
-	// import forge from "../../forge";
 	export default {
 		name: "Play",
 		components: {

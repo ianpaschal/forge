@@ -11,7 +11,12 @@ export default {
 		<div id='viewport'
 			@mousemove='onMouseMove'
 			@mousedown='onMouseDown'
-		></div>
+		>
+			<canvas id='layer3D'></canvas>
+			<svg id='layer2D'>
+				<rect id='selectionBox' x="100" y="100" width="0" height="0" stroke="white" fill='transparent'/>
+			</svg>
+		</div>
 	`,
 	data() {
 		return {
@@ -31,19 +36,20 @@ export default {
 		// Action!
 		this.renderer = new Three.WebGLRenderer({
 			alpha: true,
-			antialias: false
+			antialias: false,
+			canvas: document.getElementById( "layer3D" )
 		});
 		this.renderer.setPixelRatio( window.devicePixelRatio );
 		this.renderer.setSize( this.$el.offsetWidth, this.$el.offsetHeight );
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMap.renderReverseSided = false;
 
-		this.$el.appendChild( this.renderer.domElement );
-
 		this.controls = new OrbitControls( this.camera, this.$el );
 		this.controls.enabled = true;
 		this.controls.noRotate = true;
 
+		window.addEventListener( "mouseup", this.onMouseUp.bind( this ), false );
+		this.layer2D = document.getElementById( "layer2D" );
 		this.loop();
 	},
 	computed: {
@@ -60,6 +66,7 @@ export default {
 			requestAnimationFrame( this.loop );
 		},
 		onMouseMove( e ) {
+			const scope = this;
 			this.mouse.set( e.clientX, e.clientY );
 			if ( this.mouseDown ) {
 				/*
@@ -67,8 +74,8 @@ export default {
 					should not care (or know about) the actual viewport DOM element's
 					dimensions.
 				*/
-				this.start = this.cameraNormalize( this.dragStart, this.renderer.domElement );
-				this.end = this.cameraNormalize( this.mouse, this.renderer.domElement );
+				this.start = this.normalizeCenter( this.dragStart, this.renderer.domElement );
+				this.end = this.normalizeCenter( this.mouse, this.renderer.domElement );
 
 				// Get the min and max x and y from current mouse and start mouse
 				const max = new Three.Vector2(
@@ -82,6 +89,19 @@ export default {
 				// Get a list of entity IDs which are intersected
 				this.selected = forge.getSelection( max, min, this.camera );
 				// Draw the selection rectangle
+				this.selected.forEach(( point ) => {
+					const screenPoint = scope.normalizeCorner( point, scope.$el );
+					const el = document.createElementNS( "http://www.w3.org/2000/svg", "circle" );
+					el.setAttribute( "cx", screenPoint.x ); //Set path's data
+					el.setAttribute( "cy", screenPoint.y ); //Set path's data
+					el.setAttribute( "r", 5 ); //Set path's data
+					el.style.stroke = "#000"; //Set stroke colour
+					el.style.fill = "#fff"; //Set stroke colour
+					scope.layer2D.appendChild( el );
+				});
+
+				this.drawSelectionBox( this.dragStart, this.mouse );
+
 			}
 		},
 		onMouseDown( e ) {
@@ -92,15 +112,40 @@ export default {
 			// Call the forge getWorldMousePosition() which returns the world position
 
 			// If mouse is moving,
+			forge._entityCache.recompute( this.camera );
 		},
 		onMouseUp( e ) {
-			this.mouseDown = false;
+			if ( this.mouseDown ) {
+				this.mouseDown = false;
+				this.drawSelectionBox( 0, 0 );
+			}
 		},
-		cameraNormalize( v, el ) {
+		normalizeCenter( p, el ) {
 			return new Three.Vector2(
-				( v.x / el.clientWidth ) * 2 - 1,
-				( v.y / el.clientHeight ) * -2 + 1
+				( p.x / el.clientWidth ) * 2 - 1,
+				( p.y / el.clientHeight ) * -2 + 1
 			);
+		},
+		normalizeCorner( p, el ) {
+			return new Three.Vector2(
+				( el.clientWidth / 2 ) * p.x + el.clientWidth / 2,
+				( el.clientHeight / 2 ) * -1 * p.y + el.clientHeight / 2
+			);
+		},
+		drawSelectionBox( start, end ) {
+			const box = document.getElementById( "selectionBox" );
+			const max = new Three.Vector2(
+				Math.max( start.x, end.x ),
+				Math.max( start.y, end.y )
+			);
+			const min = new Three.Vector2(
+				Math.min( start.x, end.x ),
+				Math.min( start.y, end.y )
+			);
+			box.style.width = max.x - min.x;
+			box.style.height = max.y - min.y;
+			box.style.x = min.x;
+			box.style.y = min.y;
 		}
 	}
 };

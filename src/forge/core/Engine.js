@@ -5,6 +5,7 @@ import Assembly from "./Assembly";
 import Component from "./Component";
 import Entity from "./Entity";
 import Player from "./Player";
+import EntityCache from "../utils/EntityCache";
 
 /**
 	* Core singleton representing an instance of the Forge Engine.
@@ -42,6 +43,8 @@ class Engine {
 		this._savedFrameTime = 0;
 		this._maxFPS = 60;
 		this._lastFrameTime = null;
+
+		this._entityCache = new EntityCache();
 	}
 
 	/**
@@ -118,6 +121,8 @@ class Engine {
 					mesh.position.x = 512 * Math.random() - 256;
 					mesh.position.y = 512 * Math.random() - 256;
 					mesh.position.z = 1;
+
+					scope._entityCache.addWorldPoint( mesh.position );
 					scope._scene.add( mesh );
 				}
 			},
@@ -202,7 +207,7 @@ class Engine {
 	}
 
 	getSelection( max, min, camera ) {
-		
+		return this._entityCache.getScreenPoints( max, min );
 	}
 
 	getLocation( mouse, camera ) {
