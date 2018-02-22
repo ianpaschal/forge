@@ -32,7 +32,7 @@ export default {
 		this.camera.position.set( 16, -16, 16 );
 		this.camera.up.set( 0, 0, 1 );
 		this.camera.lookAt( new Three.Vector3( 0, 0, 0 ));
-
+		this.$store.commit( "camera", this.camera );
 		// Action!
 		this.renderer = new Three.WebGLRenderer({
 			alpha: true,
@@ -89,6 +89,7 @@ export default {
 				// Get a list of entity IDs which are intersected
 				this.selected = forge.getSelection( max, min, this.camera );
 				// Draw the selection rectangle
+				/*
 				this.selected.forEach(( point ) => {
 					const screenPoint = scope.normalizeCorner( point, scope.$el );
 					const el = document.createElementNS( "http://www.w3.org/2000/svg", "circle" );
@@ -99,7 +100,7 @@ export default {
 					el.style.fill = "#fff"; //Set stroke colour
 					scope.layer2D.appendChild( el );
 				});
-
+				*/
 				this.drawSelectionBox( this.dragStart, this.mouse );
 
 			}

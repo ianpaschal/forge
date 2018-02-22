@@ -10,7 +10,9 @@ Vue.use( Vuex );
 
 const store = new Vuex.Store({
 	state: {
-		view: "MainMenu"
+		view: "MainMenu",
+		camera: undefined,
+		activePlayerID: 1
 	},
 	getters: {},
 	mutations: {
@@ -19,6 +21,9 @@ const store = new Vuex.Store({
 			sfx.volume = 0.1;
 			sfx.play();
 			state.view = view;
+		},
+		camera( state, camera ) {
+			state.camera = camera;
 		}
 	},
 	actions: {}

@@ -98,7 +98,7 @@ class Engine {
 		loader.load(
 
 			// resource URL
-			"../resources/textures/TexturesCom_SoilSand0187_1_seamless_S.jpg",
+			"../resources/textures/TexturesCom_Grass0130_1_seamless_S.jpg",
 
 			// onLoad callback
 			function ( texture ) {
@@ -212,6 +212,10 @@ class Engine {
 
 	getLocation( mouse, camera ) {
 
+	}
+
+	getPlayer( id ) {
+		return this._players[id];
 	}
 }
 

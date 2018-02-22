@@ -9,7 +9,7 @@ class EntityCache {
 	recompute( camera ) {
 		// For now, since we don't have a way of listening to camera movements, we
 		// will just recompute for all entities.
-		const projectedPoints = [];
+		this._screenPoints = [];
 		const scope = this;
 		this._worldPoints.forEach(( point ) =>{
 			const proj = point.clone().project( camera );
@@ -30,3 +30,9 @@ class EntityCache {
 }
 
 export default EntityCache;
+
+/*
+	tbc = top, bottom, center
+	If the camera moves, go through all entities, and if their tbc is in the frustrum, update tbc.
+	In the animation system, in an entity moves, also update its tbc. but for what camera?
+*/
