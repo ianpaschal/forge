@@ -1,5 +1,5 @@
 import MainMenu from "./MainMenu.vue";
-import Play from "./Play.vue";
+import Play from "./Play";
 import Plugins from "./Plugins.vue";
 import Preferences from "./Preferences.vue";
 

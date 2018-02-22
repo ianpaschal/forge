@@ -5,11 +5,17 @@ export default {
 	name: "MiniMap",
 	components: {},
 	template: `
-		<canvas width='128' height='128' id='mini-map'></canvas>
+		<canvas id='mini-map'
+			v-bind:width='screenSize'
+			v-bind:height='screenSize'
+			@click='moveTo'
+		></canvas>
 	`,
 	data() {
 		return {
-			extent: 512 // Render extent from origin, in meters
+			pixelRatio: 2, // 2 for high DPI
+			screenSize: 128, // Render extent from origin, in meters
+			worldSize: 512
 		};
 	},
 	mounted() {
@@ -23,13 +29,19 @@ export default {
 		},
 		camera() {
 			return this.$store.state.camera;
+		},
+		cameraRig() {
+			return this.$store.state.cameraRig;
+		},
+		scale() {
+			return this.screenSize / this.worldSize;
 		}
 	},
 	methods: {
 		update() {
-			this.ctx.clearRect( 0, 0, this.canvas.width, this.canvas.height );
-			this.ctx.fillStyle = "#d8f5a2";
-			this.ctx.fillRect( 0, 0, 128, 128 );
+			// this.ctx.clearRect( 0, 0, this.canvas.width, this.canvas.height );
+			this.ctx.fillStyle = "#AD9F70";
+			this.ctx.fillRect( 0, 0, this.canvas.width, this.canvas.height );
 			// Update positions of all player units and enemy units if visible;
 
 			/*
@@ -45,12 +57,14 @@ export default {
 			const scope = this;
 			entities.forEach(( entity )=>{
 				if ( entity.type === "Mesh" ) {
-					scope.ctx.fillStyle = "#000000";
+					const position = this.convertWorldToSpace( entity.position );
+					// console.log( position );
+					scope.ctx.fillStyle = "#ffff00";
 					scope.ctx.fillRect(
-						Math.floor( entity.position.x ),
-						-1 * Math.floor( entity.position.y ),
-						2,
-						2
+						Math.floor( position.x ),
+						Math.floor( position.y ),
+						1,
+						1
 					);
 				}
 			});
@@ -79,12 +93,37 @@ export default {
 		},
 		drawCameraBox( points ) {
 			this.ctx.beginPath();
-			this.ctx.moveTo( points[0].x + 64, -1 * points[0].y + 64 );
-			this.ctx.lineTo( points[1].x + 64, -1 * points[1].y + 64 );
-			this.ctx.lineTo( points[2].x + 64, -1 * points[2].y + 64 );
-			this.ctx.lineTo( points[3].x + 64, -1 * points[3].y + 64 );
-			this.ctx.lineTo( points[0].x + 64, -1 * points[0].y + 64 );
+			this.ctx.moveTo( points[0].x * this.scale + 64, -1 * points[0].y * this.scale + 64 );
+			this.ctx.lineTo( points[1].x * this.scale + 64, -1 * points[1].y * this.scale + 64 );
+			this.ctx.lineTo( points[2].x * this.scale + 64, -1 * points[2].y * this.scale + 64 );
+			this.ctx.lineTo( points[3].x * this.scale + 64, -1 * points[3].y * this.scale + 64 );
+			this.ctx.lineTo( points[0].x * this.scale + 64, -1 * points[0].y * this.scale + 64 );
+			this.ctx.strokeStyle="#FFFFFF";
 			this.ctx.stroke();
+		},
+		convertWorldToSpace( vec ) {
+			const offset = this.screenSize / 2;
+			return {
+				x: vec.x * this.scale + offset,
+				y: vec.y * this.scale * -1 + offset
+			};
+		},
+		convertScreen( vec ) {
+			// 0 -> 128 => -512 -> +512
+			const offset = this.screenSize / 2;
+			const scale = this.worldSize / this.screenSize;
+			vec.x -= offset;
+			vec.y -= offset;
+			return {
+				x: vec.x * scale,
+				y: vec.y * scale * -1
+			};
+		},
+		moveTo( e ) {
+
+			const position = this.convertScreen({ x: e.offsetX, y: e.offsetY });
+			this.cameraRig.position.x = position.x;
+			this.cameraRig.position.y = position.y;
 		}
 	}
 };

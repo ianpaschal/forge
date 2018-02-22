@@ -24,16 +24,33 @@ export default {
 			styleObject: {},
 			raycaster: new Three.Raycaster(),
 			mouse: new Three.Vector2(),
-			dragStart: new Three.Vector2()
+			dragStart: new Three.Vector2(),
+			lastTime: 0
 		};
 	},
 	mounted() {
-		this.camera = new Three.PerspectiveCamera( 45, this.aspect, 1, 10000 );
-		this.camera.position.set( 16, -16, 16 );
-		this.camera.up.set( 0, 0, 1 );
-		this.camera.lookAt( new Three.Vector3( 0, 0, 0 ));
-		this.$store.commit( "camera", this.camera );
-		// Action!
+		if ( !this.camera || !this.cameraRig ) {
+			console.warn( "No camera attached to viewport, constructing a new rig." );
+			const camera = new Three.PerspectiveCamera( 45, this.aspect, 1, 10000 );
+			const d = 32;
+			camera.position.set( 0, -1 * d, d );
+			camera.up.set( 0, 0, 1 );
+			camera.lookAt( new Three.Vector3( 0, 0, 0 ));
+
+			const cameraRig = new Three.Object3D();
+			const pivot = new Three.Object3D();
+
+			pivot.add( camera );
+			cameraRig.add( pivot );
+
+			cameraRig.rotation.z += Math.PI/4;
+
+			forge.getScene().add( cameraRig );
+
+			this.$store.commit( "camera", camera );
+			this.$store.commit( "cameraRig", cameraRig );
+		}
+
 		this.renderer = new Three.WebGLRenderer({
 			alpha: true,
 			antialias: false,
@@ -41,16 +58,11 @@ export default {
 		});
 		this.renderer.setPixelRatio( window.devicePixelRatio );
 		this.renderer.setSize( this.$el.offsetWidth, this.$el.offsetHeight );
-		this.renderer.shadowMap.enabled = true;
-		this.renderer.shadowMap.renderReverseSided = false;
-
-		this.controls = new OrbitControls( this.camera, this.$el );
-		this.controls.enabled = true;
-		this.controls.noRotate = true;
 
 		window.addEventListener( "mouseup", this.onMouseUp.bind( this ), false );
 		this.layer2D = document.getElementById( "layer2D" );
-		this.loop();
+		this.lastTime;
+		this.update();
 	},
 	computed: {
 		showPrice() {
@@ -58,12 +70,47 @@ export default {
 		},
 		aspect() {
 			return this.$el.offsetWidth / this.$el.offsetHeight;
+		},
+		cameraRig() {
+			return this.$store.state.cameraRig;
+		},
+		camera() {
+			return this.$store.state.camera;
+		},
+		moveLeft() {
+			return this.$store.state.moveLeft;
+		},
+		moveRight() {
+			return this.$store.state.moveRight;
+		},
+		moveForward() {
+			return this.$store.state.moveForward;
+		},
+		moveBack() {
+			return this.$store.state.moveBack;
 		}
 	},
 	methods: {
-		loop() {
+		update() {
+			const thisTime = performance.now();
+			const delta = thisTime - this.lastTime;
+			this.lastTime = thisTime;
+
+			if ( this.moveRight ) {
+				this.cameraRig.translateX( delta * 0.05 );
+			}
+			if ( this.moveLeft ) {
+				this.cameraRig.translateX( delta * -0.05 );
+			}
+			if ( this.moveForward ) {
+				this.cameraRig.translateY( delta * 0.05 );
+			}
+			if ( this.moveBack ) {
+				this.cameraRig.translateY( delta * -0.05 );
+			}
+
 			this.renderer.render( forge.getScene(), this.camera );
-			requestAnimationFrame( this.loop );
+			requestAnimationFrame( this.update );
 		},
 		onMouseMove( e ) {
 			const scope = this;

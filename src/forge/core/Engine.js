@@ -90,9 +90,6 @@ class Engine {
 		};
 
 		// Generate the terrain:
-		const mesh = new Three.Mesh( new Three.PlaneGeometry( 1024, 1024 ), new Three.MeshLambertMaterial({
-			color: 0x999999
-		}));
 		const loader = new Three.TextureLoader();
 		const scope = this;
 		loader.load(
@@ -113,11 +110,11 @@ class Engine {
 				const material = new Three.MeshBasicMaterial({
 					map: texture
 				});
-				const plane = new Three.Mesh( new Three.PlaneGeometry( 1024, 1024 ), material );
+				const plane = new Three.Mesh( new Three.PlaneGeometry( 512, 512 ), material );
 				scope._scene.add( plane );
 				// Generate test entities:
 				for ( let i = 0; i < 1000; i++ ) {
-					const mesh = new Three.Mesh( new Three.BoxGeometry( 2, 2, 2 ), new Three.MeshBasicMaterial({color: 0xffff00}));
+					const mesh = new Three.Mesh( new Three.BoxGeometry( 1, 1, 2 ), new Three.MeshBasicMaterial({color: 0xffff00}));
 					mesh.position.x = 512 * Math.random() - 256;
 					mesh.position.y = 512 * Math.random() - 256;
 					mesh.position.z = 1;

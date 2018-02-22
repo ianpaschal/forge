@@ -12,7 +12,11 @@ const store = new Vuex.Store({
 	state: {
 		view: "MainMenu",
 		camera: undefined,
-		activePlayerID: 1
+		activePlayerID: 1,
+		moveLeft: false,
+		moveRight: false,
+		moveForward: false,
+		moveBack: false
 	},
 	getters: {},
 	mutations: {
@@ -24,6 +28,21 @@ const store = new Vuex.Store({
 		},
 		camera( state, camera ) {
 			state.camera = camera;
+		},
+		cameraRig( state, cameraRig ) {
+			state.cameraRig = cameraRig;
+		},
+		moveLeft( state, bool ) {
+			state.moveLeft = bool;
+		},
+		moveRight( state, bool ) {
+			state.moveRight = bool;
+		},
+		moveBack( state, bool ) {
+			state.moveBack = bool;
+		},
+		moveForward( state, bool ) {
+			state.moveForward = bool;
 		}
 	},
 	actions: {}
