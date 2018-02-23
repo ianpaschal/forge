@@ -9,7 +9,7 @@ import forge from "./forge";
 import store from "./store";
 
 // Components:
-import App from "./components/App.vue";
+import App from "./components/App";
 
 window.onload = () => {
 	new Vue({

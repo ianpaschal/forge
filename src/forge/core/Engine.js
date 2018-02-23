@@ -1,28 +1,16 @@
 // Forge is distributed under the MIT license.
 
-/**
-	* @namespace Engine
-	*/
-
-// External modules:
-import FS from "fs";
-import Path from "path";
-import Util from "util";
 import * as Three from "three";
-
-// Core:
 import Assembly from "./Assembly";
 import Component from "./Component";
 import Entity from "./Entity";
 import Player from "./Player";
-import World from "./World";
-import walkDirSync from "../utils/walkDirSync";
+import EntityCache from "../utils/EntityCache";
 
-// Managers:
-import ContentManager from "../managers/ContentManager.js";
-import PreferenceManager from "../managers/PreferenceManager";
-
-/** Core singleton representing an instance of the Forge Engine. */
+/**
+	* Core singleton representing an instance of the Forge Engine.
+	* @namespace Engine
+	*/
 class Engine {
 
 	/**
@@ -33,19 +21,13 @@ class Engine {
 
 		this._scene = new Three.Scene();
 
-		// Load assets:
-		// Create manager instances which can be used by the interface:
-		this.contentManager = new ContentManager();
-		this.preferenceManager = new PreferenceManager();
-		/*
-			For now, we don't worry about fancy plugin loading. Just worry about
-			creating the world/environment.
-		*/
-		this.pluginDir = Path.resolve( __dirname, "../plugins/" );
-
-		// ECS Storage:
+		// These are the things which are actually saved per game:
 		this._entities = [];
 		this._systems = [];
+		this._world = {
+			time: 0,
+			name: ""
+		};
 
 		// Static Resources:
 		this._assemblies = [];
@@ -55,15 +37,14 @@ class Engine {
 		this._textures = [];
 
 		// Timing:
-		/*
-			Later this will be controlled by the PreferenceManager
-		*/
 		this._running = false;
 		this._fixedStep = 10;
 		this._savedFixedTime = 0;
 		this._savedFrameTime = 0;
 		this._maxFPS = 60;
 		this._lastFrameTime = null;
+
+		this._entityCache = new EntityCache();
 	}
 
 	/**
@@ -76,68 +57,45 @@ class Engine {
 	}
 
 	registerSystems( systems ) {
-		systems.forEach( ( system ) => {
+		systems.forEach(( system ) => {
 			this.registerSystem( system );
 		});
 	}
 
-	loadAssets( callback ) {
-		const stack = this.contentManager.getStack();
-		if ( !stack ) {
-			console.error( "No asset stack to load from!" );
-			return;
-		}
-		stack.forEach( ( asset ) => {
-			/*
-				TODO: Replace with this.register[asset.type](asset);
-			*/
-			switch( asset.type ) {
-				case "animation":
-					this.registerAnimation( asset );
-					break;
-				case "assembly":
-					break;
-				case "component":
-					break;
-				case "texture":
-					this.registerTexture( asset );
-					break;
-				case "sound":
-					this.registerSound( asset );
-					break;
-				case "model":
-					this.registerModel( asset );
-					break;
-			}
-		});
-		if ( typeof callback === "function" ) {
-			return callback();
-		}
-		return;
-	}
-
-	loadWorld() {
-
-	}
-
-	generateWorld( ) {
+	generateWorld( config ) {
 		console.info( "Generating a new world." );
-		const mesh = new Three.Mesh( new Three.PlaneGeometry( 1024, 1024 ), new Three.MeshLambertMaterial({
-			color: 0x999999
-		}) );
 
-		// store.state.scene.add( mesh );
+		/* Later, config should be loaded from disk, for now it's hard coded. */
+		const resources = {
+			food: 100,
+			wood: 100,
+			metal: 100
+		};
+		config = config || {
+			name: "Test World",
+			players: [
+				new Player({
+					start: new Three.Vector3( 0, 0, 0 ),
+					resources: resources
+				}),
+				new Player({
+					start: new Three.Vector3( 200, -100, 0 ),
+					resources: resources
+				}),
+				new Player({
+					start: new Three.Vector3( -100, 200, 0 ),
+					resources: resources
+				})
+			]
+		};
 
+		// Generate the terrain:
 		const loader = new Three.TextureLoader();
-
-		let material;
-
 		const scope = this;
-
-		// load a resource
 		loader.load(
+
 			// resource URL
-			"../resources/textures/TexturesCom_SoilSand0187_1_seamless_S.jpg",
+			"../resources/textures/TexturesCom_Grass0130_1_seamless_S.jpg",
 
 			// onLoad callback
 			function ( texture ) {
@@ -149,11 +107,21 @@ class Engine {
 				//   which is probably why your example wasn't working
 				texture.repeat.set( 64, 64 );
 
-				material = new Three.MeshBasicMaterial({
+				const material = new Three.MeshBasicMaterial({
 					map: texture
 				});
-				const plane = new Three.Mesh( new Three.PlaneGeometry( 1024, 1024 ), material );
+				const plane = new Three.Mesh( new Three.PlaneGeometry( 512, 512 ), material );
 				scope._scene.add( plane );
+				// Generate test entities:
+				for ( let i = 0; i < 1000; i++ ) {
+					const mesh = new Three.Mesh( new Three.BoxGeometry( 1, 1, 2 ), new Three.MeshBasicMaterial({color: 0xffff00}));
+					mesh.position.x = 512 * Math.random() - 256;
+					mesh.position.y = 512 * Math.random() - 256;
+					mesh.position.z = 1;
+
+					scope._entityCache.addWorldPoint( mesh.position );
+					scope._scene.add( mesh );
+				}
 			},
 
 			// onProgress callback currently not supported
@@ -172,7 +140,7 @@ class Engine {
 	}
 
 	init( source ) {
-		this.loadAssets( () => {
+		this.loadAssets(() => {
 			// If no source is provided, generate a new world:
 			if ( !source ) {
 				console.warn( "World is missing, a new one will be generated!" );
@@ -184,200 +152,68 @@ class Engine {
 		});
 	}
 
+	loadAssets( callback ) {
+		callback();
+	}
+
+	/**
+		* Start the execution of the update loop. Called internally by `this.init()`.
+		*/
 	start() {
+		/*
+			Always reset. If engine was stopped and restarted, not resetting could
+			cause a massive time jump to be added to all systems.
+		*/
 		this._lastFrameTime = performance.now();
 		this._running = true;
 		setInterval( this.update.bind( this ), 1000 / 60 );
 	}
 
 	/**
-		* This function will eventually be renamed 'update'. This is because each
-		* system actually controls its own update loop.
-		*
-		* This allows systems to be more deterministic. Some systems which use fixed
-		* timesteps get called on a regular basis. Although they may not execute
-		* exactly on schedule, so time is accumulated and then simulated in fixed
-		* steps, with a step being removed from the accumulator each time.
-		*
-		* Variable step systems, however, simply collect accumulated time and
-		* simulate some action based on that variable delta and eventually remove
-		* all accumulated time each loop.
-		*
-		* Systems which use fixed steps:
-		* - Resources
-		* - Physics
-		* - Comabat
-		* - Ai
-		*
-		* Systems which use variable steps:
-		* - Animation
-		* - Sound
-		*
-		* See http://gameprogrammingpatterns.com/game-loop.html
+		* Update all systems (if the engine is currently running).
 		*/
 	update() {
 		if ( this._running ) {
-			/**
-				* Update all time. Fixed time is used for fixed step calculations while
-				* frame time is used for rendering (variable).
-				*/
 			const now = performance.now();
 			const delta = now - this._lastFrameTime;
-			// this._savedFixedTime += delta;
 			this._lastFrameTime = now;
-
-			this._systems.forEach( ( system ) => {
+			this._systems.forEach(( system ) => {
 				system.update( delta );
 			});
 		}
-		/*
-
-		// Update fixed step systems:
-		if ( this._savedFixedTime >= this._fixedStep ) {
-
-			// Update entity activity logic:
-
-			// Remove simulated time:
-			this._savedFixedTime -= this._fixedStep;
-		}
-
-				If savedFrameTime has increased more than the expected amount of time
-				one frame should take, render a frame, and remove the elapsed time this
-				loop.
-
-		if ( this._savedFrameTime > 1000 / this._maxFPS ) {
-
-			// Remove simulated time:
-			this._savedFrameTime -= delta;
-		}
-		*/
-		// Loop the loop:
-		// this.loop();
-		//}
-
-		// in the future all of this might be changed so that each system keeps
-		// track of time by itself, independently.
 	}
 
 	stop() {
 		this._running = false;
 	}
 
-	createEntity( assemblyID ) {
-
-	}
-	/*
-	//==================================================
-
-	_registerAssembly( json ) {
-		// Do nothing.
-
-		const id = json.id;
-
-		this._assemblies[ id ] = new Assembly( json );
-
-		console.log( this._assemblies );
-
-		json.components.forEach( ( component ) => {
-
-			// Replce with references to already loaded components:
-
-			const registeredComponent = this._components[ component.id ];
-			if ( registeredComponent ) {
-				this._assemblies[ id ].addComponent( registeredComponent, component );
-			} else {
-
-			}
-
-		});
-
-	}
-
-	_registerComponent( json ) {
-		// Do nothing.
-	}
-
-	_registerAnimationClip() {
-
-	}
-	_registerTexture() {
-
-	}
-
-	//===================================
-
-	loadDefaults() {
-		console.log( "Loading modules..." );
-
-		const componentFiles = walkDirSync( Path.resolve( __dirname, "components/" ) );
-
-		for ( const file of componentFiles ) {
-			var obj;
-			FS.readFile( file, "utf8", ( err, data ) => {
-				if ( err ) {
-					throw err;
-				}
-				obj = JSON.parse( data );
-				console.log( Util.inspect( obj, { depth: null, colors: true }) );
-			});
-		}
-	}
-
-	loadSavedWorld( savePath ) {
-		FS.readFile( Path.join( savePath, "world.json" ), "utf8", ( err, data ) => {
-			if ( err ) {
-				throw err;
-			}
-			const saveData = JSON.parse( data );
-
-			loaded++;
-			if ( loaded === items.length ) {
-				onFinished();
-			}
-		});
-	}
 	createPlayer( name ) {
 		const player = new Player( name );
 		player.spawn();
-	};
+	}
+
+	createEntity( id, assembly ) {
+		const entity = new Entity( id );
+		entity.copyAssembly( this._assemblies[ id ]);
+		entity.spawn();
+		this._entities.push( entity );
+	}
 
 	_scanFor( term, arr ) {
 		return ( arr.indexOf( term ) > -1 );
 	}
 
-	createEntity( id ) {
-		const entity = new Entity();
-		entity.copyAssembly( this._assemblies[ id ] );
-		entity.spawn();
-		this._entities.push( entity );
+	getSelection( max, min, camera ) {
+		return this._entityCache.getScreenPoints( max, min );
+	}
 
-		/*
-			New entities must be registered with all systems for which they may interact.
-
-			For example, they are added into the scene by default.
-
-			So bad example.
-
-			But for example, their are registered with the sound system.
-			They are registered with the combat system.
-
-			For example, the combat system does nothing but takes a note of the entity.
-			It keeps this handy and will only send back an updated copy
-
-			The alternative system would be that each loop of the system fetches all entities.
+	getLocation( mouse, camera ) {
 
 	}
 
-	createScene() {
-		this._scene = new Three.Scene();
+	getPlayer( id ) {
+		return this._players[id];
 	}
-	getScene() {
-		if ( !this._scene ) {
-			this.createScene();
-		}
-		return this._scene;
-	}
-	*/
 }
 
 export default Engine;

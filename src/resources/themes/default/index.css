@@ -1,0 +1,44 @@
+#app {
+	font-size: 11px;
+	color: #fff;
+	background-color: #212529;
+}
+.view {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+#viewport {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}
+#viewport canvas {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+#viewport svg {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+.frame-top {
+	height: 32px;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	background-color: black;
+	color: #FFF;
+}
+.frame-bottom {
+	height: 192px;
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	background-color: black;
+	color: #FFF;
+}
