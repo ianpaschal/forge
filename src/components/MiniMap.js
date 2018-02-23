@@ -10,8 +10,9 @@ export default {
 			v-bind:height='resolution'
 			@click='moveTo'
 			v-bind:style='{
-				position: "absolute",
-				left: "0px",
+				position: "relative",
+				left: ((diameter - size) / 2)+"px",
+				top: ((diameter - size) / 2)+"px",
 				width: size+"px",
 				height: size+"px",
 				transform: "rotate(45deg)"
@@ -20,10 +21,8 @@ export default {
 	`,
 	data() {
 		return {
-			resolution: 384,
-			size: 192,
-			worldSize: 512,
-			radius: ( 192 / 4 ) * Math.sqrt( 2 )
+			size: 128,
+			worldSize: 512
 		};
 	},
 	mounted() {
@@ -41,8 +40,21 @@ export default {
 		cameraRig() {
 			return this.$store.state.cameraRig;
 		},
-		scale() {
-			return this.canvas.width / this.worldSize;
+		resolution() {
+			return this.size * window.devicePixelRatio;
+		},
+		diameter() {
+			return this.size * Math.sqrt( 2 );
+		},
+
+		// Get the unknown map from the store:
+		hidden() {
+			return true;
+		},
+
+		// Get the fog of war map from the store:
+		fog() {
+			return true;
 		}
 	},
 	methods: {
