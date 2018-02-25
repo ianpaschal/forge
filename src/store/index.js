@@ -57,7 +57,7 @@ const store = new Vuex.Store({
 			state.activePlayerID = id;
 		},
 		incPlayerID( state ) {
-			if ( state.activePlayerID == 2 ) {
+			if ( state.activePlayerID == forge._players.length - 1 ) {
 				state.activePlayerID = 0;
 			} else {
 				state.activePlayerID++;

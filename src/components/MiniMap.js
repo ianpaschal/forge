@@ -69,9 +69,9 @@ export default {
 			// Update positions of all player units and enemy units if visible
 			const entityIDs = this.player.getEntityIDs();
 			entityIDs.forEach(( uuid ) => {
-				const pos = this.convertWorldToSpace( forge.getEntity( uuid ).components.position );
+				const pos = this.convertToScreen( forge.getEntity( uuid ).components.position );
 				this.ctx.fillStyle = "#"+this.player.color.getHexString();
-				this.ctx.fillRect( Math.floor( pos.x ), Math.floor( pos.y ), 1, 1 );
+				this.ctx.fillRect( Math.floor( pos.x ), Math.floor( pos.y ), window.devicePixelRatio, window.devicePixelRatio );
 
 			});
 

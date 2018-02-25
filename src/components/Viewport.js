@@ -32,7 +32,7 @@ export default {
 		if ( !this.camera || !this.cameraRig ) {
 			console.warn( "No camera attached to viewport, constructing a new rig." );
 			const camera = new Three.PerspectiveCamera( 45, this.aspect, 1, 10000 );
-			const d = 64;
+			const d = 40;
 			camera.position.set( 0, -1 * d, d );
 			camera.up.set( 0, 0, 1 );
 			camera.lookAt( new Three.Vector3( 0, 0, 0 ));

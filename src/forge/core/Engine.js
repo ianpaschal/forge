@@ -83,6 +83,12 @@ class Engine {
 			name: "Test World",
 			players: [
 				new Player( null, {
+					color: new Three.Color( 0xA0B35D ),
+					name: "Gaia",
+					start: new Three.Vector3( 0, 0, 0 ),
+					resources: {}
+				}),
+				new Player( null, {
 					color: new Three.Color( 0x0000ff ),
 					name: "Ian",
 					start: new Three.Vector3( 0, 0, 0 ),
@@ -120,6 +126,20 @@ class Engine {
 				this.spawn( entity );
 			}
 		});
+
+		// Create ground:
+		const groundTexture = this._textures[ "grass" ];
+		groundTexture.wrapS = Three.RepeatWrapping;
+		groundTexture.wrapT = Three.RepeatWrapping;
+		groundTexture.repeat.set( 32, 32 );
+		const ground = new Three.Mesh(
+			new Three.PlaneGeometry( 512, 512 ),
+			new Three.MeshLambertMaterial({
+				color: 0xffffff,
+				map: groundTexture
+			})
+		);
+		this._scene.add( ground );
 	}
 
 	init( source, onProg, onFinshed ) {
@@ -131,7 +151,6 @@ class Engine {
 			} else {
 				this.loadWorld( source );
 			}
-			console.log( this._entities );
 			onFinshed();
 		});
 	}
@@ -144,6 +163,7 @@ class Engine {
 
 		// Temporary hardcoded stack in lieu of plugin browser stack:
 		stack = [
+			{ type: "texture", id: "grass", path: "forge-aom-mod/texture/grass-75-dirt-25.bmp" },
 			{ type: "texture", id: "nature-tree-oak-diffuse", path: "forge-aom-mod/texture/nature-tree-oak-diffuse.png" },
 			{ type: "texture", id: "nature-tree-oak-alpha", path: "forge-aom-mod/texture/nature-tree-oak-alpha.png" },
 			{ type: "material", id: "nature-tree-oak", path: "forge-aom-mod/material/nature-tree-oak.json" },
@@ -288,7 +308,11 @@ class Engine {
 		const color = this.getPlayer( entity.components.player ).color;
 		const geometry = this.getGeometry( entity.components.model.geometry );
 		const material = new Three.MeshLambertMaterial({
-			color: color
+			color: new Three.Color( 1, 1, 1 ),
+			map: this._textures[entity.components.model.material+"-diffuse"],
+			alphaMap: this._textures[entity.components.model.material+"-alpha"],
+			alphaTest: 0.5, // if transparent is false
+			transparent: false
 		});
 		const mesh = new Three.Mesh( geometry, material );
 		mesh.position.copy( entity.components.position );
