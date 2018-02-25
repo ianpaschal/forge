@@ -2,14 +2,15 @@ import MainMenu from "./MainMenu.vue";
 import Play from "./Play";
 import Plugins from "./Plugins.vue";
 import Preferences from "./Preferences.vue";
-
+import Loading from "./Loading";
 export default {
 	name: "App",
 	components: {
 		MainMenu,
 		Play,
 		Plugins,
-		Preferences
+		Preferences,
+		Loading
 	},
 	template: `
 		<div id='app'>

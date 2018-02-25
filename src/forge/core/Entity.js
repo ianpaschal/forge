@@ -13,8 +13,8 @@ class Entity {
 		* @param {Object} components - The components.
 		*/
 	constructor( uuid, components ) {
-		this.uuid = "0";
-		this.components = {};
+		this.uuid = uuid || UUID();
+		this.components = components;
 	}
 
 	/**
@@ -23,7 +23,7 @@ class Entity {
 		*/
 	addComponent( component ) {
 		// Check if component is a valid type of component
-		if ( !this.components[ component.id ] ) {
+		if ( !this.components[ component.id ]) {
 			this.components[ component.id ] = component;
 		}
 		else {
@@ -45,7 +45,7 @@ class Entity {
 		* @return {number} The x value.
 		*/
 	getComponent( id ) {
-		if ( this.components[ id ] ) {
+		if ( this.components[ id ]) {
 			return this.components[ id ];
 		}
 		else {
@@ -59,7 +59,7 @@ class Entity {
 		* @return {number} The x value.
 		*/
 	removeComponent( id ) {
-		if ( this.components[ id ] ) {
+		if ( this.components[ id ]) {
 			delete this.components[ id ];
 		}
 		else {
@@ -68,23 +68,44 @@ class Entity {
 	}
 
 	/**
-		* Copy an assembly into the entity.
+		* Copy an assembly into the entity, replacing all components.
 		* @param {Assembly} - Assembly to clone into the new entity.
 		*/
-	copyAssembly( assembly ) {
-		this.components = assembly.getComponents();
+	copy( assembly ) {
+		this.components = JSON.parse( JSON.stringify( assembly.getComponents()));
 	}
 
-	spawn( position = new Three.Vector3( 0, 0, 0 ) ) {
+	/**
+		* Merge an assembly into the entity, preserving existing components.
+		* @param {Assembly} - Assembly to clone into the new entity.
+		*/
+	merge( assembly ) {
 
-		console.log( "spanwing a dude" );
+	}
+
+	/**
+		* Clone this entity.
+		* @param {Assembly} - Assembly to clone into the new entity.
+		*/
+	clone() {
+		return new this.constructor( null, this.getComponents );
+	}
+
+	spawn( position ) {
+
+		const mesh = new Three.Mesh( geometry, material );
+		mesh.position.x = 512 * Math.random() - 256;
+		mesh.position.y = 512 * Math.random() - 256;
+		mesh.position.z = 1;
+
 		// Create the model
+		/*
 		const loader = new Three.JSONLoader();
-		const path = "../../plugins/age-of-mythology/model/greek-villager-female-walk.js";
+		const path = "../../plugins/age-of-mythology/model/greek-villager-female-walk.json";
 		loader.load( path, ( geometry, materials ) => {
 			const mesh = new Three.Mesh( geometry, new Three.MeshLambertMaterial({
 				color: 0x999999
-			}) );
+			}));
 
 			// store.state.scene.add( mesh );
 
@@ -95,6 +116,7 @@ class Entity {
 		// Add it to the scene.
 
 		// Register a mixer
+		*/
 	}
 }
 

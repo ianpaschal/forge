@@ -5,18 +5,24 @@ import Vuex from "vuex";
 import FS from "fs";
 import Path from "path";
 import * as Three from "three";
+import forge from "../forge";
 
 Vue.use( Vuex );
-
+Vue.util.defineReactive( forge, "loaded", 0 );
 const store = new Vuex.Store({
 	state: {
+		loaded: forge.loaded,
 		view: "MainMenu",
 		camera: undefined,
 		activePlayerID: 1,
 		moveLeft: false,
 		moveRight: false,
 		moveForward: false,
-		moveBack: false
+		moveBack: false,
+		player: {
+			name: "None"
+		},
+		activePlayerID: 1
 	},
 	getters: {},
 	mutations: {
@@ -43,9 +49,29 @@ const store = new Vuex.Store({
 		},
 		moveForward( state, bool ) {
 			state.moveForward = bool;
+		},
+		player( state, inst ) {
+			state.player = inst;
+		},
+		activePlayerID( state, id ) {
+			state.activePlayerID = id;
+		},
+		incPlayerID( state ) {
+			if ( state.activePlayerID == 2 ) {
+				state.activePlayerID = 0;
+			} else {
+				state.activePlayerID++;
+			}
+
 		}
 	},
-	actions: {}
+	actions: {
+		switchPlayer( context ) {
+			context.commit( "incPlayerID" );
+			const id = context.state.activePlayerID;
+			context.commit( "player", forge.getPlayer( id ));
+		}
+	}
 });
 
 export default store;

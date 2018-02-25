@@ -1,6 +1,7 @@
 import Viewport from "./Viewport";
 import Overlay from "./Overlay.vue";
 import MiniMap from "./MiniMap";
+import forge from "../forge";
 export default {
 	name: "Play",
 	components: {
@@ -11,7 +12,11 @@ export default {
 	template: `
 		<div id='play'>
 			<Viewport></Viewport>
-			<div class='frame-top'></div>
+			<div class='frame-top'>
+				<button @click='switchPlayer'>Cycle</button>
+				{{playerName}}
+
+			</div>
 			<div class='frame-bottom'>
 				<MiniMap></MiniMap>
 			</div>
@@ -24,7 +29,13 @@ export default {
 			loops: 0
 		};
 	},
+	computed: {
+		playerName() {
+			return this.$store.state.player.name;
+		}
+	},
 	mounted() {
+		this.$store.dispatch( "switchPlayer", 1 );
 		window.addEventListener( "keyup", this.onKeyUp );
 		window.addEventListener( "keydown", this.onKeyDown );
 	},
@@ -66,6 +77,9 @@ export default {
 		},
 		togglePause() {
 			this.paused = !this.paused;
+		},
+		switchPlayer() {
+			this.$store.dispatch( "switchPlayer" );
 		}
 	}
 };

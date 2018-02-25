@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Component - Documentation</title>
+    <title>forge/core/Entity.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,189 +29,136 @@
 
 <div id="main">
     
-    <h1 class="page-title">Component</h1>
+    <h1 class="page-title">forge/core/Entity.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-        Component
-        </h2>
-        
-            <div class="class-description"><p>Class representing a Component.</p></div>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-<div class="section-method">
-
-    
-    <h2>Constructor</h2>
-    
-
-    <h4 class="name" id="Component"><span class="type-signature"></span>new Component<span class="signature">(json)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Create a Component.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="forge_core_Component.js.html">forge/core/Component.js</a>, <a href="forge_core_Component.js.html#line4">line 4</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>json</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Object</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The x value.</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// Forge is distributed under the MIT license.
+
+import UUID from "uuid/v4";
+import * as Three from "three";
+// import store from "../ui/store";
+
+/** Class representing an Entity. */
+class Entity {
+
+	/**
+		* Create an Entity with a given UUID and components.
+		* @param {string} uuid - The UUID.
+		* @param {Object} components - The components.
+		*/
+	constructor( uuid, components ) {
+		this.uuid = "0";
+		this.components = {};
+	}
+
+	/**
+		* Add a Component instance to the entity.
+		* @param {Component} component
+		*/
+	addComponent( component ) {
+		// Check if component is a valid type of component
+		if ( !this.components[ component.id ]) {
+			this.components[ component.id ] = component;
+		}
+		else {
+			return "Component already exists!";
+		}
+	}
+
+	/**
+		* Get the components within this entity.
+		* @return {number} The x value.
+		*/
+	getComponents() {
+		return this.components;
+	}
+
+	/**
+		* Get a component within this entity (by ID).
+		* @param {string} id - The ID of the component.
+		* @return {number} The x value.
+		*/
+	getComponent( id ) {
+		if ( this.components[ id ]) {
+			return this.components[ id ];
+		}
+		else {
+			return "Component with id " + id + "doesn't exist";
+		}
+	}
+
+	/**
+		* Remove a component from this entity (by ID).
+		* @param {string} str - The ID of the component.
+		* @return {number} The x value.
+		*/
+	removeComponent( id ) {
+		if ( this.components[ id ]) {
+			delete this.components[ id ];
+		}
+		else {
+			return "Component with id " + id + "doesn't exist";
+		}
+	}
+
+	/**
+		* Copy an assembly into the entity, replacing all components.
+		* @param {Assembly} - Assembly to clone into the new entity.
+		*/
+	copy( assembly ) {
+		this.components = assembly.getComponents();
+	}
+
+	/**
+		* Merge an assembly into the entity, preserving existing components.
+		* @param {Assembly} - Assembly to clone into the new entity.
+		*/
+	merge( assembly ) {
+
+	}
+
+	/**
+		* Clone this entity.
+		* @param {Assembly} - Assembly to clone into the new entity.
+		*/
+	clone() {
+		return new this.constructor( null, this.getComponents );
+	}
+
+	spawn( position = new Three.Vector3( 0, 0, 0 )) {
+
+		console.log( "spanwing a dude" );
+		// Create the model
+		const loader = new Three.JSONLoader();
+		const path = "../../plugins/age-of-mythology/model/greek-villager-female-walk.js";
+		loader.load( path, ( geometry, materials ) => {
+			const mesh = new Three.Mesh( geometry, new Three.MeshLambertMaterial({
+				color: 0x999999
+			}));
+
+			// store.state.scene.add( mesh );
+
+			mesh.material.morphTargets = true;
+			mesh.position.copy( position );
+		});
+
+		// Add it to the scene.
+
+		// Register a mixer
+	}
+}
+
+export default Entity;
+</code></pre>
+        </article>
+    </section>
 
 
 

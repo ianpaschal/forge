@@ -1,12 +1,20 @@
 import * as Three from "three";
+import UUID from "uuid/v4";
 export default class {
-	constructor() {
-		this._cameraDistance = 32;
-		this._horizontalPivot = new Three.Object3D();
-		this._verticalPivot = new Three.Object3D();
-		this._cameraNode = new Three.Object3D();
+	constructor( uuid, config ) {
+		this.uuid = uuid || UUID();
+		this.name = config.name;
+		this.color = config.color;
+		this._entities = [];
+		console.log( "Created player "+this.uuid+" with name "+this.name+"." );
+		return this;
+	}
 
-		this._cameraNode.position.y = -1 * this._cameraDistance;
-		this._horizontalPivot.add( this._verticalPivot );
+	own( entity ) {
+		this._entities.push( entity.uuid );
+	}
+
+	getEntityIDs() {
+		return this._entities;
 	}
 }

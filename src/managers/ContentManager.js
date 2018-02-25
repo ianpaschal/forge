@@ -26,8 +26,8 @@ class ContentManager {
 
 		const stackOrder = this._getStackOrder();
 		console.log( stackOrder );
-		this._findPlugins( ( pluginData ) => {
-			pluginData.sort( ( a, b ) => {
+		this._findPlugins(( pluginData ) => {
+			pluginData.sort(( a, b ) => {
 				if (
 					stackOrder.indexOf( a.name ) >= 0 &&
 					stackOrder.indexOf( b.name ) >= 0
@@ -60,7 +60,7 @@ class ContentManager {
 			items = FS.readdirSync( this._pluginDir );
 
 		// For each found item in the plugins directory, load it:
-		items.forEach( ( item ) => {
+		items.forEach(( item ) => {
 
 			// If the item is a .DS_Store file, skip it, but still mark as processed:
 			if ( item == ".DS_Store" ) {
@@ -74,7 +74,7 @@ class ContentManager {
 				if ( err ) {
 					throw err;
 				}
-				pluginData.push( JSON.parse( data ) );
+				pluginData.push( JSON.parse( data ));
 				loaded++;
 
 				// When we've loaded as many files as were found, it's time to return:
@@ -102,15 +102,15 @@ class ContentManager {
 	loadPlugins( plugins ) {
 		const assetTypes = [ "texture", "sound", "model" ];
 		let registered = 0;
-		plugins.forEach( ( plugin )=>{
-			plugin.contents.forEach( ( item )=>{
-				if ( this._scanFor( item.type, assetTypes ) ) {
+		plugins.forEach(( plugin )=>{
+			plugin.contents.forEach(( item )=>{
+				if ( this._scanFor( item.type, assetTypes )) {
 					this._registerAsset( item );
 				}
 			});
 			registered++;
 			if ( registered === plugins.length ) {
-				console.log( Util.inspect( this._assets, { depth: null, colors: true }) );
+				console.log( Util.inspect( this._assets, { depth: null, colors: true }));
 			}
 		});
 	};

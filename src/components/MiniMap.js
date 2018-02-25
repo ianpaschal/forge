@@ -24,8 +24,11 @@ export default {
 		this.update();
 	},
 	computed: {
+		activePlayerID() {
+			return this.$store.state.activePlayerID;
+		},
 		player() {
-			return forge.getPlayer( this.$store.state.activePlayerID );
+			return this.$store.state.player;
 		},
 		camera() {
 			return this.$store.state.camera;
@@ -42,31 +45,13 @@ export default {
 			// this.ctx.clearRect( 0, 0, this.canvas.width, this.canvas.height );
 			this.ctx.fillStyle = "#AD9F70";
 			this.ctx.fillRect( 0, 0, this.canvas.width, this.canvas.height );
-			// Update positions of all player units and enemy units if visible;
 
-			/*
-			const entities = this.player.getEntityIDs();
-
-			entities.forEach(( entity ) => {
-				entity.getComponent()
-			});
-			*/
-
-			const entities = forge.getScene().children;
-
-			const scope = this;
-			entities.forEach(( entity )=>{
-				if ( entity.type === "Mesh" ) {
-					const position = this.convertWorldToSpace( entity.position );
-					// console.log( position );
-					scope.ctx.fillStyle = "#ffff00";
-					scope.ctx.fillRect(
-						Math.floor( position.x ),
-						Math.floor( position.y ),
-						1,
-						1
-					);
-				}
+			// Update positions of all player units and enemy units if visible
+			const entityIDs = this.player.getEntityIDs();
+			entityIDs.forEach(( uuid ) => {
+				const pos = this.convertWorldToSpace( forge.getEntity( uuid ).components.position );
+				this.ctx.fillStyle = "#"+this.player.color.getHexString();
+				this.ctx.fillRect( Math.floor( pos.x ), Math.floor( pos.y ), 1, 1 );
 			});
 
 			// Also, update the camera box;

@@ -1,14 +1,33 @@
-// Load all the validators
+import Player from "../../core/Player";
 
-// ...
+/**
+	* Defines if validator returns true or false when unable to find a matching
+	* validation check.
+	*/
+const optimistic = true;
 
 const validators = {
-
+	playerIndex( input ) {
+		if ( typeof input !== "number" ) {
+			return false;
+		}
+		if ( input < 0 ) {
+			return false;
+		}
+		return true;
+	},
+	isPlayer( input ) {
+		if ( input instanceof Player ) {
+			return true;
+		}
+		return false;
+	}
 };
 
-export default function( input, check ) {
-	if ( !validators.check ) {
-		return console.error( "Could not check "+input+"; No \""+check+"\" validator found." );
+export default function( check, input ) {
+	if ( !validators[check]) {
+		console.warn( "Could not check "+input+"; No \""+check+"\" validator found." );
+		return optimistic;
 	}
-	return validators.check( input );
+	return validators[check]( input );
 }
