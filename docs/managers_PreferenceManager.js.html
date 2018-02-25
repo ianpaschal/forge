@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Component - Documentation</title>
+    <title>managers/PreferenceManager.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,189 +29,84 @@
 
 <div id="main">
     
-    <h1 class="page-title">Component</h1>
+    <h1 class="page-title">managers/PreferenceManager.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-        Component
-        </h2>
-        
-            <div class="class-description"><p>Class representing a Component.</p></div>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-<div class="section-method">
-
-    
-    <h2>Constructor</h2>
-    
-
-    <h4 class="name" id="Component"><span class="type-signature"></span>new Component<span class="signature">(json)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Create a Component.</p>
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="forge_core_Component.js.html">forge/core/Component.js</a>, <a href="forge_core_Component.js.html#line4">line 4</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>json</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Object</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <p>The x value.</p>
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+	The preference manager is awesome.
+*/
+
+import FS from "fs";
+import Path from "path";
+
+class PreferenceManager {
+	constructor() {
+		this.search();
+	}
+
+	/**
+		* Scan a directory for a preferences file.
+		*/
+	search() {
+		// If no preferences found, load the default config file.
+		this.load();
+		return;
+	}
+
+	load( ) {
+		this.prefs = {
+			app: {
+				windowWidth: undefined,
+				windowHeight: undefined
+			},
+			gameplay: {},
+			graphics: {
+				renderDistance: 2048,
+				renderWidth: undefined,
+				renderHeight: undefined,
+				antiAlias: false,
+				pixelRatio: 1,
+				maxFPS: 60,
+				shadowMapSize: 2048
+			},
+			mechanics: {
+				fixedStep: 1000
+			},
+			sound: {
+				music: {
+					volume: 1
+				},
+				sfx: {
+					volume: 1
+				}
+			}
+		};
+	}
+
+	save() {
+
+	}
+
+	getAllPreferences() {
+		return this.prefs;
+	}
+
+	getPreference( id ) {
+
+	}
+}
+
+export default PreferenceManager;
+</code></pre>
+        </article>
+    </section>
 
 
 

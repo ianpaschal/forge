@@ -6,6 +6,10 @@ import Component from "./Component";
 import Entity from "./Entity";
 import Player from "./Player";
 import EntityCache from "../utils/EntityCache";
+import validate from "../utils/validate";
+import Path from "path";
+import FS from "fs";
+const { app } = require( "electron" ).remote;
 
 /**
 	* Core singleton representing an instance of the Forge Engine.
@@ -22,19 +26,21 @@ class Engine {
 		this._scene = new Three.Scene();
 
 		// These are the things which are actually saved per game:
-		this._entities = [];
+		this._entities = {};
 		this._systems = [];
 		this._world = {
 			time: 0,
 			name: ""
 		};
+		this._players = [];
 
 		// Static Resources:
-		this._assemblies = [];
-		this._components = [];
-		this._models = [];
-		this._sounds = [];
-		this._textures = [];
+		this._assemblies = {};
+		this._components = {};
+		this._meshes = {};
+		this._geometries = {};
+		this._sounds = {};
+		this._textures = {};
 
 		// Timing:
 		this._running = false;
@@ -45,6 +51,8 @@ class Engine {
 		this._lastFrameTime = null;
 
 		this._entityCache = new EntityCache();
+
+		this.loaded = 0;
 	}
 
 	/**
@@ -63,7 +71,7 @@ class Engine {
 	}
 
 	generateWorld( config ) {
-		console.info( "Generating a new world." );
+		console.info( "Generating a new world. Assets %:", this.loaded );
 
 		/* Later, config should be loaded from disk, for now it's hard coded. */
 		const resources = {
@@ -74,73 +82,48 @@ class Engine {
 		config = config || {
 			name: "Test World",
 			players: [
-				new Player({
+				new Player( null, {
+					color: new Three.Color( 0x0000ff ),
+					name: "Ian",
 					start: new Three.Vector3( 0, 0, 0 ),
 					resources: resources
 				}),
-				new Player({
+				new Player( null, {
+					color: new Three.Color( 0xff0000 ),
+					name: "Thomas",
 					start: new Three.Vector3( 200, -100, 0 ),
 					resources: resources
 				}),
-				new Player({
+				new Player( null, {
+					color: new Three.Color( 0x00ff00 ),
+					name: "Winston",
 					start: new Three.Vector3( -100, 200, 0 ),
 					resources: resources
 				})
 			]
 		};
 
-		// Generate the terrain:
-		const loader = new Three.TextureLoader();
-		const scope = this;
-		loader.load(
+		config.players.forEach(( player ) => {
+			this.addPlayer( player );
 
-			// resource URL
-			"../resources/textures/TexturesCom_Grass0130_1_seamless_S.jpg",
-
-			// onLoad callback
-			function ( texture ) {
-				// in this example we create the material when the texture is loaded
-				texture.wrapS = Three.RepeatWrapping;
-				texture.wrapT = Three.RepeatWrapping;
-
-				// how many times to repeat in each direction; the default is (1,1),
-				//   which is probably why your example wasn't working
-				texture.repeat.set( 64, 64 );
-
-				const material = new Three.MeshBasicMaterial({
-					map: texture
-				});
-				const plane = new Three.Mesh( new Three.PlaneGeometry( 512, 512 ), material );
-				scope._scene.add( plane );
-				// Generate test entities:
-				for ( let i = 0; i < 1000; i++ ) {
-					const mesh = new Three.Mesh( new Three.BoxGeometry( 1, 1, 2 ), new Three.MeshBasicMaterial({color: 0xffff00}));
-					mesh.position.x = 512 * Math.random() - 256;
-					mesh.position.y = 512 * Math.random() - 256;
-					mesh.position.z = 1;
-
-					scope._entityCache.addWorldPoint( mesh.position );
-					scope._scene.add( mesh );
-				}
-			},
-
-			// onProgress callback currently not supported
-			undefined,
-
-			// onError callback
-			function ( err ) {
-				console.error( "An error happened." );
+			// Generate test entities:
+			for ( let i = 0; i < 4; i++ ) {
+				const entity = new Entity();
+				player.own( entity );
+				entity.copy( this.getAssembly( "nature-tree-oak" ));
+				entity.components.player = this._players.indexOf( player );
+				entity.components.position = {};
+				entity.components.position.x = Math.random()*100 - 50;
+				entity.components.position.y = Math.random()*100 - 50;
+				entity.components.position.z = 0;
+				this.addEntity( entity );
+				this.spawn( entity );
 			}
-		);
-		return this;
+		});
 	}
 
-	getScene() {
-		return this._scene;
-	}
-
-	init( source ) {
-		this.loadAssets(() => {
+	init( source, onProg, onFinshed ) {
+		this.loadAssets( null, () => {
 			// If no source is provided, generate a new world:
 			if ( !source ) {
 				console.warn( "World is missing, a new one will be generated!" );
@@ -148,12 +131,70 @@ class Engine {
 			} else {
 				this.loadWorld( source );
 			}
-			this.start();
+			console.log( this._entities );
+			onFinshed();
 		});
 	}
 
-	loadAssets( callback ) {
-		callback();
+	loadAssets( stack, callback ) {
+
+		let loaded = 0;
+		const scope = this;
+		const pluginsDir = Path.join( app.getPath( "userData" ), "Plugins" );
+
+		// Temporary hardcoded stack in lieu of plugin browser stack:
+		stack = [
+			{ type: "texture", id: "nature-tree-oak-diffuse", path: "forge-aom-mod/texture/nature-tree-oak-diffuse.png" },
+			{ type: "texture", id: "nature-tree-oak-alpha", path: "forge-aom-mod/texture/nature-tree-oak-alpha.png" },
+			{ type: "material", id: "nature-tree-oak", path: "forge-aom-mod/material/nature-tree-oak.json" },
+			{ type: "mesh", id: "nature-tree-oak", path: "forge-aom-mod/model/nature-tree-oak-a.json" },
+			{ type: "assembly", id: "nature-tree-oak", path: "forge-aom-mod/assembly/nature-tree-oak.json" }
+		];
+		stack.forEach(( asset ) => {
+
+			const textureLoader = new Three.TextureLoader();
+			const meshLoader = new Three.JSONLoader();
+
+			const onTextureLoaded = function( texture ) {
+				scope._textures[asset.id] = texture;
+				addLoaded();
+			};
+
+			const onMeshLoaded = function( geometry, materials ) {
+				scope._geometries[asset.id] = geometry;
+				scope._meshes[asset.id] = new Three.Mesh( geometry, materials );
+				addLoaded();
+			};
+
+			const onError = function ( err ) {
+				console.error( "An error happened." );
+			};
+
+			const loadPath = Path.join( pluginsDir, asset.path );
+			switch ( asset.type ) {
+				case "texture":
+					textureLoader.load( loadPath, onTextureLoaded, undefined, onError );
+					break;
+				case "material":
+					addLoaded();
+					break;
+				case "mesh":
+					meshLoader.load( loadPath, onMeshLoaded, undefined, onError );
+					break;
+				case "assembly":
+					const json = JSON.parse( FS.readFileSync( loadPath ));
+					scope._assemblies[ asset.id ] = new Entity( null, json.components );
+					addLoaded();
+					break;
+			}
+		});
+		function addLoaded() {
+			loaded++;
+			if ( loaded === stack.length ) {
+				scope.loaded = 100;
+				callback();
+			}
+		}
 	}
 
 	/**
@@ -187,21 +228,75 @@ class Engine {
 		this._running = false;
 	}
 
-	createPlayer( name ) {
-		const player = new Player( name );
-		player.spawn();
+	// Object stuff:
+	addAssembly( assembly ) {
+		this._assemblies[ assembly.type ] = assembly;
+		return;
 	}
 
-	createEntity( id, assembly ) {
-		const entity = new Entity( id );
-		entity.copyAssembly( this._assemblies[ id ]);
-		entity.spawn();
-		this._entities.push( entity );
+	getAssembly( type ) {
+		return this._assemblies[ type ];
 	}
 
-	_scanFor( term, arr ) {
-		return ( arr.indexOf( term ) > -1 );
+	addEntity( entity ) {
+		this._entities[ entity.uuid ] = entity;
+		return;
 	}
+
+	getEntity( uuid ) {
+		if ( this._entities[ uuid ]) {
+			return this._entities[ uuid ];
+		}
+		console.error( "Please supply a valid entity UUID." );
+		return null;
+	}
+
+	getGeometry( type ) {
+		if ( this._geometries[type]) {
+			return this._geometries[type];
+		} else {
+			console.error( "Please supply a valid geometry type." );
+		}
+	}
+
+	/** Add a `Player` instance to to the engine.
+		* @param {Player} player - The instance to add.
+		*/
+	addPlayer( player ) {
+		if ( validate( "isPlayer", player )) {
+			this._players.push( player );
+			return;
+		}
+		console.error( "Please supply a valid player instance." );
+		return null;
+	}
+
+	getPlayer( index ) {
+		if ( validate( "playerIndex", index )) {
+			return this._players[ index ];
+		}
+		console.error( "Please supply a valid player index." );
+		return null;
+	}
+
+	getScene() {
+		return this._scene;
+	}
+
+	spawn( entity ) {
+		// Check if this is an entity.
+		const color = this.getPlayer( entity.components.player ).color;
+		const geometry = this.getGeometry( entity.components.model.geometry );
+		const material = new Three.MeshLambertMaterial({
+			color: color
+		});
+		const mesh = new Three.Mesh( geometry, material );
+		mesh.position.copy( entity.components.position );
+		mesh.rotation.x += Math.PI/2;
+		this._scene.add( mesh );
+	}
+
+	// ....
 
 	getSelection( max, min, camera ) {
 		return this._entityCache.getScreenPoints( max, min );
@@ -209,10 +304,6 @@ class Engine {
 
 	getLocation( mouse, camera ) {
 
-	}
-
-	getPlayer( id ) {
-		return this._players[id];
 	}
 }
 

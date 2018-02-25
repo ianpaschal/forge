@@ -86,8 +86,19 @@
 				}
 			},
 			createGame() {
-				forge.init();
-				this.$store.commit( "view", "Play" )
+				this.$store.commit( "view", "Loading" )
+				forge.init( false,
+					( prog ) => {
+						console.log("Loading...");
+					},
+					() => {
+						console.log("Finished!");
+						this.$store.commit("player", forge.getPlayer(0))
+						this.$store.commit( "view", "Play" );
+						forge.start();
+					}
+				);
+
 			},
 			quit() {
 				const remote = require('electron').remote;

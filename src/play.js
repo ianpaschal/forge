@@ -15,11 +15,9 @@ window.onload = () => {
 	new Vue({
 		el: "#vue-wrapper",
 		store: store,
-		data() {
-			return {
-				windowWidth: 0,
-				windowHeight: 0
-			};
+		data: {
+			windowWidth: 0,
+			windowHeight: 0
 		},
 		render: ( h ) => h( App ),
 		beforeMount() {

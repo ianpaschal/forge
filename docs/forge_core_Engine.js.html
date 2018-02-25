@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>forge/core/Engine.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Assembly.html">Assembly</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Component.html">Component</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="ContentManager.html">ContentManager</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="ContentManager.html#_findPlugins">_findPlugins</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Engine.html">Engine</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Engine.html#addPlayer">addPlayer</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Engine.html#registerSystem">registerSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Engine.html#start">start</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Engine.html#update">update</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Entity.html">Entity</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Entity.html#addComponent">addComponent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Entity.html#clone">clone</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Entity.html#copy">copy</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Entity.html#getComponent">getComponent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Entity.html#getComponents">getComponents</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Entity.html#merge">merge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Entity.html#removeComponent">removeComponent</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="namespace_Engine%250A%255E%255E%255E%255E%255E%255E%255E%255E%255E%2520need%2520to%2520tell%2520JSDoc%2520UI%2520is%2520a%2520member.AnimationSystem.html">AnimationSystem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="namespace_Engine%25250A%25255E%25255E%25255E%25255E%25255E%25255E%25255E%25255E%25255E%252520need%252520to%252520tell%252520JSDoc%252520UI%252520is%252520a%252520member.AnimationSystem.html#update">update</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="namespace_Engine%250A%255E%255E%255E%255E%255E%255E%255E%255E%255E%2520need%2520to%2520tell%2520JSDoc%2520UI%2520is%2520a%2520member.LightingSystem.html">LightingSystem</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="namespace_Engine%250A%255E%255E%255E%255E%255E%255E%255E%255E%255E%2520need%2520to%2520tell%2520JSDoc%2520UI%2520is%2520a%2520member.TerrainSystem.html">TerrainSystem</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="System.html">System</a></span></li><li class="nav-heading">Namespaces</li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#optimistic">optimistic</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">forge/core/Engine.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// Forge is distributed under the MIT license.
+
+import * as Three from "three";
+import Assembly from "./Assembly";
+import Component from "./Component";
+import Entity from "./Entity";
+import Player from "./Player";
+import EntityCache from "../utils/EntityCache";
+import validate from "../utils/validate";
+import Path from "path";
+const { app } = require( "electron" ).remote;
+
+/**
+	* Core singleton representing an instance of the Forge Engine.
+	* @namespace Engine
+	*/
+class Engine {
+
+	/**
+		* Create an instance of the Forge Engine.
+		*/
+	constructor() {
+		console.log( "Initializing a new Engine." );
+
+		this._scene = new Three.Scene();
+
+		// These are the things which are actually saved per game:
+		this._entities = {};
+		this._systems = [];
+		this._world = {
+			time: 0,
+			name: ""
+		};
+		this._players = [];
+
+		// Static Resources:
+		this._assemblies = [];
+		this._components = [];
+		this._models = [];
+		this._sounds = [];
+		this._textures = [];
+
+		// Timing:
+		this._running = false;
+		this._fixedStep = 10;
+		this._savedFixedTime = 0;
+		this._savedFrameTime = 0;
+		this._maxFPS = 60;
+		this._lastFrameTime = null;
+
+		this._entityCache = new EntityCache();
+	}
+
+	/**
+		* Register a system with the engine (so it can be updated later).
+		* Used internally by `.registerSystems()`
+		*/
+	registerSystem( system ) {
+		system.init( this );
+		this._systems.push( system );
+	}
+
+	registerSystems( systems ) {
+		systems.forEach(( system ) => {
+			this.registerSystem( system );
+		});
+	}
+
+	generateWorld( config ) {
+		console.info( "Generating a new world." );
+
+		/* Later, config should be loaded from disk, for now it's hard coded. */
+		const resources = {
+			food: 100,
+			wood: 100,
+			metal: 100
+		};
+		config = config || {
+			name: "Test World",
+			players: [
+				new Player( null, {
+					color: new Three.Color( 0x0000ff ),
+					name: "Ian",
+					start: new Three.Vector3( 0, 0, 0 ),
+					resources: resources
+				}),
+				new Player( null, {
+					color: new Three.Color( 0xff0000 ),
+					name: "Thomas",
+					start: new Three.Vector3( 200, -100, 0 ),
+					resources: resources
+				}),
+				new Player( null, {
+					color: new Three.Color( 0x00ff00 ),
+					name: "Winston",
+					start: new Three.Vector3( -100, 200, 0 ),
+					resources: resources
+				})
+			]
+		};
+
+		config.players.forEach(( player ) => {
+			this.addPlayer( player );
+			const material = new Three.MeshLambertMaterial({ color: player.color });
+			const geometry = new Three.BoxGeometry( 1, 1, 2 );
+			// Generate test entities:
+			for ( let i = 0; i &lt; 256; i++ ) {
+				const entity = new Entity();
+				player.own( entity );
+				entity.copy( this.getAssembly( "basic-box" ));
+				entity.spawn();
+				this.addEntity( entity );
+
+				const mesh = new Three.Mesh( geometry, material );
+				mesh.position.x = 512 * Math.random() - 256;
+				mesh.position.y = 512 * Math.random() - 256;
+				mesh.position.z = 1;
+				this._entityCache.addWorldPoint( mesh.position );
+				this._scene.add( mesh );
+
+				entity = this.createEntity( null, "basic-box", player );
+			}
+		});
+	}
+
+	init( source ) {
+		this.loadAssets( null, () => {
+			// If no source is provided, generate a new world:
+			if ( !source ) {
+				console.warn( "World is missing, a new one will be generated!" );
+				this.generateWorld();
+			} else {
+				this.loadWorld( source );
+			}
+			this.start();
+		});
+	}
+
+	loadAssets( stack, callback ) {
+
+		const pluginsDir = Path.join( app.getPath( "userData" ), "Plugins" );
+		// Temporary hardcoded stack in lieu of plugin browser stack:
+		stack = [
+			{ type: "texture", id: "nature-tree-oak-diffuse", path: "forge-aom-mod/texture/nature-tree-oak-diffuse.png" },
+			{ type: "texture", id: "nature-tree-oak-alpha", path: "forge-aom-mod/texture/nature-tree-oak-alpha.png" },
+			{ type: "material", id: "nature-tree-oak", path: "forge-aom-mod/material/nature-tree-oak.json" },
+			{ type: "model", id: "nature-tree-oak-a", path: "forge-aom-mod/model/nature-tree-oak-a.json" },
+			{ type: "asesembly", id: "nature-tree-oak", path: "forge-aom-mod/assembly/nature-tree-oak.json" }
+		];
+		stack.forEach(( asset ) => {
+			console.log( Path.join( pluginsDir, asset.path ));
+
+			switch ( asset.type ) {
+				case "texture":
+
+					break;
+				case "material":
+					break;
+				case "model":
+					break;
+				case "assembly":
+					break;
+			}
+		});
+
+		callback();
+	}
+
+	/**
+		* Start the execution of the update loop. Called internally by `this.init()`.
+		*/
+	start() {
+		/*
+			Always reset. If engine was stopped and restarted, not resetting could
+			cause a massive time jump to be added to all systems.
+		*/
+		this._lastFrameTime = performance.now();
+		this._running = true;
+		setInterval( this.update.bind( this ), 1000 / 60 );
+	}
+
+	/**
+		* Update all systems (if the engine is currently running).
+		*/
+	update() {
+		if ( this._running ) {
+			const now = performance.now();
+			const delta = now - this._lastFrameTime;
+			this._lastFrameTime = now;
+			this._systems.forEach(( system ) => {
+				system.update( delta );
+			});
+		}
+	}
+
+	stop() {
+		this._running = false;
+	}
+
+	// Object stuff:
+	addAssembly( assembly ) {
+		this._assemblies[ assembly.type ] = assembly;
+		return;
+	}
+
+	getAssembly( type ) {
+		return this._assemblies[ type ];
+	}
+
+	addEntity( entity ) {
+		this._entities[ entity.uuid ] = entity;
+		return;
+	}
+
+	getEntity( uuid ) {
+		if ( validate( "entityUUID", uuid )) {
+			return this._entities[ uuid ];
+		}
+		console.error( "Please supply a valid entity UUID." );
+		return null;
+	}
+
+	/** Add a `Player` instance to to the engine.
+		* @param {Player} player - The instance to add.
+		*/
+	addPlayer( player ) {
+		if ( validate( "isPlayer", player )) {
+			this._players.push( player );
+			return;
+		}
+		console.error( "Please supply a valid player instance." );
+		return null;
+	}
+
+	getPlayer( index ) {
+		if ( validate( "playerIndex", index )) {
+			return this._players[ index ];
+		}
+		console.error( "Please supply a valid player index." );
+		return null;
+	}
+
+	getScene() {
+		return this._scene;
+	}
+
+	// ....
+
+	getSelection( max, min, camera ) {
+		return this._entityCache.getScreenPoints( max, min );
+	}
+	getLocation( mouse, camera ) {
+
+	}
+
+	// This logic should be handled in systems:
+	createEntity( uuid, assembly, player ) {
+		const entity = new Entity( uuid );
+		if ( player instanceof Player ) {
+			player.own( entity );
+		} else if ( typeof player === "Number" ) {
+			this.getPlayer( player ).own( entity );
+		} else {
+			console.error( "Could not assign entity to player." );
+			return;
+		}
+		if ( assembly instanceof Entity ) {
+			entity.copy( assembly );
+		} else if ( typeof assembly === "String" ) {
+			entity.copy( this.getAssembly( assembly ));
+		} else {
+			console.error( "Could not apply assembly to entity." );
+			return;
+		}
+		entity.spawn();
+		this.addEntity( entity );
+	}
+
+}
+
+export default Engine;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Feb 25 2018 10:09:49 GMT+0100 (CET) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
