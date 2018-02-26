@@ -60,8 +60,13 @@ class Engine {
 		* Used internally by `.registerSystems()`
 		*/
 	registerSystem( system ) {
-		system.init( this );
-		this._systems.push( system );
+		if ( validate( "isSystem", system )) {
+			system.init( this );
+			this._systems.push( system );
+			return;
+		}
+		console.error( "Please supply a valid system instance." );
+		return null;
 	}
 
 	registerSystems( systems ) {
@@ -316,7 +321,7 @@ class Engine {
 		});
 		const mesh = new Three.Mesh( geometry, material );
 		mesh.position.copy( entity.components.position );
-		mesh.rotation.x += Math.PI/2;
+		mesh.rotation.x += Math.PI/2; // Uncheck flip in 3dsMax
 		this._scene.add( mesh );
 	}
 

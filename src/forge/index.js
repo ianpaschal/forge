@@ -1,13 +1,15 @@
 import Engine from "./core/Engine";
-import AnimationSystem from "./systems/animation";
-import LightingSystem from "./systems/lighting";
-import SoundSystem from "./systems/sound";
+import System from "./core/System";
+
+import animationSystem from "./systems/animation";
+import lightingSystem from "./systems/lighting";
+import soundSystem from "./systems/sound";
 
 const forge = new Engine();
 forge.registerSystems([
-	new AnimationSystem(),
-	new LightingSystem(),
-	new SoundSystem()
+	animationSystem,
+	lightingSystem,
+	soundSystem
 ]);
 
 export default forge;

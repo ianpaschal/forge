@@ -1,12 +1,24 @@
 import * as Three from "three";
-import capitalize from "../utils/capitalize";
+import System from "../core/System";
 
-/**
-	* description of UI.
-	* @memberof namespace:Engine
-	* ^^^^^^^^^ need to tell JSDoc UI is a member
-	* @class
-	*/
+const props = {
+	name: "animation",
+	fixed: false
+};
+
+const init = function( engine ) {
+	this._scene = this._engine.getScene();
+	// Do nothing for now.
+};
+
+const update = function( time ) {
+	// Do nothing for now.
+};
+
+export default new System( props, init, update );
+
+// OLD:
+/*
 class AnimationSystem {
 
 	constructor() {
@@ -25,14 +37,14 @@ class AnimationSystem {
 			return;
 		}
 		console.log( capitalize( this.name ) + ": Linked system to engine." );
-		
+
 		const loader = new Three.JSONLoader();
 		// console.log( "IN ANIMATION:", forge );
 		const scope = this;
 
 		const paths = [];
-		// paths.push( "../../plugins/age-of-mythology/model/greek-villager-female.js" );
-		/*
+		paths.push( "../../plugins/age-of-mythology/model/greek-villager-female.js" );
+
 		paths.forEach( ( path ) => {
 			loader.load( path, ( geometry, materials ) => {
 				for ( var i = 0; i < materials.length; i++ ) {
@@ -64,13 +76,7 @@ class AnimationSystem {
 				}
 			});
 		});
-		*/
 	}
-
-	/**
-		* Updates the system with a certain amount of ellapsed time.
-		* @param {number} delta - Time in milliseconds to update the system.
-		*/
 	update( delta ) {
 		this._savedTime += delta;
 		if ( this._savedTime > this._stepSize ) {
@@ -84,3 +90,4 @@ class AnimationSystem {
 }
 
 export default AnimationSystem;
+*/
