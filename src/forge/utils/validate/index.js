@@ -1,5 +1,5 @@
 import Player from "../../core/Player";
-
+import System from "../../core/System";
 /**
 	* Defines if validator returns true or false when unable to find a matching
 	* validation check.
@@ -18,6 +18,12 @@ const validators = {
 	},
 	isPlayer( input ) {
 		if ( input instanceof Player ) {
+			return true;
+		}
+		return false;
+	},
+	isSystem( input ) {
+		if ( input instanceof System ) {
 			return true;
 		}
 		return false;

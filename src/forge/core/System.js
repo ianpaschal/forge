@@ -10,14 +10,13 @@ class System {
 
 	/**
 		* Create a System.
-		* @param
 		*/
 	constructor( props, initFn, updateFn ) {
 		this.name = props.name || "unnamed";
 		this.step = props.step || 100;
 		this.fixed = props.fixed || true;
 
-		this.inifFn = initFn;
+		this.initFn = initFn;
 		this.updateFn = updateFn;
 
 		this._savedTime = 0;
@@ -32,6 +31,8 @@ class System {
 			return;
 		}
 		console.log( capitalize( this.name ) + ": Linked system to engine." );
+		this._engine = engine;
+
 		// Run the actual init behavior:
 		this.initFn();
 	}

@@ -1,20 +1,17 @@
-import capitalize from "../utils/capitalize";
+import System from "../core/System";
 
-export default class {
-	constructor() {
-		this.name = "sound";
-		console.log( "Created a new " + this.name + " system." );
-		return this;
-	}
+const props = {
+	name: "sound",
+	fixed: false
+};
 
-	init( engine ) {
-		if( !engine ) {
-			console.warn( capitalize( this.name ) + ": Attempted to initalize system without an engine!" );
-			return;
-		}
-		console.log( capitalize( this.name ) + ": Linked system to engine." );
-	}
-	update( delta ) {
+const init = function( engine ) {
+	this._scene = this._engine.getScene();
+	// Do nothing for now.
+};
 
-	}
-}
+const update = function( time ) {
+	// Do nothing for now.
+};
+
+export default new System( props, init, update );
