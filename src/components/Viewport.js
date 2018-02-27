@@ -161,6 +161,16 @@ export default {
 
 			// If mouse is moving,
 			forge._entityCache.recompute( this.camera );
+
+			this.end = this.normalizeCenter( this.mouse, this.renderer.domElement );
+
+			this.raycaster.setFromCamera( this.end, this.camera );
+			// See if the ray from the camera into the world hits one of our meshes
+			var intersects = this.raycaster.intersectObjects( forge.getScene().children );
+			// Toggle rotation bool for meshes that we clicked
+			if ( intersects.length > 0 ) {
+				intersects[0].object.material.color = new Three.Color( 0xff0000 );
+			}
 		},
 		onMouseUp( e ) {
 			if ( this.mouseDown ) {
