@@ -6,7 +6,7 @@ export default class {
 		this.name = config.name;
 		this.color = config.color;
 		this._entities = [];
-		console.log( "Created player "+this.uuid+" with name "+this.name+"." );
+		console.log( "Created player " + this.uuid + " with name " + this.name + "." );
 		return this;
 	}
 

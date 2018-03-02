@@ -1,4 +1,4 @@
-// Forge is distributed under the MIT license.
+s;// Forge is distributed under the MIT license.
 
 import * as Three from "three";
 import Assembly from "./Assembly";
@@ -124,8 +124,8 @@ class Engine {
 				entity.copy( this.getAssembly( "nature-tree-oak" ));
 				entity.components.player = this._players.indexOf( player );
 				entity.components.position = {};
-				entity.components.position.x = Math.random()*100 - 50;
-				entity.components.position.y = Math.random()*100 - 50;
+				entity.components.position.x = Math.random() * 100 - 50;
+				entity.components.position.y = Math.random() * 100 - 50;
 				entity.components.position.z = 0;
 				this.addEntity( entity );
 				this.spawn( entity );
@@ -181,13 +181,13 @@ class Engine {
 			const meshLoader = new Three.JSONLoader();
 
 			const onTextureLoaded = function( texture ) {
-				scope._textures[asset.id] = texture;
+				scope._textures[ asset.id ] = texture;
 				addLoaded();
 			};
 
 			const onMeshLoaded = function( geometry, materials ) {
-				scope._geometries[asset.id] = geometry;
-				scope._meshes[asset.id] = new Three.Mesh( geometry, materials );
+				scope._geometries[ asset.id ] = geometry;
+				scope._meshes[ asset.id ] = new Three.Mesh( geometry, materials );
 				addLoaded();
 			};
 
@@ -283,8 +283,8 @@ class Engine {
 		* @param {String} type - The geometry's type.
 		*/
 	getGeometry( type ) {
-		if ( this._geometries[type]) {
-			return this._geometries[type];
+		if ( this._geometries[ type ]) {
+			return this._geometries[ type ];
 		} else {
 			console.error( "Please supply a valid geometry type." );
 		}
@@ -325,14 +325,14 @@ class Engine {
 		const geometry = this.getGeometry( entity.components.model.geometry );
 		const material = new Three.MeshLambertMaterial({
 			color: new Three.Color( 1, 1, 1 ),
-			map: this._textures[entity.components.model.material+"-diffuse"],
-			alphaMap: this._textures[entity.components.model.material+"-alpha"],
+			map: this._textures[ entity.components.model.material + "-diffuse" ],
+			alphaMap: this._textures[ entity.components.model.material + "-alpha" ],
 			alphaTest: 0.5, // if transparent is false
 			transparent: false
 		});
 		const mesh = new Three.Mesh( geometry, material );
 		mesh.position.copy( entity.components.position );
-		mesh.rotation.x += Math.PI/2; // Uncheck flip in 3dsMax
+		mesh.rotation.x += Math.PI / 2; // Uncheck flip in 3dsMax
 		mesh.entityID = entity.uuid;
 		this._scene.add( mesh );
 	}

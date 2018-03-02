@@ -7,7 +7,7 @@ export default {
 			<div class='fill' :style='fillStyle'></div>
 		</div>
 	`,
-	props: ["entity"],
+	props: [ "entity" ],
 	computed: {
 		camera() {
 			return this.$store.state.camera;

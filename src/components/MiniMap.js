@@ -72,7 +72,7 @@ export default {
 			const entityIDs = this.player.getEntityIDs();
 			entityIDs.forEach(( uuid ) => {
 				const pos = this.convertToScreen( engine.getEntity( uuid ).components.position );
-				this.ctx.fillStyle = "#"+this.player.color.getHexString();
+				this.ctx.fillStyle = "#" + this.player.color.getHexString();
 				this.ctx.fillRect( Math.floor( pos.x ), Math.floor( pos.y ), window.devicePixelRatio, window.devicePixelRatio );
 
 			});
@@ -107,12 +107,12 @@ export default {
 				return scope.convertToScreen( point );
 			});
 			this.ctx.beginPath();
-			this.ctx.moveTo( screenPoints[0].x, screenPoints[0].y );
-			this.ctx.lineTo( screenPoints[1].x, screenPoints[1].y );
-			this.ctx.lineTo( screenPoints[2].x, screenPoints[2].y );
-			this.ctx.lineTo( screenPoints[3].x, screenPoints[3].y );
-			this.ctx.lineTo( screenPoints[0].x, screenPoints[0].y );
-			this.ctx.strokeStyle="#FFFFFF";
+			this.ctx.moveTo( screenPoints[ 0 ].x, screenPoints[ 0 ].y );
+			this.ctx.lineTo( screenPoints[ 1 ].x, screenPoints[ 1 ].y );
+			this.ctx.lineTo( screenPoints[ 2 ].x, screenPoints[ 2 ].y );
+			this.ctx.lineTo( screenPoints[ 3 ].x, screenPoints[ 3 ].y );
+			this.ctx.lineTo( screenPoints[ 0 ].x, screenPoints[ 0 ].y );
+			this.ctx.strokeStyle = "#FFFFFF";
 			this.ctx.stroke();
 		},
 

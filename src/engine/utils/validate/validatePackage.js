@@ -8,11 +8,10 @@ export default function( dir, callback ) {
 	}
 
 	let err, obj = {};
-	let file = Path.join( dir, "package.json" );
-	console.log(file);
+	const file = Path.join( dir, "package.json" );
+	console.log( file );
 
-
-	FS.readFile( file, 'utf8', ( err, data ) => {
+	FS.readFile( file, "utf8", ( err, data ) => {
 		if ( err ) return err;
 		obj = JSON.parse( data );
 

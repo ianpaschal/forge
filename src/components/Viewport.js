@@ -28,7 +28,7 @@ export default {
 	`,
 	data() {
 		return {
-			mouse: {x:0, y:0},
+			mouse: { x:0, y:0 },
 			styleObject: {},
 			raycaster: new Three.Raycaster(),
 			mouse: new Three.Vector2(),
@@ -53,7 +53,7 @@ export default {
 			pivot.add( camera );
 			cameraRig.add( pivot );
 
-			cameraRig.rotation.z += Math.PI/4;
+			cameraRig.rotation.z += Math.PI / 4;
 
 			engine.getScene().add( cameraRig );
 
@@ -123,7 +123,7 @@ export default {
 			}
 
 			for ( let i = 0; i < this.selection.length; i++ ) {
-				this.screenPositions[i] = this.getScreenPosition( this.selection[i], this.$el );
+				this.screenPositions[ i ] = this.getScreenPosition( this.selection[ i ], this.$el );
 			}
 
 			this.renderer.render( engine.getScene(), this.camera );
@@ -186,9 +186,9 @@ export default {
 			var intersects = this.raycaster.intersectObjects( engine.getScene().children );
 			// Toggle rotation bool for meshes that we clicked
 			if ( intersects.length > 0 ) {
-				if ( intersects[0].object.entityID ) {
-					this.$store.commit( "selection", engine.getEntity( intersects[0].object.entityID ));
-					intersects[0].object.material.color = new Three.Color( 0xff0000 );
+				if ( intersects[ 0 ].object.entityID ) {
+					this.$store.commit( "selection", engine.getEntity( intersects[ 0 ].object.entityID ));
+					intersects[ 0 ].object.material.color = new Three.Color( 0xff0000 );
 				}
 			}
 		},
