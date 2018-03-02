@@ -1,21 +1,29 @@
 import * as Three from "three";
 import forge from "../forge";
 import OrbitControlModule from "three-orbit-controls";
+import Nimbus from "./Nimbus";
 
 const OrbitControls = OrbitControlModule( Three );
 
 export default {
 	name: "Viewport",
-	components: {},
+	components: {
+		Nimbus
+	},
 	template: `
 		<div id='viewport'
 			@mousemove='onMouseMove'
 			@mousedown='onMouseDown'
 		>
 			<canvas id='layer3D'></canvas>
-			<svg id='layer2D'>
-				<rect id='selectionBox' x="100" y="100" width="0" height="0" stroke="white" fill='transparent'/>
-			</svg>
+			<div id='layer2D'>
+				<!--<rect id='selectionBox' x="100" y="100" width="0" height="0" stroke="white" fill='transparent'/> -->
+				<Nimbus
+					v-for='(entity, index) in selection'
+					:entity='entity'
+					:key='index'
+				></Nimbus>
+			</div>
 		</div>
 	`,
 	data() {
@@ -25,7 +33,9 @@ export default {
 			raycaster: new Three.Raycaster(),
 			mouse: new Three.Vector2(),
 			dragStart: new Three.Vector2(),
-			lastTime: 0
+			lastTime: 0,
+			selected: [],
+			screenPositions: []
 		};
 	},
 	mounted() {
@@ -88,6 +98,9 @@ export default {
 		},
 		moveBack() {
 			return this.$store.state.moveBack;
+		},
+		selection() {
+			return this.$store.state.selection;
 		}
 	},
 	methods: {
@@ -107,6 +120,10 @@ export default {
 			}
 			if ( this.moveBack ) {
 				this.cameraRig.translateY( delta * -0.05 );
+			}
+
+			for ( let i = 0; i < this.selection.length; i++ ) {
+				this.screenPositions[i] = this.getScreenPosition( this.selection[i], this.$el );
 			}
 
 			this.renderer.render( forge.getScene(), this.camera );
@@ -148,7 +165,7 @@ export default {
 					scope.layer2D.appendChild( el );
 				});
 				*/
-				this.drawSelectionBox( this.dragStart, this.mouse );
+				// this.drawSelectionBox( this.dragStart, this.mouse );
 
 			}
 		},
@@ -169,13 +186,16 @@ export default {
 			var intersects = this.raycaster.intersectObjects( forge.getScene().children );
 			// Toggle rotation bool for meshes that we clicked
 			if ( intersects.length > 0 ) {
-				intersects[0].object.material.color = new Three.Color( 0xff0000 );
+				if ( intersects[0].object.entityID ) {
+					this.$store.commit( "selection", forge.getEntity( intersects[0].object.entityID ));
+					intersects[0].object.material.color = new Three.Color( 0xff0000 );
+				}
 			}
 		},
 		onMouseUp( e ) {
 			if ( this.mouseDown ) {
 				this.mouseDown = false;
-				this.drawSelectionBox( 0, 0 );
+				// this.drawSelectionBox( 0, 0 );
 			}
 		},
 		normalizeCenter( p, el ) {
@@ -189,6 +209,11 @@ export default {
 				( el.clientWidth / 2 ) * p.x + el.clientWidth / 2,
 				( el.clientHeight / 2 ) * -1 * p.y + el.clientHeight / 2
 			);
+		},
+		getScreenPosition( entity ) {
+			const worldPosition = new Three.Vector3().copy( entity.components.position );
+			const proj = worldPosition.clone().project( this.camera );
+			return this.normalizeCorner( proj, this.$el );
 		},
 		drawSelectionBox( start, end ) {
 			const box = document.getElementById( "selectionBox" );

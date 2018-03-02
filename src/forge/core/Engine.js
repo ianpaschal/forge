@@ -333,6 +333,7 @@ class Engine {
 		const mesh = new Three.Mesh( geometry, material );
 		mesh.position.copy( entity.components.position );
 		mesh.rotation.x += Math.PI/2; // Uncheck flip in 3dsMax
+		mesh.entityID = entity.uuid;
 		this._scene.add( mesh );
 	}
 

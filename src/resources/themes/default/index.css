@@ -41,4 +41,27 @@
 	bottom: 0;
 	background-color: black;
 	color: #FFF;
+	display: flex;
+	flex-direction: row;
+}
+.mini-map-wrapper {
+	height: 192px;
+	width: 192px;
+	background-color: #333;
+	position: relative;
+}
+.nimbus {
+	position: absolute;
+	width: 64px;
+	height: 4px;
+	background-color: #333;
+	border: 1px solid #111;
+	border-radius: 3px;
+}
+.nimbus .fill {
+	position: absolute;
+	height: 100%;
+	width: 64px;
+	background-color: #94d82d;
+	border-radius: 3px;
 }

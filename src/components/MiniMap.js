@@ -5,19 +5,21 @@ export default {
 	name: "MiniMap",
 	components: {},
 	template: `
-		<canvas id='mini-map'
-			v-bind:width='resolution'
-			v-bind:height='resolution'
-			@click='moveTo'
-			v-bind:style='{
-				position: "relative",
-				left: ((diameter - size) / 2)+"px",
-				top: ((diameter - size) / 2)+"px",
-				width: size+"px",
-				height: size+"px",
-				transform: "rotate(45deg)"
-			}'
-		></canvas>
+		<div class='mini-map-wrapper'>
+			<canvas id='mini-map'
+				v-bind:width='resolution'
+				v-bind:height='resolution'
+				@click='moveTo'
+				v-bind:style='{
+					position: "relative",
+					left: ((diameter - size) / 2)+"px",
+					top: ((diameter - size) / 2)+"px",
+					width: size+"px",
+					height: size+"px",
+					transform: "rotate(45deg)"
+				}'
+			></canvas>
+		</div>
 	`,
 	data() {
 		return {
