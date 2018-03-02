@@ -268,6 +268,9 @@ class Engine {
 		return;
 	}
 
+	/** Get an `Entity` instance by UUID.
+		* @param {String} uuid - The entity's uuid.
+		*/
 	getEntity( uuid ) {
 		if ( this._entities[ uuid ]) {
 			return this._entities[ uuid ];
@@ -276,6 +279,9 @@ class Engine {
 		return null;
 	}
 
+	/** Get a `Three.Geometry` instance by type.
+		* @param {String} type - The geometry's type.
+		*/
 	getGeometry( type ) {
 		if ( this._geometries[type]) {
 			return this._geometries[type];
@@ -285,7 +291,7 @@ class Engine {
 	}
 
 	/** Add a `Player` instance to to the engine.
-		* @param {Player} player - The instance to add.
+		* @param {Player} player - The `Player` instance to add.
 		*/
 	addPlayer( player ) {
 		if ( validate( "isPlayer", player )) {
@@ -296,6 +302,9 @@ class Engine {
 		return null;
 	}
 
+	/** Get a `Player` instance by index (player number).
+		* @param {Number} index - The player number (in order of creation).
+		*/
 	getPlayer( index ) {
 		if ( validate( "playerIndex", index )) {
 			return this._players[ index ];
@@ -304,6 +313,8 @@ class Engine {
 		return null;
 	}
 
+	/** Get the glogal scene instance.
+		*/
 	getScene() {
 		return this._scene;
 	}
@@ -322,6 +333,7 @@ class Engine {
 		const mesh = new Three.Mesh( geometry, material );
 		mesh.position.copy( entity.components.position );
 		mesh.rotation.x += Math.PI/2; // Uncheck flip in 3dsMax
+		mesh.entityID = entity.uuid;
 		this._scene.add( mesh );
 	}
 

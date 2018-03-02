@@ -1,7 +1,6 @@
 import Viewport from "./Viewport";
 import Overlay from "./Overlay.vue";
 import MiniMap from "./MiniMap";
-import forge from "../forge";
 export default {
 	name: "Play",
 	components: {
@@ -12,6 +11,9 @@ export default {
 	template: `
 		<div id='play'>
 			<Viewport></Viewport>
+
+
+
 			<div class='frame-top'>
 				<button @click='switchPlayer'>Cycle</button>
 				{{playerName}}
@@ -19,19 +21,23 @@ export default {
 			</div>
 			<div class='frame-bottom'>
 				<MiniMap></MiniMap>
+
+				<p v-if='selection.length > 0'>{{selection[0]}}</p>
 			</div>
 			<Overlay v-if='paused' @unpause='togglePause'/>
 		</div>
 	`,
 	data() {
 		return {
-			paused: false,
-			loops: 0
+			paused: false
 		};
 	},
 	computed: {
 		playerName() {
 			return this.$store.state.player.name;
+		},
+		selection() {
+			return this.$store.state.selection;
 		}
 	},
 	mounted() {

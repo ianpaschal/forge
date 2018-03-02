@@ -8,7 +8,10 @@ import * as Three from "three";
 import forge from "../forge";
 
 Vue.use( Vuex );
+
+// Not sure if this is really still needed
 Vue.util.defineReactive( forge, "loaded", 0 );
+
 const store = new Vuex.Store({
 	state: {
 		loaded: forge.loaded,
@@ -22,7 +25,8 @@ const store = new Vuex.Store({
 		player: {
 			name: "None"
 		},
-		activePlayerID: 1
+		activePlayerID: 1,
+		selection: []
 	},
 	getters: {},
 	mutations: {
@@ -62,7 +66,9 @@ const store = new Vuex.Store({
 			} else {
 				state.activePlayerID++;
 			}
-
+		},
+		selection( state, entity ) {
+			state.selection.push( entity );
 		}
 	},
 	actions: {
