@@ -43,15 +43,13 @@ export default {
 	},
 	methods: {
 		update() {
-			const worldPosition = new Three.Vector3(
-				this.entity.components.position.x,
-				this.entity.components.position.y,
-				this.entity.components.position.z + 9.5
-			 );
-			const proj = worldPosition.project( this.camera );
+			const projected = new Three.Vector3();
+			projected.copy( this.entity.components.position );
+			projected.z += 9.5;
+			projected.project( this.camera );
 			this.position.set(
-				( this.parentWidth / 2 ) * proj.x + this.parentWidth / 2,
-				( this.parentHeight / 2 ) * -1 * proj.y + this.parentHeight / 2
+				( this.parentWidth / 2 ) * projected.x + this.parentWidth / 2,
+				( this.parentHeight / 2 ) * -1 * projected.y + this.parentHeight / 2
 			);
 			requestAnimationFrame( this.update );
 		}
