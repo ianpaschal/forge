@@ -39,7 +39,7 @@ class AnimationSystem {
 		console.log( capitalize( this.name ) + ": Linked system to engine." );
 
 		const loader = new Three.JSONLoader();
-		// console.log( "IN ANIMATION:", forge );
+		// console.log( "IN ANIMATION:", engine );
 		const scope = this;
 
 		const paths = [];
@@ -68,7 +68,7 @@ class AnimationSystem {
 				walkAction.play();
 				// forageAction.play();
 
-				// forge.getScene().add( mesh );
+				// engine.getScene().add( mesh );
 				mesh.position.x = paths.indexOf( path ) * 2;
 				scope._mixers.push( mixer );
 				if ( paths.indexOf( path ) === 1 ) {

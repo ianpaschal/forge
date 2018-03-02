@@ -1,5 +1,5 @@
 import * as Three from "three";
-import forge from "../forge";
+import engine from "../engine";
 
 export default {
 	name: "MiniMap",
@@ -71,7 +71,7 @@ export default {
 			// Update positions of all player units and enemy units if visible
 			const entityIDs = this.player.getEntityIDs();
 			entityIDs.forEach(( uuid ) => {
-				const pos = this.convertToScreen( forge.getEntity( uuid ).components.position );
+				const pos = this.convertToScreen( engine.getEntity( uuid ).components.position );
 				this.ctx.fillStyle = "#"+this.player.color.getHexString();
 				this.ctx.fillRect( Math.floor( pos.x ), Math.floor( pos.y ), window.devicePixelRatio, window.devicePixelRatio );
 

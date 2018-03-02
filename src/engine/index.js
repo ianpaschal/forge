@@ -6,12 +6,12 @@ import lightingSystem from "./systems/lighting";
 import soundSystem from "./systems/sound";
 import resourceSystem from "./systems/resources";
 
-const forge = new Engine();
-forge.registerSystems([
+const engine = new Engine();
+engine.registerSystems([
 	animationSystem,
 	lightingSystem,
 	resourceSystem,
 	soundSystem
 ]);
 
-export default forge;
+export default engine;

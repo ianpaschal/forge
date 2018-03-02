@@ -1,4 +1,4 @@
-import forge from "../forge";
+import engine from "../engine";
 import * as Three from "three";
 export default {
 	name: "Nimbus",

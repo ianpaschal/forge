@@ -1,11 +1,9 @@
-/*
-	Forge is distributed under the MIT license.
-*/
+// Forge is distributed under the MIT license.
 import Vue from "vue";
 import Vuex from "vuex";
 
 // The two main data sources, the game engine and UI store:
-import forge from "./forge";
+import engine from "./engine";
 import store from "./store";
 
 // Components:

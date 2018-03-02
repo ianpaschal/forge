@@ -5,16 +5,16 @@ import Vuex from "vuex";
 import FS from "fs";
 import Path from "path";
 import * as Three from "three";
-import forge from "../forge";
+import engine from "../engine";
 
 Vue.use( Vuex );
 
 // Not sure if this is really still needed
-Vue.util.defineReactive( forge, "loaded", 0 );
+Vue.util.defineReactive( engine, "loaded", 0 );
 
 const store = new Vuex.Store({
 	state: {
-		loaded: forge.loaded,
+		loaded: engine.loaded,
 		view: "MainMenu",
 		camera: undefined,
 		activePlayerID: 1,
@@ -61,7 +61,7 @@ const store = new Vuex.Store({
 			state.activePlayerID = id;
 		},
 		incPlayerID( state ) {
-			if ( state.activePlayerID == forge._players.length - 1 ) {
+			if ( state.activePlayerID == engine._players.length - 1 ) {
 				state.activePlayerID = 0;
 			} else {
 				state.activePlayerID++;
@@ -75,7 +75,7 @@ const store = new Vuex.Store({
 		switchPlayer( context ) {
 			context.commit( "incPlayerID" );
 			const id = context.state.activePlayerID;
-			context.commit( "player", forge.getPlayer( id ));
+			context.commit( "player", engine.getPlayer( id ));
 		}
 	}
 });

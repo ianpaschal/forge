@@ -9,7 +9,7 @@ export default class {
 
 		const mesh = new Three.Mesh( new Three.PlaneGeometry( 1024, 1024 ), new Three.MeshLambertMaterial({
 			color: 0x999999
-		}) );
+		}));
 
 		// store.state.scene.add( mesh );
 
@@ -36,7 +36,7 @@ export default class {
 					map: texture
 				});
 				const plane = new Three.Mesh( new Three.PlaneGeometry( 1024, 1024 ), material );
-				// forge.getScene().add( plane );
+				// engine.getScene().add( plane );
 			},
 
 			// onProgress callback currently not supported

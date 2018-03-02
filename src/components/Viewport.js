@@ -1,5 +1,5 @@
 import * as Three from "three";
-import forge from "../forge";
+import engine from "../engine";
 import OrbitControlModule from "three-orbit-controls";
 import Nimbus from "./Nimbus";
 
@@ -55,7 +55,7 @@ export default {
 
 			cameraRig.rotation.z += Math.PI/4;
 
-			forge.getScene().add( cameraRig );
+			engine.getScene().add( cameraRig );
 
 			this.$store.commit( "camera", camera );
 			this.$store.commit( "cameraRig", cameraRig );
@@ -126,7 +126,7 @@ export default {
 				this.screenPositions[i] = this.getScreenPosition( this.selection[i], this.$el );
 			}
 
-			this.renderer.render( forge.getScene(), this.camera );
+			this.renderer.render( engine.getScene(), this.camera );
 			requestAnimationFrame( this.update );
 		},
 		onMouseMove( e ) {
@@ -151,7 +151,7 @@ export default {
 					Math.min( this.end.y, this.start.y )
 				);
 				// Get a list of entity IDs which are intersected
-				this.selected = forge.getSelection( max, min, this.camera );
+				this.selected = engine.getSelection( max, min, this.camera );
 				// Draw the selection rectangle
 				/*
 				this.selected.forEach(( point ) => {
@@ -174,20 +174,20 @@ export default {
 			this.mouse.set( e.clientX, e.clientY );
 			this.dragStart.copy( this.mouse );
 
-			// Call the forge getWorldMousePosition() which returns the world position
+			// Call the engine getWorldMousePosition() which returns the world position
 
 			// If mouse is moving,
-			forge._entityCache.recompute( this.camera );
+			engine._entityCache.recompute( this.camera );
 
 			this.end = this.normalizeCenter( this.mouse, this.renderer.domElement );
 
 			this.raycaster.setFromCamera( this.end, this.camera );
 			// See if the ray from the camera into the world hits one of our meshes
-			var intersects = this.raycaster.intersectObjects( forge.getScene().children );
+			var intersects = this.raycaster.intersectObjects( engine.getScene().children );
 			// Toggle rotation bool for meshes that we clicked
 			if ( intersects.length > 0 ) {
 				if ( intersects[0].object.entityID ) {
-					this.$store.commit( "selection", forge.getEntity( intersects[0].object.entityID ));
+					this.$store.commit( "selection", engine.getEntity( intersects[0].object.entityID ));
 					intersects[0].object.material.color = new Three.Color( 0xff0000 );
 				}
 			}

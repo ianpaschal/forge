@@ -33,7 +33,7 @@
 <script>
 	import MenuButton from "./MenuButton.vue";
 	import Modal from "./Modal.vue"
-	import forge from "../forge"
+	import engine from "../engine"
 	export default {
 		name: "MainMenu",
 		components: {
@@ -87,15 +87,15 @@
 			},
 			createGame() {
 				this.$store.commit( "view", "Loading" )
-				forge.init( false,
+				engine.init( false,
 					( prog ) => {
 						console.log("Loading...");
 					},
 					() => {
 						console.log("Finished!");
-						this.$store.commit("player", forge.getPlayer(0))
+						this.$store.commit("player", engine.getPlayer(0))
 						this.$store.commit( "view", "Play" );
-						forge.start();
+						engine.start();
 					}
 				);
 
