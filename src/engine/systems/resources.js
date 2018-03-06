@@ -8,7 +8,6 @@ const props = {
 
 const init = function( engine ) {
 	// Do nothing for now.
-	console.log( this._engine );
 };
 
 const update = function( time ) {

@@ -16,7 +16,7 @@ export default {
 			// console.log( this.position );
 			return {
 				top: (( this.position ? this.position.y : 0 ) - 2 ) + "px",
-				left: (( this.position ? this.position.x : 0 ) - 40 ) + "px"
+				left: (( this.position ? this.position.x : 0 ) - 20 ) + "px"
 			};
 		},
 		fillStyle() {
@@ -45,7 +45,7 @@ export default {
 		update() {
 			const projected = new Three.Vector3();
 			projected.copy( this.entity.components.position );
-			projected.z += 9.5;
+			projected.z += 2.5;
 			projected.project( this.camera );
 			this.position.set(
 				( this.parentWidth / 2 ) * projected.x + this.parentWidth / 2,
