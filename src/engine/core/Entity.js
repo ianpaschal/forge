@@ -12,9 +12,17 @@ class Entity {
 		* @param {string} uuid - The UUID.
 		* @param {Object} components - The components.
 		*/
-	constructor( uuid, components ) {
-		this.uuid = uuid || UUID();
-		this.components = components;
+	constructor( uuid = UUID(), type = "unknown", components = {}, inherit = true  ) {
+		this._uuid = uuid;
+		this._type = type;
+
+		if ( components ) {
+			if ( inherit ) {
+				this._components = components || {};
+			} else {
+
+			}
+		}
 	}
 
 	/**
@@ -23,7 +31,7 @@ class Entity {
 		*/
 	addComponent( component ) {
 		// Check if component is a valid type of component
-		if ( !this.components[ component.id ]) {
+		if ( !this.components[ component.id ] ) {
 			this.components[ component.id ] = component;
 		}
 		else {
@@ -45,7 +53,7 @@ class Entity {
 		* @return {number} The x value.
 		*/
 	getComponent( id ) {
-		if ( this.components[ id ]) {
+		if ( this.components[ id ] ) {
 			return this.components[ id ];
 		}
 		else {
@@ -53,26 +61,17 @@ class Entity {
 		}
 	}
 
-	/**
-		* Remove a component from this entity (by ID).
-		* @param {string} str - The ID of the component.
-		* @return {number} The x value.
+	/** Remove a component from this entity (by ID).
+		* @param {string} name - The ID of the component.
 		*/
-	removeComponent( id ) {
-		if ( this.components[ id ]) {
-			delete this.components[ id ];
+	removeComponent( name ) {
+		const index = this._components.indexOf( this.getComponent( name ) );
+		if ( index > 0 ) {
+			delete this.components[ index ];
 		}
 		else {
-			return "Component with id " + id + "doesn't exist";
+			return "Component with id " + name + "doesn't exist";
 		}
-	}
-
-	/**
-		* Copy an assembly into the entity, replacing all components.
-		* @param {Assembly} - Assembly to clone into the new entity.
-		*/
-	copy( assembly ) {
-		this.components = JSON.parse( JSON.stringify( assembly.getComponents()));
 	}
 
 	/**
@@ -83,40 +82,21 @@ class Entity {
 
 	}
 
-	/**
-		* Clone this entity.
-		* @param {Assembly} - Assembly to clone into the new entity.
+	/** Clone this entity.
 		*/
 	clone() {
-		return new this.constructor( null, this.getComponents );
+		return new this.constructor().copy( this );
 	}
 
-	spawn( position ) {
-
-		const mesh = new Three.Mesh( geometry, material );
-		mesh.position.x = 512 * Math.random() - 256;
-		mesh.position.y = 512 * Math.random() - 256;
-		mesh.position.z = 1;
-
-		// Create the model
-		/*
-		const loader = new Three.JSONLoader();
-		const path = "../../plugins/age-of-mythology/model/greek-villager-female-walk.json";
-		loader.load( path, ( geometry, materials ) => {
-			const mesh = new Three.Mesh( geometry, new Three.MeshLambertMaterial({
-				color: 0x999999
-			}));
-
-			// store.state.scene.add( mesh );
-
-			mesh.material.morphTargets = true;
-			mesh.position.copy( position );
-		});
-
-		// Add it to the scene.
-
-		// Register a mixer
+	/** Copy an assembly into the entity, replacing all components.
+		* @param {Assembly} source - Assembly to clone into the new entity.
 		*/
+	copy( source ) {
+		this._type = source.getType();
+		this._components = [];
+		source.getComponents().forEach( ( component ) => {
+			this._components.push( component.clone() );
+		});
 	}
 }
 

@@ -11,7 +11,7 @@
   },
   "rules": {
     "indent": [ 2, "tab", { "SwitchCase": 1 } ],
-    "space-in-parens": [ "error", "always", { "exceptions": ["{}", "[]", "()"] } ],
+    "space-in-parens": [ "error", "always", { "exceptions": ["{}"] } ],
     "space-before-blocks": [ 2, "always" ],
     "comma-spacing": [ 2, { "before": false, "after": true }],
 

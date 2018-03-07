@@ -7,10 +7,11 @@ import * as Three from "three";
 import { remote } from "electron";
 
 // Internal modules:
-import Assembly from "./Assembly";
 import Component from "./Component";
 import Entity from "./Entity";
 import Player from "./Player";
+
+// Additional utilities:
 import EntityCache from "../utils/EntityCache";
 import validate from "../utils/validate";
 
@@ -24,7 +25,7 @@ class Engine {
 	constructor() {
 		console.log( "Initializing a new Engine." );
 
-		this.pluginDir = Path.join( remote.app.getPath( "userData" ), "plugins" );
+		this.pluginDir = Path.join( remote.app.getPath( "userData" ), "Plugins" );
 		this._scene = new Three.Scene();
 
 		// These are the things which are actually saved per game:
@@ -63,7 +64,8 @@ class Engine {
 			const path = Path.join( __dirname, "../components", file );
 			const data = FS.readFileSync( path, "utf8" );
 			const json = JSON.parse( data );
-			this._components[ file.replace( /\.[^/.]+$/, "" ) ] = json;
+			const name = file.replace( /\.[^/.]+$/, "" );
+			this._components[ name ] = new Component( name, json );
 		});
 		console.log( this._components );
 	}
@@ -195,7 +197,7 @@ class Engine {
 		for ( const section in stack ) {
 			length += Object.keys( stack[ section ]).length;
 		}
-		const pluginDir = Path.join( remote.app.getPath( "userData" ), "Plugins" );
+		const pluginDir = this.pluginDir;
 		const textureLoader = new Three.TextureLoader();
 		const JSONLoader = new Three.JSONLoader();
 
@@ -379,11 +381,11 @@ class Engine {
 		}
 	}
 
-	getComponent( type ) {
-		if ( this._components[ type ]) {
-			return this._components[ type ];
+	getComponent( name ) {
+		if ( this._components[ name ]) {
+			return this._components[ name ];
 		} else {
-			console.error( "Please supply a valid component type." );
+			console.error( "Please supply a valid component name." );
 		}
 	}
 
