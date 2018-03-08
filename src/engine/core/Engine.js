@@ -59,22 +59,21 @@ class Engine {
 		/* TODO: This should be more elegant. But for now I'm not sure if components
 		need their own class or not. The whole idea is kind of that they're just
 		data. */
-		const componentFiles = FS.readdirSync( Path.join( __dirname, "../components" ));
-		componentFiles.forEach(( file ) => {
+		const componentFiles = FS.readdirSync( Path.join( __dirname, "../components" ) );
+		componentFiles.forEach( ( file ) => {
 			const path = Path.join( __dirname, "../components", file );
 			const data = FS.readFileSync( path, "utf8" );
 			const json = JSON.parse( data );
 			const name = file.replace( /\.[^/.]+$/, "" );
 			this._components[ name ] = new Component( name, json );
 		});
-		console.log( this._components );
 	}
 
 	/** Register a system with the engine (so it can be updated later).
 		* Used internally by `.registerSystems()`.
 		*/
 	registerSystem( system ) {
-		if ( validate( "isSystem", system )) {
+		if ( validate( "isSystem", system ) ) {
 			system.init( this );
 			this._systems.push( system );
 			return;
@@ -84,7 +83,7 @@ class Engine {
 	}
 
 	registerSystems( systems ) {
-		systems.forEach(( system ) => {
+		systems.forEach( ( system ) => {
 			this.registerSystem( system );
 		});
 	}
@@ -127,19 +126,22 @@ class Engine {
 			]
 		};
 
-		config.players.forEach(( player ) => {
+		config.players.forEach( ( player ) => {
 			this.addPlayer( player );
 
 			// Generate test entities:
 			for ( let i = 0; i < 4; i++ ) {
 				const entity = new Entity();
 				player.own( entity );
-				entity.copy( this.getAssembly( "nature-rock-granite" ));
-				entity.components.player = this._players.indexOf( player );
-				entity.components.position = {};
-				entity.components.position.x = Math.random() * 100 - 50;
-				entity.components.position.y = Math.random() * 100 - 50;
-				entity.components.position.z = 0;
+				entity.copy( this.getAssembly( "nature-rock-granite" ) );
+				entity.setComponentData( "player", this._players.indexOf( player ) );
+				entity.setComponentData( "position", {
+					x: Math.random() * 100 - 50,
+					y: Math.random() * 100 - 50
+				});
+				entity.setComponentData( "rotation", {
+					z: Math.random() * Math.PI
+				});
 				this.addEntity( entity );
 				this.spawn( entity );
 			}
@@ -167,14 +169,14 @@ class Engine {
 		let length = 0;
 		let loaded = 0;
 		for ( const section in stack ) {
-			length += Object.keys( stack[ section ]).length;
+			length += Object.keys( stack[ section ] ).length;
 		}
 		if ( world ) {
 			length += Object.keys( world.entities ).length;
 		}
 		function update( item ) {
 			loaded++;
-			onProgress(( loaded / length ) * 100, "Loaded " + item );
+			onProgress( ( loaded / length ) * 100, "Loaded " + item );
 		}
 
 		// Load assets. On finished, start the world loading/generation routine:
@@ -195,7 +197,7 @@ class Engine {
 		let loaded = 0;
 		let length = 0;
 		for ( const section in stack ) {
-			length += Object.keys( stack[ section ]).length;
+			length += Object.keys( stack[ section ] ).length;
 		}
 		const pluginDir = this.pluginDir;
 		const textureLoader = new Three.TextureLoader();
@@ -206,28 +208,27 @@ class Engine {
 			loadTextures() {
 				for ( const name in stack.texture ) {
 					textureLoader.load(
-						Path.join( pluginDir, stack.texture[ name ]),
+						Path.join( pluginDir, stack.texture[ name ] ),
 						( texture ) => {
 							scope._textures[ name ] = texture;
 							addLoaded( name );
 						},
 						undefined,
 						( err ) => {
-							console.error( "Failed to load", stack.textures[ name ]);
+							console.error( "Failed to load", stack.textures[ name ] );
 						}
 					);
 				}
 			},
 			loadMaterials() {
 				for ( const name in stack.material ) {
-					console.log( name, stack.material[ name ]);
 					addLoaded( name );
 				}
 			},
 			loadGeometries() {
 				for ( const name in stack.geometry ) {
 					JSONLoader.load(
-						Path.join( pluginDir, stack.geometry[ name ]),
+						Path.join( pluginDir, stack.geometry[ name ] ),
 						( geometry ) => {
 							scope._geometries[ name ] = geometry;
 							addLoaded( name );
@@ -241,11 +242,24 @@ class Engine {
 			},
 			loadAssemblies() {
 				for ( const name in stack.assembly ) {
-					const path = Path.join( pluginDir, stack.assembly[ name ]);
+					const path = Path.join( pluginDir, stack.assembly[ name ] );
 					const file = FS.readFileSync( path, "utf8" );
 					const json = JSON.parse( file );
-					scope._assemblies[ name ] = new Entity( null, json.components );
-					console.log( name, stack.assembly[ name ]);
+					const assembly = new Entity();
+					assembly.setType( json.type ); // "my-type"
+					json.components.forEach( ( data ) => {
+						//let comp = scope.getComponent( data.name );
+						/*if ( !comp ) {
+							console.log( "Adding a new component..." );
+							comp = new Component();
+							comp.setName( data.name );
+						}*/
+						const comp = new Component();
+						comp.setName( data.name );
+						comp.apply( data.data );
+						assembly.addComponent( comp );
+					});
+					scope.addAssembly( assembly );
 					addLoaded( name );
 				}
 			},
@@ -327,7 +341,7 @@ class Engine {
 			const now = performance.now();
 			const delta = now - this._lastFrameTime;
 			this._lastFrameTime = now;
-			this._systems.forEach(( system ) => {
+			this._systems.forEach( ( system ) => {
 				system.update( delta );
 			});
 		}
@@ -341,7 +355,7 @@ class Engine {
 		* @param {Entity} assembly - The instance to add.
 		*/
 	addAssembly( assembly ) {
-		this._assemblies[ assembly.type ] = assembly;
+		this._assemblies[ assembly.getType() ] = assembly;
 		return;
 	}
 
@@ -349,7 +363,8 @@ class Engine {
 		* @param {Component} component - The instance to add.
 		*/
 	addComponent( component ) {
-		this._components[ component.type ] = component;
+		console.log( component );
+		this._components[ component.getName() ] = component;
 		return;
 	}
 
@@ -357,7 +372,7 @@ class Engine {
 		* @param {Entity} entity - The instance to add.
 		*/
 	addEntity( entity ) {
-		this._entities[ entity.uuid ] = entity;
+		this._entities[ entity.getUUID() ] = entity;
 		return;
 	}
 
@@ -365,7 +380,7 @@ class Engine {
 		* @param {Player} player - The instance to add.
 		*/
 	addPlayer( player ) {
-		if ( validate( "isPlayer", player )) {
+		if ( validate( "isPlayer", player ) ) {
 			this._players.push( player );
 			return;
 		}
@@ -374,7 +389,7 @@ class Engine {
 	}
 
 	getAssembly( type ) {
-		if ( this._assemblies[ type ]) {
+		if ( this._assemblies[ type ] ) {
 			return this._assemblies[ type ];
 		} else {
 			console.error( "Please supply a valid assembly type." );
@@ -382,10 +397,10 @@ class Engine {
 	}
 
 	getComponent( name ) {
-		if ( this._components[ name ]) {
+		if ( this._components[ name ] ) {
 			return this._components[ name ];
 		} else {
-			console.error( "Please supply a valid component name." );
+			console.warn( "Tried to get component " + name + " from engine but it did not exist." );
 		}
 	}
 
@@ -393,7 +408,7 @@ class Engine {
 		* @param {String} uuid - The entity's uuid.
 		*/
 	getEntity( uuid ) {
-		if ( this._entities[ uuid ]) {
+		if ( this._entities[ uuid ] ) {
 			return this._entities[ uuid ];
 		}
 		console.error( "Please supply a valid entity UUID." );
@@ -404,7 +419,7 @@ class Engine {
 		* @param {String} type - The geometry's type.
 		*/
 	getGeometry( type ) {
-		if ( this._geometries[ type ]) {
+		if ( this._geometries[ type ] ) {
 			return this._geometries[ type ];
 		} else {
 			console.error( "Please supply a valid geometry type." );
@@ -415,7 +430,7 @@ class Engine {
 		* @param {Number} index - The player number (in order of creation).
 		*/
 	getPlayer( index ) {
-		if ( validate( "playerIndex", index )) {
+		if ( validate( "playerIndex", index ) ) {
 			return this._players[ index ];
 		}
 		console.error( "Please supply a valid player index." );
@@ -442,20 +457,20 @@ class Engine {
 	// to be registered there anyway.
 	spawn( entity ) {
 		// Check if this is an entity.
-		const color = this.getPlayer( entity.components.player ).color;
-		const geoIndex = Math.floor( Math.random() * ( entity.components.geometry.length  ));
-		const geometry = this.getGeometry( entity.components.geometry[ geoIndex ]);
+		const color = this.getPlayer( entity.getComponentData( "player" ).index ).color;
+		const geoIndex = Math.floor( Math.random() * entity.getComponentData( "geometry" ).length );
+		const geometry = this.getGeometry( entity.getComponentData( "geometry" )[ geoIndex ] );
 		const material = new Three.MeshLambertMaterial({
 			color: new Three.Color( 1, 1, 1 ),
-			map: this._textures[ entity.components.material + "-diffuse" ],
-			alphaMap: this._textures[ entity.components.material + "-alpha" ],
+			map: this._textures[ entity.getComponentData( "material" ) + "-diffuse" ],
+			alphaMap: this._textures[ entity.getComponentData( "material" ) + "-alpha" ],
 			alphaTest: 0.5, // if transparent is false
 			transparent: false
 		});
 		const mesh = new Three.Mesh( geometry, material );
-		mesh.position.copy( entity.components.position );
-		mesh.rotation.x += Math.PI / 2; // Uncheck flip in 3dsMax
-		mesh.entityID = entity.uuid;
+		mesh.position.copy( entity.getComponentData( "position" ) );
+		mesh.rotation.copy( entity.getComponentData( "rotation" ) );
+		mesh.entityID = entity.getUUID();
 		this._scene.add( mesh );
 	}
 }

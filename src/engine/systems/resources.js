@@ -13,7 +13,7 @@ const init = function( engine ) {
 const update = function( time ) {
 	for ( const uuid in this._engine._entities ) {
 		const entity = this._engine._entities[ uuid ];
-		entity.components.resource.wood--;
+		// entity.getComponent( "resource" ).stone--;
 	}
 };
 

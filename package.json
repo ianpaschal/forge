@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/ianpaschal/forge#readme",
   "dependencies": {
+    "deepmerge": "^2.1.0",
     "three": "^0.87.1",
     "three-orbit-controls": "^82.1.0",
     "uuid": "^3.2.1",

@@ -95,7 +95,6 @@
 						console.log("Loading...", progress );
 					},
 					() => {
-						console.log("Finished!");
 						this.$store.commit("player", engine.getPlayer(0))
 						this.$store.commit( "view", "Play" );
 						engine.start();
