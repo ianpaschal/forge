@@ -2,20 +2,22 @@
 	height: 4px;
 	background-color: green;
 	flex: 1 auto;
-	margin: 8px;
+	margin: 0 8px;
 	border-radius: 3px;
 	border: 1px solid black;
 }
 
 .bar-display {
-	width: 160px;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+	margin: 8px;
+	background-color: blue;
 }
 .health-value {
-	width: 36px;
-	line-height: 16px;
+	width: 32px;
+	font-size: 10px;
+	line-height: 12px;
 }
 .health-value.right {
 	text-align: left;

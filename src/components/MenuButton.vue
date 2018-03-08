@@ -23,6 +23,8 @@
 
 <style scoped>
 	.menu-button {
+		font-family: Vollkorn;
+		text-transform: uppercase;
 		width: 100%;
 		display: block;
 		height: 32px;

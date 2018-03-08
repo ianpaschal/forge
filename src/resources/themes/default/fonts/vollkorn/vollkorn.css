@@ -1,0 +1,10 @@
+@font-face {
+	font-family: Vollkorn;
+	src: url("vollkorn-regular.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: Vollkorn;
+	font-weight: bold;
+	src: url("vollkorn-bold.ttf") format("truetype");
+}

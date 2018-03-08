@@ -3,8 +3,8 @@ export default {
 	components: {},
 	template: `
 		<div class='podium'>
-			<h1>Unit Name</h1>
-			<h2>Unit Type</h2>
+			<h1>Unit Class</h1>
+			<h2>Player</h2>
 			<div class='entity-icon'>
 
 			</div>

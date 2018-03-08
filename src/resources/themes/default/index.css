@@ -1,5 +1,7 @@
 @import "./components/HealthBar.css";
 @import "./components/Podium.css";
+@import "./fonts/vollkorn/vollkorn.css";
+
 #app {
 	font-size: 11px;
 	color: #fff;
