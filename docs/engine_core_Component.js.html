@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>ContentManager - Documentation</title>
+    <title>engine/core/Component.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,297 +29,108 @@
 
 <div id="main">
     
-    <h1 class="page-title">ContentManager</h1>
+    <h1 class="page-title">engine/core/Component.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-        ContentManager
-        </h2>
-        
-            <div class="class-description">Class representing an Entity.</div>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-<div class="section-method">
-
-    
-    <h2>Constructor</h2>
-    
-
-    <h4 class="name" id="ContentManager"><span class="type-signature"></span>new ContentManager<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="managers_ContentManager.js.html">managers/ContentManager.js</a>, <a href="managers_ContentManager.js.html#line12">line 12</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id="_findPlugins"><span class="type-signature">(protected) </span>_findPlugins<span class="signature">(callback)</span><span class="type-signature"> &rarr; {array}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Scans the plugins directory for installed plugins.
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="managers_ContentManager.js.html">managers/ContentManager.js</a>, <a href="managers_ContentManager.js.html#line55">line 55</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>callback</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>function</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Function executed using the results of the scan.
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>array</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    result of the sum value.
-</div>
-
-    
-</div>
-
-
-
-</div>
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// Forge is distributed under the MIT license.
+
+import UUID from "uuid/v4";
+import deepCopy from "../utils/deepCopy";
+import deepMerge from "deepmerge";
+
+/** @classdesc Class representing a Component. */
+class Component {
+
+	/** Create a Component.
+		* @param {Object} json - JSON object containing component data. This is used
+		* when loading a previously created ecomponent from disk, or creating the
+		* components which comprise an Assembly.
+		*/
+	constructor( json ) {
+
+		// If building from JSON:
+		if ( json ) {
+			this._uuid = json.uuid;
+			this._name = json.name;
+			this._data = json.data;
+		}
+
+		// If creating a fresh instance:
+		else {
+			this._uuid = UUID();
+			this._name = "noname";
+			this._data = {};
+		}
+	}
+
+	/** Apply JSON data to this component. Note: When merging an object and an
+		* array, the item in `JSON` will overwrite the existing object for that key.``
+		* @param {Object} json - New instance of `Component` with the same data.
+		*/
+	apply( json ) {
+		this._data = deepMerge( this._data, json );
+	}
+
+	/** Clone this component.
+		* @returns {Component} - New instance of `Component` with the same data.
+		*/
+	clone() {
+		const clone = new this.constructor();
+		clone.copy( this );
+		return clone;
+	}
+
+	/** @description Copy another component's data, replacing all existing data.
+		* @param {Component} source - Component to copy from.
+		*/
+	copy( source ) {
+		this._name = source.getName();
+		this._data = deepCopy( source.getData() );
+	}
+
+	/** @description Get the component's data.
+		* @readonly
+		* @returns {Object} - The component's data.
+		*/
+	getData() {
+		return this._data;
+	}
+
+	/** @description Get the component's name.
+		* @readonly
+		* @returns {String} - The component's name.
+		*/
+	getName() {
+		return this._name;
+	}
+
+	/** @description Get the component's UUID.
+		* @readonly
+		* @returns {String} - The component's UUID.
+		*/
+	getUUID() {
+		return this._uuid;
+	}
+
+	/** Set the component's name.
+		* @param {String} name - New name for the component.
+		*/
+	setName( name ) {
+		this._name = name;
+	}
+}
+
+export default Component;
+</code></pre>
+        </article>
+    </section>
 
 
 
