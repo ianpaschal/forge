@@ -1,5 +1,4 @@
 import Engine from "./core/Engine";
-import System from "./core/System";
 
 import animationSystem from "./systems/animation";
 import lightingSystem from "./systems/lighting";
@@ -7,11 +6,14 @@ import soundSystem from "./systems/sound";
 import resourceSystem from "./systems/resources";
 
 const engine = new Engine();
-engine.registerSystems([
+const systems = [
 	animationSystem,
 	lightingSystem,
 	resourceSystem,
 	soundSystem
-]);
+];
+systems.forEach( ( system ) => {
+	engine.registerSystem( system );
+});
 
 export default engine;

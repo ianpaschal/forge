@@ -1,11 +1,19 @@
 import Viewport from "./Viewport";
 import Overlay from "./Overlay.vue";
-import MiniMap from "./MiniMap";
+import Resources from "./panels/Resources";
+import LeftPanel from "./panels/LeftPanel";
+import Podium from "./panels/Podium";
+import RightPanel from "./panels/RightPanel";
+import MiniMap from "./panels/MiniMap";
 export default {
 	name: "Play",
 	components: {
 		Viewport,
 		Overlay,
+		Resources,
+		LeftPanel,
+		Podium,
+		RightPanel,
 		MiniMap
 	},
 	template: `
@@ -20,9 +28,15 @@ export default {
 
 			</div>
 			<div class='frame-bottom'>
+				<Resources></Resources>
+				<LeftPanel>
+					<p v-if='selection.length > 0'>{{selection[0]}}</p>
+				</LeftPanel>
+				<Podium></Podium>
+				<RightPanel></RightPanel>
 				<MiniMap></MiniMap>
 
-				<p v-if='selection.length > 0'>{{selection[0]}}</p>
+
 			</div>
 			<Overlay v-if='paused' @unpause='togglePause'/>
 		</div>

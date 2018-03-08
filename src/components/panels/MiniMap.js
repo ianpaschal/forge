@@ -1,5 +1,5 @@
 import * as Three from "three";
-import engine from "../engine";
+import engine from "../../engine";
 
 export default {
 	name: "MiniMap",
@@ -22,14 +22,15 @@ export default {
 					top: ((diameter - size) / 2)+"px",
 					width: size+"px",
 					height: size+"px",
-					transform: "rotate(45deg)"
+					transform: "rotate(45deg)",
+					border: "1px solid white"
 				}'
 			></canvas>
 		</div>
 	`,
 	data() {
 		return {
-			diameter: 192,
+			diameter: 256,
 			worldSize: 512
 		};
 	},

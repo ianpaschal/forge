@@ -17,7 +17,6 @@ import validate from "../utils/validate";
 
 /**
 	* Core singleton representing an instance of the Forge Engine.
-	* @namespace Engine
 	*/
 class Engine {
 
@@ -65,26 +64,7 @@ class Engine {
 			const data = FS.readFileSync( path, "utf8" );
 			const json = JSON.parse( data );
 			const name = file.replace( /\.[^/.]+$/, "" );
-			this._components[ name ] = new Component( name, json );
-		});
-	}
-
-	/** Register a system with the engine (so it can be updated later).
-		* Used internally by `.registerSystems()`.
-		*/
-	registerSystem( system ) {
-		if ( validate( "isSystem", system ) ) {
-			system.init( this );
-			this._systems.push( system );
-			return;
-		}
-		console.error( "Please supply a valid system instance." );
-		return null;
-	}
-
-	registerSystems( systems ) {
-		systems.forEach( ( system ) => {
-			this.registerSystem( system );
+			this.registerComponent( new Component( name, json ) );
 		});
 	}
 
@@ -127,7 +107,7 @@ class Engine {
 		};
 
 		config.players.forEach( ( player ) => {
-			this.addPlayer( player );
+			this.registerPlayer( player );
 
 			// Generate test entities:
 			for ( let i = 0; i < 4; i++ ) {
@@ -136,13 +116,13 @@ class Engine {
 				entity.copy( this.getAssembly( "nature-rock-granite" ) );
 				entity.setComponentData( "player", this._players.indexOf( player ) );
 				entity.setComponentData( "position", {
-					x: Math.random() * 100 - 50,
-					y: Math.random() * 100 - 50
+					x: player.start.x + ( Math.random() * 32 - 16 ),
+					y: player.start.y + ( Math.random() * 32 - 16 )
 				});
 				entity.setComponentData( "rotation", {
 					z: Math.random() * Math.PI
 				});
-				this.addEntity( entity );
+				this.registerEntity( entity );
 				this.spawn( entity );
 			}
 		});
@@ -259,7 +239,7 @@ class Engine {
 						comp.apply( data.data );
 						assembly.addComponent( comp );
 					});
-					scope.addAssembly( assembly );
+					scope.registerAssembly( assembly );
 					addLoaded( name );
 				}
 			},
@@ -279,49 +259,6 @@ class Engine {
 				onFinished();
 			}
 		}
-		/*
-		stack.forEach(( asset ) => {
-		for( const assetName in stack ) {
-			const asset = stack[assetName]
-
-			const textureLoader = new Three.TextureLoader();
-			const meshLoader = new Three.JSONLoader();
-
-			const onTextureLoaded = function( texture ) {
-				scope._textures[ asset.id ] = texture;
-				addLoaded();
-			};
-
-			const onMeshLoaded = function( geometry, materials ) {
-				scope._geometries[ asset.id ] = geometry;
-				scope._meshes[ asset.id ] = new Three.Mesh( geometry, materials );
-				addLoaded();
-			};
-
-			const onError = function ( err ) {
-				console.error( "An error happened." );
-			};
-
-			const loadPath = Path.join( pluginsDir, asset.path );
-			switch ( asset.type ) {
-				case "texture":
-					textureLoader.load( loadPath, onTextureLoaded, undefined, onError );
-					break;
-				case "material":
-					addLoaded();
-					break;
-				case "mesh":
-					meshLoader.load( loadPath, onMeshLoaded, undefined, onError );
-					break;
-				case "assembly":
-					const json = JSON.parse( FS.readFileSync( loadPath ));
-					scope._assemblies[ asset.id ] = new Entity( null, json.components );
-					addLoaded();
-					break;
-			}
-		});
-
-		*/
 	}
 
 	/** Start the execution of the update loop. Called internally by `this.init()`. */
@@ -351,42 +288,7 @@ class Engine {
 		this._running = false;
 	}
 
-	/** Add an `Entity` instance to to the engine as a re-usable assembly.
-		* @param {Entity} assembly - The instance to add.
-		*/
-	addAssembly( assembly ) {
-		this._assemblies[ assembly.getType() ] = assembly;
-		return;
-	}
-
-	/** Add a `Component` instance to to the engine.
-		* @param {Component} component - The instance to add.
-		*/
-	addComponent( component ) {
-		console.log( component );
-		this._components[ component.getName() ] = component;
-		return;
-	}
-
-	/** Add an `Entity` instance to to the engine.
-		* @param {Entity} entity - The instance to add.
-		*/
-	addEntity( entity ) {
-		this._entities[ entity.getUUID() ] = entity;
-		return;
-	}
-
-	/** Add a `Player` instance to to the engine.
-		* @param {Player} player - The instance to add.
-		*/
-	addPlayer( player ) {
-		if ( validate( "isPlayer", player ) ) {
-			this._players.push( player );
-			return;
-		}
-		console.error( "Please supply a valid player instance." );
-		return null;
-	}
+	// Getters:
 
 	getAssembly( type ) {
 		if ( this._assemblies[ type ] ) {
@@ -449,6 +351,58 @@ class Engine {
 		*/
 	getScene() {
 		return this._scene;
+	}
+
+	// Registers:
+
+	/** Add an `Entity` instance to to the engine as a re-usable assembly.
+		* @param {Entity} assembly - The instance to add.
+		*/
+	registerAssembly( assembly ) {
+		this._assemblies[ assembly.getType() ] = assembly;
+		return;
+	}
+
+	/** Add a `Component` instance to to the engine.
+		* @param {Component} component - The instance to add.
+		*/
+	registerComponent( component ) {
+		console.log( component );
+		this._components[ component.getName() ] = component;
+		return;
+	}
+
+	/** Add an `Entity` instance to to the engine.
+		* @param {Entity} entity - The instance to add.
+		*/
+	registerEntity( entity ) {
+		this._entities[ entity.getUUID() ] = entity;
+		return;
+	}
+
+	/** Add a `Player` instance to to the engine.
+		* @param {Player} player - The instance to add.
+		*/
+	registerPlayer( player ) {
+		if ( validate( "isPlayer", player ) ) {
+			this._players.push( player );
+			return;
+		}
+		console.error( "Please supply a valid player instance." );
+		return null;
+	}
+
+	/** @description Register a system with the engine (so it can be updated later).
+		* Used internally by `.registerSystems()`.
+		*/
+	registerSystem( input ) {
+		if ( validate( "isSystem", input ) ) {
+			input.init( this );
+			this._systems.push( input );
+			return;
+		}
+		console.error( "Please supply a valid system instance." );
+		return null;
 	}
 
 	//---
