@@ -29,34 +29,12 @@ class Component {
 		}
 	}
 
-	// This is used in the following way:
-	/*
-	assembly = new Entity();
-	assembly.setType = json.type; // "my-type"
-	json.components.forEach( data => {
-		let comp = forge.getComponent( data.name );
-		if ( !comp ) {
-			comp = new Component();
-			comp.setName( data.name );
-		}
-		comp.apply( data.data );
-		assembly.addComponent( comp );
-	});
-	forge.addAssembly( assembly );
-	*/
+	/** Apply JSON data to this component. Note: When merging an object and an
+		* array, the item in `JSON` will overwrite the existing object for that key.``
+		* @param {Object} json - New instance of `Component` with the same data.
+		*/
 	apply( json ) {
 		this._data = deepMerge( this._data, json );
-		/*
-		for ( const prop in json ) {
-			console.log( prop );
-			if ( json[ prop ].constructor === Object ) {
-				this._data[ prop ] = this.apply( json[ prop ] );
-			}
-			else {
-				this._data[ prop ] = json[ prop ];
-			}
-		}
-		*/
 	}
 
 	/** Clone this component.
@@ -76,27 +54,30 @@ class Component {
 		this._data = deepCopy( source.getData() );
 	}
 
-	/** Get this component's data.
-		* @returns {Object} - This component's data.
+	/** Get the component's data.
+		* @returns {Object} - The component's data.
 		*/
 	getData() {
 		return this._data;
 	}
 
-	/** Get this component's name.
-		* @returns {string} - This component's name.
+	/** Get the component's name.
+		* @returns {String} - The component's name.
 		*/
 	getName() {
 		return this._name;
 	}
 
-	/** Get this component's UUID.
-		* @returns {string} - This component's UUID.
+	/** Get the component's UUID.
+		* @returns {String} - The component's UUID.
 		*/
 	getUUID() {
 		return this._uuid;
 	}
 
+	/** Set the component's name.
+		* @param {String} name - New name for the component.
+		*/
 	setName( name ) {
 		this._name = name;
 	}

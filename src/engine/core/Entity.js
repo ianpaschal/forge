@@ -1,7 +1,6 @@
 // Forge is distributed under the MIT license.
 
 import UUID from "uuid/v4";
-import * as Three from "three";
 
 /** Class representing an Entity. */
 class Entity {
@@ -43,7 +42,8 @@ class Entity {
 		this._components.push( component );
 	}
 
-	/** Clone this entity.
+	/** Clone the entity.
+		* @returns {Entity} - New instance with the same components.
 		*/
 	clone() {
 		return new this.constructor().copy( this );
@@ -60,9 +60,9 @@ class Entity {
 		});
 	}
 
-	/** Get a component within this entity (by ID).
-		* @param {string} name - The ID of the component.
-		* @return {Component} - The x value.
+	/** Get a component instance by name within the entity.
+		* @param {String} name - Name of the component to get.
+		* @returns {Component}
 		*/
 	getComponent( name ) {
 		for ( let i = 0; i < this._components.length; i++ ) {
@@ -73,6 +73,11 @@ class Entity {
 		return "Component with name " + name + "doesn't exist";
 	}
 
+	/** Get data by component name from the entity.
+		* @readonly
+		* @param {String} name - Name of the component to get data from.
+		* @returns {Object}
+		*/
 	getComponentData( name ) {
 		for ( let i = 0; i < this._components.length; i++ ) {
 			if ( this._components[ i ].getName() === name ) {
@@ -82,29 +87,32 @@ class Entity {
 		return "Component with name " + name + "doesn't exist";
 	}
 
-	/** Get all of this entity's components.
-		* @return {Array} - This entity's components.
+	/** Get all of the entity's components.
+		* @readonly
+		* @returns {Array} - The entity's components.
 		*/
 	getComponents() {
 		return this._components;
 	}
 
-	/** Get this entity's type.
-		* @returns {string} - This entity's type.
+	/** Get the entity's type.
+		* @readonly
+		* @returns {String} - The entity's type.
 		*/
 	getType() {
 		return this._type;
 	}
 
-	/** Get this entity's UUID.
-		* @returns {string} - This entity's UUID.
+	/** Get the entity's UUID.
+		* @readonly
+		* @returns {String} - The entity's UUID.
 		*/
 	getUUID() {
 		return this._uuid;
 	}
 
-	/** Remove a component from this entity (by ID).
-		* @param {string} name - The ID of the component.
+	/** Remove a component by name from the entity.
+		* @param {String} name - Name of the component to remove.
 		*/
 	removeComponent( name ) {
 		const index = this._components.indexOf( this.getComponent( name ) );

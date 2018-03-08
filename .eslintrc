@@ -26,6 +26,7 @@
     "semi": [2, "always"],
     "quotes": [ 2, "double" ],
     "no-use-before-define": [ 2, { "functions": false } ],
+    "no-unused-vars":  ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }],
     "prefer-const": 1,
     "complexity": [ 1, 5 ]
   }
