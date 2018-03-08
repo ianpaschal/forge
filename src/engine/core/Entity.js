@@ -2,7 +2,7 @@
 
 import UUID from "uuid/v4";
 
-/** Class representing an Entity. */
+/** @classdesc Class representing an Entity. */
 class Entity {
 
 	/** Create an Entity.
@@ -81,7 +81,7 @@ class Entity {
 	getComponentData( name ) {
 		for ( let i = 0; i < this._components.length; i++ ) {
 			if ( this._components[ i ].getName() === name ) {
-				return this._components[ i ]._data;
+				return this._components[ i ].getData();
 			}
 		}
 		return "Component with name " + name + "doesn't exist";
@@ -93,6 +93,20 @@ class Entity {
 		*/
 	getComponents() {
 		return this._components;
+	}
+
+	/** Get data by component name from the entity.
+		* @readonly
+		* @param {String} name - Name of the component to get data from.
+		* @returns {Object}
+		*/
+	getData( name ) {
+		for ( let i = 0; i < this._components.length; i++ ) {
+			if ( this._components[ i ].getName() === name ) {
+				return this._components[ i ].getData();
+			}
+		}
+		return "Component with name " + name + "doesn't exist";
 	}
 
 	/** Get the entity's type.

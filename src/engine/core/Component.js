@@ -4,7 +4,7 @@ import UUID from "uuid/v4";
 import deepCopy from "../utils/deepCopy";
 import deepMerge from "deepmerge";
 
-/** Class representing a Component. */
+/** @classdesc Class representing a Component. */
 class Component {
 
 	/** Create a Component.
@@ -16,9 +16,9 @@ class Component {
 
 		// If building from JSON:
 		if ( json ) {
-			this._uuid = json._uuid;
-			this._name = json._name;
-			this._data = json._data;
+			this._uuid = json.uuid;
+			this._name = json.name;
+			this._data = json.data;
 		}
 
 		// If creating a fresh instance:
@@ -46,7 +46,7 @@ class Component {
 		return clone;
 	}
 
-	/** Copy another component's data, replacing all existing data.
+	/** @description Copy another component's data, replacing all existing data.
 		* @param {Component} source - Component to copy from.
 		*/
 	copy( source ) {
@@ -54,21 +54,24 @@ class Component {
 		this._data = deepCopy( source.getData() );
 	}
 
-	/** Get the component's data.
+	/** @description Get the component's data.
+		* @readonly
 		* @returns {Object} - The component's data.
 		*/
 	getData() {
 		return this._data;
 	}
 
-	/** Get the component's name.
+	/** @description Get the component's name.
+		* @readonly
 		* @returns {String} - The component's name.
 		*/
 	getName() {
 		return this._name;
 	}
 
-	/** Get the component's UUID.
+	/** @description Get the component's UUID.
+		* @readonly
 		* @returns {String} - The component's UUID.
 		*/
 	getUUID() {

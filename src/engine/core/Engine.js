@@ -215,7 +215,7 @@ class Engine {
 						},
 						undefined,
 						( err ) => {
-							console.error( "Failed to load", stack.textures[ name ] );
+							console.error( "Failed to load", stack.textures[ name ], err );
 						}
 					);
 				}
@@ -456,20 +456,18 @@ class Engine {
 	// TODO: Move this to it's own system. Maybe animation. Animated models need
 	// to be registered there anyway.
 	spawn( entity ) {
-		// Check if this is an entity.
-		const color = this.getPlayer( entity.getComponentData( "player" ).index ).color;
-		const geoIndex = Math.floor( Math.random() * entity.getComponentData( "geometry" ).length );
-		const geometry = this.getGeometry( entity.getComponentData( "geometry" )[ geoIndex ] );
+		const geoIndex = Math.floor( Math.random() * entity.getData( "geometry" ).length );
+		const geometry = this.getGeometry( entity.getData( "geometry" )[ geoIndex ] );
 		const material = new Three.MeshLambertMaterial({
 			color: new Three.Color( 1, 1, 1 ),
-			map: this._textures[ entity.getComponentData( "material" ) + "-diffuse" ],
-			alphaMap: this._textures[ entity.getComponentData( "material" ) + "-alpha" ],
+			map: this._textures[ entity.getData( "material" ) + "-diffuse" ],
+			alphaMap: this._textures[ entity.getData( "material" ) + "-alpha" ],
 			alphaTest: 0.5, // if transparent is false
 			transparent: false
 		});
 		const mesh = new Three.Mesh( geometry, material );
-		mesh.position.copy( entity.getComponentData( "position" ) );
-		mesh.rotation.copy( entity.getComponentData( "rotation" ) );
+		mesh.position.copy( entity.getData( "position" ) );
+		mesh.rotation.copy( entity.getData( "rotation" ) );
 		mesh.entityID = entity.getUUID();
 		this._scene.add( mesh );
 	}
