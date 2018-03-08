@@ -8,13 +8,12 @@ const props = {
 
 const init = function( engine ) {
 	// Do nothing for now.
-	console.log( this._engine );
 };
 
 const update = function( time ) {
 	for ( const uuid in this._engine._entities ) {
 		const entity = this._engine._entities[ uuid ];
-		entity.components.resource.wood--;
+		// entity.getComponent( "resource" ).stone--;
 	}
 };
 

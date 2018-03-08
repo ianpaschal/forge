@@ -11,7 +11,7 @@
   },
   "rules": {
     "indent": [ 2, "tab", { "SwitchCase": 1 } ],
-    "space-in-parens": [ "error", "always", { "exceptions": ["{}", "[]", "()"] } ],
+    "space-in-parens": [ "error", "always", { "exceptions": ["{}"] } ],
     "space-before-blocks": [ 2, "always" ],
     "comma-spacing": [ 2, { "before": false, "after": true }],
 
@@ -26,6 +26,7 @@
     "semi": [2, "always"],
     "quotes": [ 2, "double" ],
     "no-use-before-define": [ 2, { "functions": false } ],
+    "no-unused-vars":  ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }],
     "prefer-const": 1,
     "complexity": [ 1, 5 ]
   }

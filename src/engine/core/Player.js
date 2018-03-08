@@ -11,7 +11,7 @@ export default class {
 	}
 
 	own( entity ) {
-		this._entities.push( entity.uuid );
+		this._entities.push( entity.getUUID() );
 	}
 
 	getEntityIDs() {

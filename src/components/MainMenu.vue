@@ -87,12 +87,14 @@
 			},
 			createGame() {
 				this.$store.commit( "view", "Loading" )
-				engine.init( false,
-					( prog ) => {
-						console.log("Loading...");
+				engine.init(
+					this.$store.state.pluginStack,
+					false,
+					( progress ) => {
+						this.$store.commit("loaded", progress);
+						console.log("Loading...", progress );
 					},
 					() => {
-						console.log("Finished!");
 						this.$store.commit("player", engine.getPlayer(0))
 						this.$store.commit( "view", "Play" );
 						engine.start();

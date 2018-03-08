@@ -52,16 +52,16 @@
 }
 .nimbus {
 	position: absolute;
-	width: 64px;
+	width: 40px;
 	height: 4px;
 	background-color: #333;
 	border: 1px solid #111;
-	border-radius: 3px;
+	border-radius: 2px;
 }
 .nimbus .fill {
 	position: absolute;
 	height: 100%;
-	width: 64px;
+	width: 40px;
 	background-color: #94d82d;
 	border-radius: 3px;
 }

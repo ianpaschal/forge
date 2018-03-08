@@ -27,7 +27,7 @@
 			</div>
 			<div class='buttons'>
 				<StandardButton v-bind:label='"Back"' @click='$store.commit("view", "MainMenu")'/>
-				<StandardButton v-bind:label='"Save"' @click='$store.commit("view", "MainMenu")'/>
+				<StandardButton v-bind:label='"Save"' @click='save'/>
 			</div>
 		</div>
 	</div>
@@ -42,6 +42,11 @@
 		},
 		data() {
 			return {};
+		},
+		methods: {
+			save() {
+				this.$store.dispatch("buildLoadStack");
+			}
 		}
 	}
 </script>

@@ -5,7 +5,13 @@ export default {
 	name: "MiniMap",
 	components: {},
 	template: `
-		<div class='mini-map-wrapper'>
+		<div
+			class='mini-map-wrapper'
+			v-bind:style='{
+				width: diameter + "px",
+				height: diameter + "px"
+			}'
+		>
 			<canvas id='mini-map'
 				v-bind:width='resolution'
 				v-bind:height='resolution'
@@ -23,7 +29,7 @@ export default {
 	`,
 	data() {
 		return {
-			size: 128,
+			diameter: 192,
 			worldSize: 512
 		};
 	},
@@ -45,11 +51,12 @@ export default {
 		cameraRig() {
 			return this.$store.state.cameraRig;
 		},
+
+		size() {
+			return this.diameter / Math.sqrt( 2 );
+		},
 		resolution() {
 			return this.size * window.devicePixelRatio;
-		},
-		diameter() {
-			return this.size * Math.sqrt( 2 );
 		},
 
 		// Get the unknown map from the store:
@@ -70,15 +77,15 @@ export default {
 
 			// Update positions of all player units and enemy units if visible
 			const entityIDs = this.player.getEntityIDs();
-			entityIDs.forEach(( uuid ) => {
-				const pos = this.convertToScreen( engine.getEntity( uuid ).components.position );
+			entityIDs.forEach( ( uuid ) => {
+				const pos = this.convertToScreen( engine.getEntity( uuid ).getComponentData( "position" ) );
 				this.ctx.fillStyle = "#" + this.player.color.getHexString();
 				this.ctx.fillRect( Math.floor( pos.x ), Math.floor( pos.y ), window.devicePixelRatio, window.devicePixelRatio );
 
 			});
 
 			// Also, update the camera box;
-			this.drawCameraBox( this.getCameraPoints( this.camera ));
+			this.drawCameraBox( this.getCameraPoints( this.camera ) );
 
 			requestAnimationFrame( this.update );
 		},
@@ -91,12 +98,12 @@ export default {
 				new Three.Vector2( -1, -1 )
 			];
 			const worldExtents = [];
-			screenExtents.forEach(( corner ) => {
+			screenExtents.forEach( ( corner ) => {
 				// Make a new ray and set to camera corner:
 				const ray = new Three.Ray();
 				ray.origin.setFromMatrixPosition( camera.matrixWorld );
 				ray.direction.set( corner.x, corner.y, 1 ).unproject( camera ).sub( ray.origin ).normalize();
-				worldExtents.push( ray.intersectPlane( plane ));
+				worldExtents.push( ray.intersectPlane( plane ) );
 			});
 			// console.log( worldExtents );
 			return worldExtents;
@@ -135,7 +142,7 @@ export default {
 		},
 		moveTo( e ) {
 			const position = new Three.Vector2( e.offsetX, e.offsetY );
-			this.cameraRig.position.copy( this.convertToWorld( position ));
+			this.cameraRig.position.copy( this.convertToWorld( position ) );
 		}
 	}
 };

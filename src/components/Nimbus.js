@@ -15,12 +15,12 @@ export default {
 		style() {
 			// console.log( this.position );
 			return {
-				top: (( this.position ? this.position.y : 0 ) - 2 ) + "px",
-				left: (( this.position ? this.position.x : 0 ) - 40 ) + "px"
+				top: ( ( this.position ? this.position.y : 0 ) - 2 ) + "px",
+				left: ( ( this.position ? this.position.x : 0 ) - 20 ) + "px"
 			};
 		},
 		fillStyle() {
-			const percent = ( this.entity.components.resource.wood / 150 ) * 100;
+			const percent = ( this.entity.getComponentData( "resource" ).stone / 150 ) * 100;
 			let background;
 			if ( percent <= 20 ) {
 				background = "#e03131";
@@ -44,8 +44,8 @@ export default {
 	methods: {
 		update() {
 			const projected = new Three.Vector3();
-			projected.copy( this.entity.components.position );
-			projected.z += 9.5;
+			projected.copy( this.entity.getComponentData( "position" ) );
+			projected.z += 2.5;
 			projected.project( this.camera );
 			this.position.set(
 				( this.parentWidth / 2 ) * projected.x + this.parentWidth / 2,

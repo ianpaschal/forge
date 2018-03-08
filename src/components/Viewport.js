@@ -45,7 +45,7 @@ export default {
 			const d = 40;
 			camera.position.set( 0, -1 * d, d );
 			camera.up.set( 0, 0, 1 );
-			camera.lookAt( new Three.Vector3( 0, 0, 0 ));
+			camera.lookAt( new Three.Vector3( 0, 0, 0 ) );
 
 			const cameraRig = new Three.Object3D();
 			const pivot = new Three.Object3D();
@@ -187,7 +187,7 @@ export default {
 			// Toggle rotation bool for meshes that we clicked
 			if ( intersects.length > 0 ) {
 				if ( intersects[ 0 ].object.entityID ) {
-					this.$store.commit( "selection", engine.getEntity( intersects[ 0 ].object.entityID ));
+					this.$store.commit( "selection", engine.getEntity( intersects[ 0 ].object.entityID ) );
 					intersects[ 0 ].object.material.color = new Three.Color( 0xff0000 );
 				}
 			}
@@ -211,7 +211,7 @@ export default {
 			);
 		},
 		getScreenPosition( entity ) {
-			const worldPosition = new Three.Vector3().copy( entity.components.position );
+			const worldPosition = new Three.Vector3().copy( entity.getComponentData( "position" ) );
 			const proj = worldPosition.clone().project( this.camera );
 			return this.normalizeCorner( proj, this.$el );
 		},

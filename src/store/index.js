@@ -6,6 +6,7 @@ import FS from "fs";
 import Path from "path";
 import * as Three from "three";
 import engine from "../engine";
+var { app } = require( "electron" ).remote;
 
 Vue.use( Vuex );
 
@@ -26,7 +27,8 @@ const store = new Vuex.Store({
 			name: "None"
 		},
 		activePlayerID: 1,
-		selection: []
+		selection: [],
+		loaded: 0
 	},
 	getters: {},
 	mutations: {
@@ -69,6 +71,12 @@ const store = new Vuex.Store({
 		},
 		selection( state, entity ) {
 			state.selection.push( entity );
+		},
+		pluginStack( state, stack ) {
+			state.pluginStack = stack;
+		},
+		loaded( state, percent ) {
+			state.loaded = percent;
 		}
 	},
 	actions: {
@@ -76,6 +84,43 @@ const store = new Vuex.Store({
 			context.commit( "incPlayerID" );
 			const id = context.state.activePlayerID;
 			context.commit( "player", engine.getPlayer( id ));
+		},
+		buildLoadStack( context ) {
+
+			// Do the logic here.
+			const loadStack = [ "forge-aom-mod" ];
+			const pluginDir = Path.join( app.getPath( "userData" ), "plugins" );
+			let loaded = 0;
+			// Use an object so that plugins higher in the stack can overwrite lower
+			// ones using the same key.
+			// TODO: Get pluginStack from engine which is pre-populated with Engine
+			// defaults.
+			const pluginStack = {
+				assembly: {},
+				geometry: {},
+				icon: {},
+				material: {},
+				texture: {}
+			};
+			let path;
+			let contents;
+			loadStack.forEach(( plugin ) => {
+				path = Path.join( pluginDir, plugin, "package.json" );
+				FS.readFile( path, "utf8", ( err, data ) => {
+					if ( err ) {
+						return err;
+					}
+					contents = JSON.parse( data ).contents;
+					contents.forEach(( item )=>{
+						pluginStack[ item.type ][ item.name ] = Path.join( plugin, item.path );
+					});
+					loaded++;
+					if ( loaded === loadStack.length ) {
+						context.commit( "pluginStack", pluginStack );
+					}
+				});
+			});
+			context.commit( "view", "MainMenu" );
 		}
 	}
 });
