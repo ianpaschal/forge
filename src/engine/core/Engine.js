@@ -14,10 +14,9 @@ import Player from "./Player";
 // Additional utilities:
 import EntityCache from "../utils/EntityCache";
 import validate from "../utils/validate";
+import DecalGeometry from "../utils/DecalGeometry";
 
-/**
-	* Core singleton representing an instance of the Forge Engine.
-	*/
+/** @classdesc Core singleton representing an instance of the Forge Engine. */
 class Engine {
 
 	/** Create an instance of the Forge Engine. */
@@ -109,6 +108,21 @@ class Engine {
 		config.players.forEach( ( player ) => {
 			this.registerPlayer( player );
 
+			// Create ground:
+			const groundTexture = this._textures[ "nature-grass-75-dirt-25" ];
+			groundTexture.wrapS = Three.RepeatWrapping;
+			groundTexture.wrapT = Three.RepeatWrapping;
+			groundTexture.repeat.set( 32, 32 );
+			const ground = new Three.Mesh(
+				new Three.PlaneGeometry( 512, 512 ),
+				new Three.MeshLambertMaterial({
+					color: 0xffffff,
+					map: groundTexture
+				})
+			);
+			ground.name = "ground";
+			this._scene.add( ground );
+
 			// Generate test entities:
 			for ( let i = 0; i < 4; i++ ) {
 				const entity = new Entity();
@@ -127,19 +141,6 @@ class Engine {
 			}
 		});
 
-		// Create ground:
-		const groundTexture = this._textures[ "nature-grass-75-dirt-25" ];
-		groundTexture.wrapS = Three.RepeatWrapping;
-		groundTexture.wrapT = Three.RepeatWrapping;
-		groundTexture.repeat.set( 32, 32 );
-		const ground = new Three.Mesh(
-			new Three.PlaneGeometry( 512, 512 ),
-			new Three.MeshLambertMaterial({
-				color: 0xffffff,
-				map: groundTexture
-			})
-		);
-		this._scene.add( ground );
 		onFinished();
 	}
 
@@ -424,6 +425,29 @@ class Engine {
 		mesh.rotation.copy( entity.getData( "rotation" ) );
 		mesh.entityID = entity.getUUID();
 		this._scene.add( mesh );
+
+		// Decal
+		var ground = this._scene.getObjectByName( "ground" );
+		console.log( ground );
+		var decalGeo =  new DecalGeometry( ground, mesh.position, mesh.rotation, new Three.Vector3( 4, 4, 4 ) );
+		var decalMat = new Three.MeshPhongMaterial({
+			specular: 0x444444,
+			/*
+			map: decalDiffuse,
+			normalMap: decalNormal,
+			normalScale: new Three.Vector2( 1, 1 ),
+			*/
+			shininess: 30,
+			transparent: true,
+			depthTest: true,
+			depthWrite: false,
+			polygonOffset: true,
+			polygonOffsetFactor: - 4,
+			wireframe: false
+		});
+		var decalMesh = new Three.Mesh( decalGeo, decalMat );
+		this._scene.add( decalMesh );
+
 	}
 }
 
