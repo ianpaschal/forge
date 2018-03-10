@@ -6,7 +6,7 @@ const props = {
 	fixed: false
 };
 
-const init = function( engine ) {
+const init = function() {
 	// Do nothing for now.
 };
 

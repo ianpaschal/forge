@@ -5,7 +5,7 @@ const props = {
 	fixed: false
 };
 
-const init = function( engine ) {
+const init = function() {
 	this._scene = this._engine.getScene();
 	// Do nothing for now.
 };
