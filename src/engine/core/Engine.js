@@ -427,23 +427,39 @@ class Engine {
 		this._scene.add( mesh );
 
 		// Decal
-		var ground = this._scene.getObjectByName( "ground" );
-		console.log( ground );
-		var decalGeo =  new DecalGeometry( ground, mesh.position, mesh.rotation, new Three.Vector3( 4, 4, 4 ) );
-		var decalMat = new Three.MeshPhongMaterial({
-			specular: 0x444444,
+		const ground = this._scene.getObjectByName( "ground" );
+		const textureLoader = new Three.TextureLoader();
+
+		const decalMap = textureLoader.load(
+			Path.join( this.pluginDir, "forge-aom-mod/texture/nature-rock-base-decal-diffuse.png" ),
+			undefined,
+			undefined,
+			( err ) => {
+				console.error( "Failed to load", err );
+			}
+		);
+		const decalMapAlpha = textureLoader.load(
+			Path.join( this.pluginDir, "forge-aom-mod/texture/nature-rock-base-decal-alpha.png" ),
+			undefined,
+			undefined,
+			( err ) => {
+				console.error( "Failed to load", err );
+			}
+		);
+		var decalGeo = new DecalGeometry( ground, mesh.position, mesh.rotation, new Three.Vector3( 4, 4, 4 ) );
+		var decalMat = new Three.MeshLambertMaterial({
+
 			/*
-			map: decalDiffuse,
 			normalMap: decalNormal,
 			normalScale: new Three.Vector2( 1, 1 ),
 			*/
-			shininess: 30,
+			map: decalMap,
+			alphaMap: decalMapAlpha,
 			transparent: true,
 			depthTest: true,
 			depthWrite: false,
 			polygonOffset: true,
-			polygonOffsetFactor: - 4,
-			wireframe: false
+			polygonOffsetFactor: - 4
 		});
 		var decalMesh = new Three.Mesh( decalGeo, decalMat );
 		this._scene.add( decalMesh );
