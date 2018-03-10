@@ -67,6 +67,213 @@ class Engine {
 		});
 	}
 
+	// Getters:
+
+	getAssembly( type ) {
+		if ( this._assemblies[ type ] ) {
+			return this._assemblies[ type ];
+		} else {
+			console.error( "Please supply a valid assembly type." );
+		}
+	}
+
+	getComponent( name ) {
+		if ( this._components[ name ] ) {
+			return this._components[ name ];
+		} else {
+			console.warn( "Tried to get component " + name + " from engine but it did not exist." );
+		}
+	}
+
+	/** Get an `Entity` instance by UUID.
+		* @param {String} uuid - The entity's uuid.
+		*/
+	getEntity( uuid ) {
+		if ( this._entities[ uuid ] ) {
+			return this._entities[ uuid ];
+		}
+		console.error( "Please supply a valid entity UUID." );
+		return null;
+	}
+
+	/** Get a `Three.Geometry` instance by type.
+		* @param {String} type - The geometry's type.
+		*/
+	getGeometry( type ) {
+		if ( this._geometries[ type ] ) {
+			return this._geometries[ type ];
+		} else {
+			console.error( "Please supply a valid geometry type." );
+		}
+	}
+
+	/** Get a `Player` instance by index (player number).
+		* @param {Number} index - The player number (in order of creation).
+		*/
+	getPlayer( index ) {
+		if ( validate( "playerIndex", index ) ) {
+			return this._players[ index ];
+		}
+		console.error( "Please supply a valid player index." );
+		return null;
+	}
+
+	getLocation( mouse, camera ) {
+
+	}
+
+	getSelection( max, min, camera ) {
+		return this._entityCache.getScreenPoints( max, min );
+	}
+
+	/** Get the glogal scene instance.
+		*/
+	getScene() {
+		return this._scene;
+	}
+
+	// Registers:
+
+	/** Add an `Entity` instance to to the engine as a re-usable assembly.
+		* @param {Entity} assembly - The instance to add.
+		*/
+	registerAssembly( assembly ) {
+		this._assemblies[ assembly.getType() ] = assembly;
+		return;
+	}
+
+	/** Add a `Component` instance to to the engine.
+		* @param {Component} component - The instance to add.
+		*/
+	registerComponent( component ) {
+		console.log( component );
+		this._components[ component.getName() ] = component;
+		return;
+	}
+
+	/** Add an `Entity` instance to to the engine.
+		* @param {Entity} entity - The instance to add.
+		*/
+	registerEntity( entity ) {
+		this._entities[ entity.getUUID() ] = entity;
+		return;
+	}
+
+	/** Add a `Player` instance to to the engine.
+		* @param {Player} player - The instance to add.
+		*/
+	registerPlayer( player ) {
+		if ( validate( "isPlayer", player ) ) {
+			this._players.push( player );
+			return;
+		}
+		console.error( "Please supply a valid player instance." );
+		return null;
+	}
+
+	/** @description Register a system with the engine (so it can be updated later).
+		* Used internally by `.registerSystems()`.
+		*/
+	registerSystem( input ) {
+		if ( validate( "isSystem", input ) ) {
+			input.init( this );
+			this._systems.push( input );
+			return;
+		}
+		console.error( "Please supply a valid system instance." );
+		return null;
+	}
+
+	/** @description Start the execution of the update loop. */
+	start() {
+		/* Always reset. If engine was stopped and restarted, not resetting could
+			cause a massive time jump to be added to all systems. */
+		this._lastFrameTime = performance.now();
+		this._running = true;
+		setInterval( this.update.bind( this ), 1000 / 60 );
+	}
+
+	/** @description Stop the execution of the update loop. */
+	stop() {
+		this._running = false;
+	}
+
+	/** @description Update all systems (if the engine is currently running). */
+	update() {
+		if ( this._running ) {
+			const now = performance.now();
+			const delta = now - this._lastFrameTime;
+			this._lastFrameTime = now;
+			this._systems.forEach( ( system ) => {
+				system.update( delta );
+			});
+		}
+	}
+
+	// Everything south of here is pretty gnarly. Not sure what to do with it for now.
+
+	//---
+
+	//---
+
+	//---
+
+	// TODO: Move this to it's own system. Maybe animation. Animated models need
+	// to be registered there anyway.
+	spawn( entity ) {
+		const geoIndex = Math.floor( Math.random() * entity.getData( "geometry" ).length );
+		const geometry = this.getGeometry( entity.getData( "geometry" )[ geoIndex ] );
+		const material = new Three.MeshLambertMaterial({
+			color: new Three.Color( 1, 1, 1 ),
+			map: this._textures[ entity.getData( "material" ) + "-diffuse" ],
+			alphaMap: this._textures[ entity.getData( "material" ) + "-alpha" ],
+			alphaTest: 0.5, // if transparent is false
+			transparent: false
+		});
+		const mesh = new Three.Mesh( geometry, material );
+		mesh.position.copy( entity.getData( "position" ) );
+		mesh.rotation.copy( entity.getData( "rotation" ) );
+		mesh.entityID = entity.getUUID();
+		this._scene.add( mesh );
+
+		// Decal
+		const ground = this._scene.getObjectByName( "ground" );
+		const textureLoader = new Three.TextureLoader();
+
+		const decalMap = textureLoader.load(
+			Path.join( this.pluginDir, "forge-aom-mod/texture/nature-rock-base-decal-diffuse.png" ),
+			undefined,
+			undefined,
+			( err ) => {
+				console.error( "Failed to load", err );
+			}
+		);
+		const decalMapAlpha = textureLoader.load(
+			Path.join( this.pluginDir, "forge-aom-mod/texture/nature-rock-base-decal-alpha.png" ),
+			undefined,
+			undefined,
+			( err ) => {
+				console.error( "Failed to load", err );
+			}
+		);
+		var decalGeo = new DecalGeometry( ground, mesh.position, mesh.rotation, new Three.Vector3( 4, 4, 4 ) );
+		var decalMat = new Three.MeshLambertMaterial({
+			/*
+			normalMap: decalNormal,
+			normalScale: new Three.Vector2( 1, 1 ),
+			*/
+			map: decalMap,
+			alphaMap: decalMapAlpha,
+			transparent: true,
+			depthTest: true,
+			depthWrite: false,
+			polygonOffset: true,
+			polygonOffsetFactor: - 4
+		});
+		var decalMesh = new Three.Mesh( decalGeo, decalMat );
+		this._scene.add( decalMesh );
+	}
+
 	generateWorld( config, onProgress, onFinished ) {
 
 		/* Later, config should be loaded from disk, for now it's hard coded. */
@@ -262,209 +469,6 @@ class Engine {
 		}
 	}
 
-	/** Start the execution of the update loop. Called internally by `this.init()`. */
-	start() {
-		/*
-			Always reset. If engine was stopped and restarted, not resetting could
-			cause a massive time jump to be added to all systems.
-		*/
-		this._lastFrameTime = performance.now();
-		this._running = true;
-		setInterval( this.update.bind( this ), 1000 / 60 );
-	}
-
-	/** Update all systems (if the engine is currently running). */
-	update() {
-		if ( this._running ) {
-			const now = performance.now();
-			const delta = now - this._lastFrameTime;
-			this._lastFrameTime = now;
-			this._systems.forEach( ( system ) => {
-				system.update( delta );
-			});
-		}
-	}
-
-	stop() {
-		this._running = false;
-	}
-
-	// Getters:
-
-	getAssembly( type ) {
-		if ( this._assemblies[ type ] ) {
-			return this._assemblies[ type ];
-		} else {
-			console.error( "Please supply a valid assembly type." );
-		}
-	}
-
-	getComponent( name ) {
-		if ( this._components[ name ] ) {
-			return this._components[ name ];
-		} else {
-			console.warn( "Tried to get component " + name + " from engine but it did not exist." );
-		}
-	}
-
-	/** Get an `Entity` instance by UUID.
-		* @param {String} uuid - The entity's uuid.
-		*/
-	getEntity( uuid ) {
-		if ( this._entities[ uuid ] ) {
-			return this._entities[ uuid ];
-		}
-		console.error( "Please supply a valid entity UUID." );
-		return null;
-	}
-
-	/** Get a `Three.Geometry` instance by type.
-		* @param {String} type - The geometry's type.
-		*/
-	getGeometry( type ) {
-		if ( this._geometries[ type ] ) {
-			return this._geometries[ type ];
-		} else {
-			console.error( "Please supply a valid geometry type." );
-		}
-	}
-
-	/** Get a `Player` instance by index (player number).
-		* @param {Number} index - The player number (in order of creation).
-		*/
-	getPlayer( index ) {
-		if ( validate( "playerIndex", index ) ) {
-			return this._players[ index ];
-		}
-		console.error( "Please supply a valid player index." );
-		return null;
-	}
-
-	getLocation( mouse, camera ) {
-
-	}
-
-	getSelection( max, min, camera ) {
-		return this._entityCache.getScreenPoints( max, min );
-	}
-
-	/** Get the glogal scene instance.
-		*/
-	getScene() {
-		return this._scene;
-	}
-
-	// Registers:
-
-	/** Add an `Entity` instance to to the engine as a re-usable assembly.
-		* @param {Entity} assembly - The instance to add.
-		*/
-	registerAssembly( assembly ) {
-		this._assemblies[ assembly.getType() ] = assembly;
-		return;
-	}
-
-	/** Add a `Component` instance to to the engine.
-		* @param {Component} component - The instance to add.
-		*/
-	registerComponent( component ) {
-		console.log( component );
-		this._components[ component.getName() ] = component;
-		return;
-	}
-
-	/** Add an `Entity` instance to to the engine.
-		* @param {Entity} entity - The instance to add.
-		*/
-	registerEntity( entity ) {
-		this._entities[ entity.getUUID() ] = entity;
-		return;
-	}
-
-	/** Add a `Player` instance to to the engine.
-		* @param {Player} player - The instance to add.
-		*/
-	registerPlayer( player ) {
-		if ( validate( "isPlayer", player ) ) {
-			this._players.push( player );
-			return;
-		}
-		console.error( "Please supply a valid player instance." );
-		return null;
-	}
-
-	/** @description Register a system with the engine (so it can be updated later).
-		* Used internally by `.registerSystems()`.
-		*/
-	registerSystem( input ) {
-		if ( validate( "isSystem", input ) ) {
-			input.init( this );
-			this._systems.push( input );
-			return;
-		}
-		console.error( "Please supply a valid system instance." );
-		return null;
-	}
-
-	//---
-
-	// TODO: Move this to it's own system. Maybe animation. Animated models need
-	// to be registered there anyway.
-	spawn( entity ) {
-		const geoIndex = Math.floor( Math.random() * entity.getData( "geometry" ).length );
-		const geometry = this.getGeometry( entity.getData( "geometry" )[ geoIndex ] );
-		const material = new Three.MeshLambertMaterial({
-			color: new Three.Color( 1, 1, 1 ),
-			map: this._textures[ entity.getData( "material" ) + "-diffuse" ],
-			alphaMap: this._textures[ entity.getData( "material" ) + "-alpha" ],
-			alphaTest: 0.5, // if transparent is false
-			transparent: false
-		});
-		const mesh = new Three.Mesh( geometry, material );
-		mesh.position.copy( entity.getData( "position" ) );
-		mesh.rotation.copy( entity.getData( "rotation" ) );
-		mesh.entityID = entity.getUUID();
-		this._scene.add( mesh );
-
-		// Decal
-		const ground = this._scene.getObjectByName( "ground" );
-		const textureLoader = new Three.TextureLoader();
-
-		const decalMap = textureLoader.load(
-			Path.join( this.pluginDir, "forge-aom-mod/texture/nature-rock-base-decal-diffuse.png" ),
-			undefined,
-			undefined,
-			( err ) => {
-				console.error( "Failed to load", err );
-			}
-		);
-		const decalMapAlpha = textureLoader.load(
-			Path.join( this.pluginDir, "forge-aom-mod/texture/nature-rock-base-decal-alpha.png" ),
-			undefined,
-			undefined,
-			( err ) => {
-				console.error( "Failed to load", err );
-			}
-		);
-		var decalGeo = new DecalGeometry( ground, mesh.position, mesh.rotation, new Three.Vector3( 4, 4, 4 ) );
-		var decalMat = new Three.MeshLambertMaterial({
-
-			/*
-			normalMap: decalNormal,
-			normalScale: new Three.Vector2( 1, 1 ),
-			*/
-			map: decalMap,
-			alphaMap: decalMapAlpha,
-			transparent: true,
-			depthTest: true,
-			depthWrite: false,
-			polygonOffset: true,
-			polygonOffsetFactor: - 4
-		});
-		var decalMesh = new Three.Mesh( decalGeo, decalMat );
-		this._scene.add( decalMesh );
-
-	}
 }
 
 export default Engine;
