@@ -1,23 +1,7 @@
 // Forge is distributed under the MIT license.
 
+/* Does this file look small? It is. This pattern is copied from Vuex for
+	creating a central store. It's important that we create an instance and then
+	import THAT instance everywhere, not simply importing the engine class. */
 import Engine from "./core/Engine";
-
-/* In the future, it may be desireable to replace this with directory scanning
-	to automatically load all availible systems. Maybe... */
-import animationSystem from "./systems/animation";
-import lightingSystem from "./systems/lighting";
-import soundSystem from "./systems/sound";
-import resourceSystem from "./systems/resources";
-
-const engine = new Engine();
-const systems = [
-	animationSystem,
-	lightingSystem,
-	resourceSystem,
-	soundSystem
-];
-systems.forEach( ( system ) => {
-	engine.registerSystem( system );
-});
-
-export default engine;
+export default new Engine();

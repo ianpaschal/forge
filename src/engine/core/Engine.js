@@ -11,6 +11,14 @@ import Component from "./Component";
 import Entity from "./Entity";
 import Player from "./Player";
 
+// Systems:
+/* In the future, it may be desireable to replace this with directory scanning
+	to automatically load all availible systems. Maybe... */
+import animationSystem from "../systems/animation";
+import lightingSystem from "../systems/lighting";
+import soundSystem from "../systems/sound";
+import resourceSystem from "../systems/resources";
+
 // Additional utilities:
 import EntityCache from "../utils/EntityCache";
 import validate from "../utils/validate";
@@ -28,7 +36,6 @@ class Engine {
 
 		// These are the things which are actually saved per game:
 		this._entities = {};
-		this._systems = [];
 		this._world = {
 			time: 0,
 			name: ""
@@ -36,35 +43,18 @@ class Engine {
 		this._players = [];
 
 		// Static Resources:
+		// TODO: Make these into arrays. ,map, .filter and .find all give us what we need.
 		this._assemblies = {};
 		this._components = {};
-		this._meshes = {};
 		this._geometries = {};
+		this._materials = [];
 		this._sounds = {};
 		this._textures = {};
+		this._systems = [];
 
 		// Timing:
 		this._running = false;
-		this._fixedStep = 10;
-		this._savedFixedTime = 0;
-		this._savedFrameTime = 0;
-		this._maxFPS = 60;
 		this._lastFrameTime = null;
-
-		// TODO: Remove this:
-		this._entityCache = new EntityCache();
-
-		/* TODO: This should be more elegant. But for now I'm not sure if components
-		need their own class or not. The whole idea is kind of that they're just
-		data. */
-		const componentFiles = FS.readdirSync( Path.join( __dirname, "../components" ) );
-		componentFiles.forEach( ( file ) => {
-			const path = Path.join( __dirname, "../components", file );
-			const data = FS.readFileSync( path, "utf8" );
-			const json = JSON.parse( data );
-			const name = file.replace( /\.[^/.]+$/, "" );
-			this.registerComponent( new Component( name, json ) );
-		});
 	}
 
 	// Getters:
@@ -352,6 +342,29 @@ class Engine {
 	}
 
 	init( stack, world, onProgress, onFinished ) {
+
+		// Start systems:
+		const systems = [
+			animationSystem,
+			lightingSystem,
+			resourceSystem,
+			soundSystem
+		];
+		systems.forEach( ( system ) => {
+			this.registerSystem( system );
+		});
+
+		/* TODO: This should be more elegant. But for now I'm not sure if components
+		need their own class or not. The whole idea is kind of that they're just
+		data. */
+		const componentFiles = FS.readdirSync( Path.join( __dirname, "../components" ) );
+		componentFiles.forEach( ( file ) => {
+			const path = Path.join( __dirname, "../components", file );
+			const data = FS.readFileSync( path, "utf8" );
+			const json = JSON.parse( data );
+			const name = file.replace( /\.[^/.]+$/, "" );
+			this.registerComponent( new Component( name, json ) );
+		});
 
 		// Compute total length:
 		let length = 0;
