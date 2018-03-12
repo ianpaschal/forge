@@ -20,7 +20,6 @@ import soundSystem from "../systems/sound";
 import resourceSystem from "../systems/resources";
 
 // Additional utilities:
-import EntityCache from "../utils/EntityCache";
 import validate from "../utils/validate";
 import DecalGeometry from "../utils/DecalGeometry";
 
@@ -44,13 +43,14 @@ class Engine {
 
 		// Static Resources:
 		// TODO: Make these into arrays. ,map, .filter and .find all give us what we need.
-		this._assemblies = {};
-		this._components = {};
-		this._geometries = {};
-		this._materials = [];
-		this._sounds = {};
-		this._textures = {};
+		this._assemblies = [];
+		this._components = [];
 		this._systems = [];
+
+		this._geometries = {}; // Three.Geometry class does not have .getType() method.
+		this._materials = {}; // Three.Material class does not have .getType() method.
+		this._sounds = {}; // Sound does not have .getType() method.
+		this._textures = {}; // Three.Texture class does not have .getType() method.
 
 		// Timing:
 		this._running = false;
@@ -60,30 +60,36 @@ class Engine {
 	// Getters:
 
 	getAssembly( type ) {
-		if ( this._assemblies[ type ] ) {
-			return this._assemblies[ type ];
-		} else {
-			console.error( "Please supply a valid assembly type." );
+		const match = this._assemblies.find( ( assembly ) => {
+			return assembly.getType() === type;
+		});
+		if ( match ) {
+			return match;
 		}
+		console.warn( "Assembly " + type + " could not be found in the engine." );
 	}
 
-	getComponent( name ) {
-		if ( this._components[ name ] ) {
-			return this._components[ name ];
-		} else {
-			console.warn( "Tried to get component " + name + " from engine but it did not exist." );
+	getComponent( type ) {
+		const match = this._components.find( ( component ) => {
+			return component.getType() === type;
+		});
+		if ( match ) {
+			return match;
 		}
+		console.warn( "Component " + type + " could not be found in the engine." );
 	}
 
 	/** Get an `Entity` instance by UUID.
 		* @param {String} uuid - The entity's uuid.
 		*/
 	getEntity( uuid ) {
-		if ( this._entities[ uuid ] ) {
-			return this._entities[ uuid ];
+		const match = this._entities.find( ( entity ) => {
+			return entity.getUUID() === uuid;
+		});
+		if ( match ) {
+			return match;
 		}
-		console.error( "Please supply a valid entity UUID." );
-		return null;
+		console.warn( "Entity " + uuid + " could not be found in the engine." );
 	}
 
 	/** Get a `Three.Geometry` instance by type.
@@ -108,13 +114,14 @@ class Engine {
 		return null;
 	}
 
+	/*
 	getLocation( mouse, camera ) {
 
 	}
-
 	getSelection( max, min, camera ) {
 		return this._entityCache.getScreenPoints( max, min );
 	}
+	*/
 
 	/** Get the glogal scene instance.
 		*/
@@ -128,7 +135,7 @@ class Engine {
 		* @param {Entity} assembly - The instance to add.
 		*/
 	registerAssembly( assembly ) {
-		this._assemblies[ assembly.getType() ] = assembly;
+		this._assemblies.push( assembly );
 		return;
 	}
 
@@ -136,8 +143,7 @@ class Engine {
 		* @param {Component} component - The instance to add.
 		*/
 	registerComponent( component ) {
-		console.log( component );
-		this._components[ component.getName() ] = component;
+		this._components.push( component );
 		return;
 	}
 
@@ -145,7 +151,7 @@ class Engine {
 		* @param {Entity} entity - The instance to add.
 		*/
 	registerEntity( entity ) {
-		this._entities[ entity.getUUID() ] = entity;
+		this._entities.push( entity );
 		return;
 	}
 
@@ -164,10 +170,10 @@ class Engine {
 	/** @description Register a system with the engine (so it can be updated later).
 		* Used internally by `.registerSystems()`.
 		*/
-	registerSystem( input ) {
-		if ( validate( "isSystem", input ) ) {
-			input.init( this );
-			this._systems.push( input );
+	registerSystem( system ) {
+		if ( validate( "isSystem", system ) ) {
+			system.init( this );
+			this._systems.push( system );
 			return;
 		}
 		console.error( "Please supply a valid system instance." );

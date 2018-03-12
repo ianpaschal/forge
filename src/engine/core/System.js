@@ -26,6 +26,9 @@ class System {
 		return this;
 	}
 
+	/** @description Create a System.
+		*
+		*/
 	init( engine ) {
 		if( !engine ) {
 			console.warn( "System " + this._name + ": Attempted to initalize system without an engine!" );
@@ -38,6 +41,9 @@ class System {
 		this.initFn();
 	}
 
+	/** @description Create a System.
+		*
+		*/
 	update( delta ) {
 		if ( this._fixed ) {
 			// Add time to the accumulator & simulate if greater than the step size:

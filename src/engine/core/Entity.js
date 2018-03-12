@@ -34,11 +34,9 @@ class Entity {
 		* @param {Component} component - The component to add.
 		*/
 	addComponent( component ) {
-		this._components.forEach( ( item ) => {
-			if ( item.getName() === component.getName() ) {
-				return "Component already exists!";
-			}
-		});
+		if ( this.hasComponent( component.getType() ) ) {
+			return "Component already exists!";
+		}
 		this._components.push( component );
 	}
 
@@ -60,31 +58,18 @@ class Entity {
 		});
 	}
 
-	/** Get a component instance by name within the entity.
-		* @param {String} name - Name of the component to get.
+	/** Get a component instance by  within the entity.
+		* @param {String} type - Type of the component to get.
 		* @returns {Component}
 		*/
-	getComponent( name ) {
-		for ( let i = 0; i < this._components.length; i++ ) {
-			if ( this._components[ i ].getName() === name ) {
-				return this._components[ i ];
-			}
+	getComponent( type ) {
+		const match = this._components.find( ( component ) => {
+			return component.getType() === type;
+		});
+		if ( match ) {
+			return match;
 		}
-		return "Component with name " + name + "doesn't exist";
-	}
-
-	/** Get data by component name from the entity.
-		* @readonly
-		* @param {String} name - Name of the component to get data from.
-		* @returns {Object}
-		*/
-	getComponentData( name ) {
-		for ( let i = 0; i < this._components.length; i++ ) {
-			if ( this._components[ i ].getName() === name ) {
-				return this._components[ i ].getData();
-			}
-		}
-		return "Component with name " + name + "doesn't exist";
+		return "Component with type " + type + "doesn't exist";
 	}
 
 	/** Get all of the entity's components.
@@ -95,18 +80,17 @@ class Entity {
 		return this._components;
 	}
 
-	/** Get data by component name from the entity.
+	/** Get data by component type from the entity.
 		* @readonly
-		* @param {String} name - Name of the component to get data from.
+		* @param {String} type - Type of the component to get data from.
 		* @returns {Object}
 		*/
-	getData( name ) {
-		for ( let i = 0; i < this._components.length; i++ ) {
-			if ( this._components[ i ].getName() === name ) {
-				return this._components[ i ].getData();
-			}
+	getData( type ) {
+		const component = this.getComponent( type );
+		if ( component ) {
+			return component.getData();
 		}
-		return "Component with name " + name + "doesn't exist";
+		return "Component with type " + type + "doesn't exist";
 	}
 
 	/** Get the entity's type.
@@ -125,9 +109,9 @@ class Entity {
 		return this._uuid;
 	}
 
-	hasComponent( name ) {
+	hasComponent( type ) {
 		const match = this._components.find( ( component ) => {
-			return component.getName() === name;
+			return component.getType() === type;
 		});
 		if ( match ) {
 			return true;
@@ -135,26 +119,26 @@ class Entity {
 		return false;
 	}
 
-	/** Remove a component by name from the entity.
-		* @param {String} name - Name of the component to remove.
+	/** Remove a component by type from the entity.
+		* @param {String} type - Type of the component to remove.
 		*/
-	removeComponent( name ) {
-		const index = this._components.indexOf( this.getComponent( name ) );
+	removeComponent( type ) {
+		const index = this._components.indexOf( this.getComponent( type ) );
 		if ( index > 0 ) {
 			delete this.components[ index ];
 		}
 		else {
-			return "Component with id " + name + "doesn't exist";
+			return "Component with id " + type + "doesn't exist";
 		}
 	}
 
-	setComponentData( name, data ) {
+	setComponentData( type, data ) {
 		for ( let i = 0; i < this._components.length; i++ ) {
-			if ( this._components[ i ].getName() === name ) {
+			if ( this._components[ i ].getType() === type ) {
 				return this._components[ i ].apply( data );
 			}
 		}
-		return "Component with name " + name + "doesn't exist";
+		return "Component with type " + type + "doesn't exist";
 	}
 
 	setType( type ) {
