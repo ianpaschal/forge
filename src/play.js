@@ -31,13 +31,14 @@ window.onload = () => {
 			window.removeEventListener( "resize", this.getWindowHeight );
 		},
 		methods: {
-			getWindowWidth( e ) {
+			getWindowWidth() {
 				this.windowWidth = document.documentElement.clientWidth;
 			},
-			getWindowHeight( e ) {
+			getWindowHeight() {
 				this.windowHeight = document.documentElement.clientHeight;
 			},
 			handleKeyboard( e ) {
+				console.log( e.which );
 				return;
 			}
 		}

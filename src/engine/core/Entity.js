@@ -125,6 +125,16 @@ class Entity {
 		return this._uuid;
 	}
 
+	hasComponent( name ) {
+		const match = this._components.find( ( component ) => {
+			return component.getName() === name;
+		});
+		if ( match ) {
+			return true;
+		}
+		return false;
+	}
+
 	/** Remove a component by name from the entity.
 		* @param {String} name - Name of the component to remove.
 		*/
