@@ -4,7 +4,6 @@
 import FS from "fs";
 import Path from "path";
 import * as Three from "three";
-import { remote } from "electron";
 
 // Internal modules:
 import Component from "./Component";
@@ -30,7 +29,6 @@ class Engine {
 	constructor() {
 		console.log( "Initializing a new Engine." );
 
-		this.pluginDir = Path.join( remote.app.getPath( "userData" ), "Plugins" );
 		this._scene = new Three.Scene();
 
 		// These are the things which are actually saved per game:
@@ -55,6 +53,11 @@ class Engine {
 		// Timing:
 		this._running = false;
 		this._lastFrameTime = null;
+	}
+
+	addPluginsLocation( path ) {
+		this._pluginsDir = path;
+		console.log( this._pluginsDir );
 	}
 
 	// Getters:
@@ -237,7 +240,7 @@ class Engine {
 		const textureLoader = new Three.TextureLoader();
 
 		const decalMap = textureLoader.load(
-			Path.join( this.pluginDir, "forge-aom-mod/texture/nature-rock-base-decal-diffuse.png" ),
+			Path.join( this._pluginsDir, "forge-aom-mod/texture/nature-rock-base-decal-diffuse.png" ),
 			undefined,
 			undefined,
 			( err ) => {
@@ -245,7 +248,7 @@ class Engine {
 			}
 		);
 		const decalMapAlpha = textureLoader.load(
-			Path.join( this.pluginDir, "forge-aom-mod/texture/nature-rock-base-decal-alpha.png" ),
+			Path.join( this._pluginsDir, "forge-aom-mod/texture/nature-rock-base-decal-alpha.png" ),
 			undefined,
 			undefined,
 			( err ) => {
@@ -406,13 +409,14 @@ class Engine {
 		for ( const section in stack ) {
 			length += Object.keys( stack[ section ] ).length;
 		}
-		const pluginDir = this.pluginDir;
+		const pluginDir = this._pluginsDir;
 		const textureLoader = new Three.TextureLoader();
 		const JSONLoader = new Three.JSONLoader();
 
 		// Load these backwards (textures, materials, geometries, aseemblies)
 		const loaders = {
 			loadTextures() {
+				console.log( stack.texture );
 				for ( const name in stack.texture ) {
 					textureLoader.load(
 						Path.join( pluginDir, stack.texture[ name ] ),
