@@ -4,7 +4,6 @@ import Vue from "vue";
 import Vuex from "vuex";
 import FS from "fs";
 import Path from "path";
-import * as Three from "three";
 import engine from "../engine";
 var { app } = require( "electron" ).remote;
 
@@ -83,7 +82,7 @@ const store = new Vuex.Store({
 		switchPlayer( context ) {
 			context.commit( "incPlayerID" );
 			const id = context.state.activePlayerID;
-			context.commit( "player", engine.getPlayer( id ));
+			context.commit( "player", engine.getPlayer( id ) );
 		},
 		buildLoadStack( context ) {
 
@@ -104,14 +103,14 @@ const store = new Vuex.Store({
 			};
 			let path;
 			let contents;
-			loadStack.forEach(( plugin ) => {
+			loadStack.forEach( ( plugin ) => {
 				path = Path.join( pluginDir, plugin, "package.json" );
 				FS.readFile( path, "utf8", ( err, data ) => {
 					if ( err ) {
 						return err;
 					}
 					contents = JSON.parse( data ).contents;
-					contents.forEach(( item )=>{
+					contents.forEach( ( item )=>{
 						pluginStack[ item.type ][ item.name ] = Path.join( plugin, item.path );
 					});
 					loaded++;

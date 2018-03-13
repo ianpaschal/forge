@@ -11,7 +11,7 @@ const windows = {};
 
 function createPlayWindow() {
 
-	console.log( app.getPath( "userData" ));
+	console.log( app.getPath( "userData" ) );
 
 	// Create the browser window.
 	windows.play = new BrowserWindow({
@@ -31,7 +31,7 @@ function createPlayWindow() {
 		pathname: Path.join( app.getAppPath(), "src/windows/play.html" ),
 		protocol: "file:",
 		slashes: true
-	}));
+	}) );
 
 	// Open the DevTools.
 	// windows.play.webContents.openDevTools();
@@ -60,7 +60,7 @@ app.on( "activate", () => {
 });
 
 // Send simulation updates:
-const loopTimer = setInterval(() => {
+const loopTimer = setInterval( () => {
 	windows.play.webContents.send( "info", {
 		msg: "Simulation update from main process."
 	});

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Home - Documentation</title>
+    <title>PreferenceManager.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,31 +29,84 @@
 
 <div id="main">
     
+    <h1 class="page-title">PreferenceManager.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+	The preference manager is awesome.
+*/
 
+import FS from "fs";
+import Path from "path";
 
+class PreferenceManager {
+	constructor() {
+		this.search();
+	}
 
+	/**
+		* Scan a directory for a preferences file.
+		*/
+	search() {
+		// If no preferences found, load the default config file.
+		this.load();
+		return;
+	}
 
+	load( ) {
+		this.prefs = {
+			app: {
+				windowWidth: undefined,
+				windowHeight: undefined
+			},
+			gameplay: {},
+			graphics: {
+				renderDistance: 2048,
+				renderWidth: undefined,
+				renderHeight: undefined,
+				antiAlias: false,
+				pixelRatio: 1,
+				maxFPS: 60,
+				shadowMapSize: 2048
+			},
+			mechanics: {
+				fixedStep: 1000
+			},
+			sound: {
+				music: {
+					volume: 1
+				},
+				sfx: {
+					volume: 1
+				}
+			}
+		};
+	}
 
+	save() {
 
+	}
 
+	getAllPreferences() {
+		return this.prefs;
+	}
 
+	getPreference( id ) {
 
-    
+	}
+}
 
-
-    <section class="readme">
-        <article><h1>Forge</h1><p>Real-time-strategy ECS sandbox.</p>
-<p>Forge is a game, mod API, and game engine rolled into one. It make be broken apart in the future, but for now, it makes the most sense to keep it bundled together.</p>
-<p>Forge is described as a sandbox because it's essentially an RTS game with no theme or story/campaign. It uses an entity-component-system structure to allow for the creation of almost any unit imaginable. In Forge it's possible to pit stone age gatherers against aliens, or <a href="https://en.wikipedia.org/wiki/Rome,_Sweet_Rome">Roman legionaries against U.S. Marines</a>.</p></article>
+export default PreferenceManager;
+</code></pre>
+        </article>
     </section>
-
-
 
 
 

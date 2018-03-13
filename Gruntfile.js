@@ -14,13 +14,20 @@ module.exports = function( grunt ) {
 					"template": "./node_modules/minami"
 				}
 			}
+		},
+		eslint: {
+			options: {
+				configFile: ".eslintrc.json",
+				fix: true
+			},
+			target: [ "src/**/*.js", "!src/windows/**" ]
 		}
 	});
 
 	// Load tasks:
-	grunt.loadNpmTasks( "grunt-jsdoc" );
+	require( "load-grunt-tasks" )( grunt );
 
 	// Default task(s).
-	grunt.registerTask( "default", [ "jsdoc" ] );
+	grunt.registerTask( "default", [ "eslint", "jsdoc" ] );
 
 };
