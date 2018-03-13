@@ -17,14 +17,14 @@ class Component {
 		// If building from JSON:
 		if ( json ) {
 			this._uuid = json.uuid;
-			this._name = json.name;
+			this._type = json.type;
 			this._data = json.data;
 		}
 
 		// If creating a fresh instance:
 		else {
 			this._uuid = UUID();
-			this._name = "noname";
+			this._type = "noname";
 			this._data = {};
 		}
 	}
@@ -50,7 +50,7 @@ class Component {
 		* @param {Component} source - Component to copy from.
 		*/
 	copy( source ) {
-		this._name = source.getName();
+		this._type = source.getType();
 		this._data = deepCopy( source.getData() );
 	}
 
@@ -62,12 +62,12 @@ class Component {
 		return this._data;
 	}
 
-	/** @description Get the component's name.
+	/** @description Get the component's type.
 		* @readonly
-		* @returns {String} - The component's name.
+		* @returns {String} - The component's type.
 		*/
-	getName() {
-		return this._name;
+	getType() {
+		return this._type;
 	}
 
 	/** @description Get the component's UUID.
@@ -78,11 +78,11 @@ class Component {
 		return this._uuid;
 	}
 
-	/** Set the component's name.
-		* @param {String} name - New name for the component.
+	/** Set the component's type.
+		* @param {String} type - New type for the component.
 		*/
-	setName( name ) {
-		this._name = name;
+	setType( type ) {
+		this._type = type;
 	}
 }
 

@@ -20,7 +20,7 @@ export default {
 			};
 		},
 		fillStyle() {
-			const percent = ( this.entity.getComponentData( "resource" ).stone / 150 ) * 100;
+			const percent = ( this.entity.getData( "resource" ).stone / 150 ) * 100;
 			let background;
 			if ( percent <= 20 ) {
 				background = "#e03131";
@@ -44,7 +44,7 @@ export default {
 	methods: {
 		update() {
 			const projected = new Three.Vector3();
-			projected.copy( this.entity.getComponentData( "position" ) );
+			projected.copy( this.entity.getData( "position" ) );
 			projected.z += 2.5;
 			projected.project( this.camera );
 			this.position.set(
