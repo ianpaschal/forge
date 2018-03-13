@@ -151,7 +151,7 @@ export default {
 					Math.min( this.end.y, this.start.y )
 				);
 				// Get a list of entity IDs which are intersected
-				this.selected = engine.getSelection( max, min, this.camera );
+				// this.selected = engine.getSelection( max, min, this.camera );
 				// Draw the selection rectangle
 				/*
 				this.selected.forEach(( point ) => {
@@ -177,7 +177,7 @@ export default {
 			// Call the engine getWorldMousePosition() which returns the world position
 
 			// If mouse is moving,
-			engine._entityCache.recompute( this.camera );
+			// engine._entityCache.recompute( this.camera );
 
 			this.end = this.normalizeCenter( this.mouse, this.renderer.domElement );
 
@@ -211,7 +211,7 @@ export default {
 			);
 		},
 		getScreenPosition( entity ) {
-			const worldPosition = new Three.Vector3().copy( entity.getComponentData( "position" ) );
+			const worldPosition = new Three.Vector3().copy( entity.getData( "position" ) );
 			const proj = worldPosition.clone().project( this.camera );
 			return this.normalizeCorner( proj, this.$el );
 		},

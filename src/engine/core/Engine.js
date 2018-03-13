@@ -34,7 +34,7 @@ class Engine {
 		this._scene = new Three.Scene();
 
 		// These are the things which are actually saved per game:
-		this._entities = {};
+		this._entities = [];
 		this._world = {
 			time: 0,
 			name: ""
@@ -433,12 +433,12 @@ class Engine {
 				}
 			},
 			loadGeometries() {
-				for ( const name in stack.geometry ) {
+				for ( const type in stack.geometry ) {
 					JSONLoader.load(
-						Path.join( pluginDir, stack.geometry[ name ] ),
+						Path.join( pluginDir, stack.geometry[ type ] ),
 						( geometry ) => {
-							scope._geometries[ name ] = geometry;
-							addLoaded( name );
+							scope._geometries[ type ] = geometry;
+							addLoaded( type );
 						},
 						undefined,
 						( err ) => {
@@ -462,7 +462,7 @@ class Engine {
 							comp.setName( data.name );
 						}*/
 						const comp = new Component();
-						comp.setName( data.name );
+						comp.setType( data.type );
 						comp.apply( data.data );
 						assembly.addComponent( comp );
 					});
