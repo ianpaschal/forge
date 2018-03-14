@@ -111,7 +111,7 @@ export default {
 		},
 		drawCameraBox( worldPoints ) {
 			const scope = this;
-			const screenPoints = worldPoints.map( function( point ) {
+			const screenPoints = worldPoints.map( ( point ) => {
 				return scope.convertToScreen( point );
 			});
 			this.ctx.beginPath();

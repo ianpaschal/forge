@@ -102,8 +102,8 @@ class ContentManager {
 	loadPlugins( plugins ) {
 		const assetTypes = [ "texture", "sound", "model" ];
 		let registered = 0;
-		plugins.forEach( ( plugin )=>{
-			plugin.contents.forEach( ( item )=>{
+		plugins.forEach( ( plugin ) => {
+			plugin.contents.forEach( ( item ) => {
 				if ( this._scanFor( item.type, assetTypes ) ) {
 					this._registerAsset( item );
 				}

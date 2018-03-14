@@ -5,7 +5,7 @@ import Vuex from "vuex";
 import FS from "fs";
 import Path from "path";
 import engine from "../engine";
-var { app } = require( "electron" ).remote;
+const { app } = require( "electron" ).remote;
 
 Vue.use( Vuex );
 
@@ -110,7 +110,7 @@ const store = new Vuex.Store({
 						return err;
 					}
 					contents = JSON.parse( data ).contents;
-					contents.forEach( ( item )=>{
+					contents.forEach( ( item ) => {
 						pluginStack[ item.type ][ item.name ] = Path.join( plugin, item.path );
 					});
 					loaded++;

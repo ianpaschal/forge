@@ -1,9 +1,6 @@
 import * as Three from "three";
 import engine from "../engine";
-import OrbitControlModule from "three-orbit-controls";
 import Nimbus from "./Nimbus";
-
-const OrbitControls = OrbitControlModule( Three );
 
 export default {
 	name: "Viewport",
@@ -183,7 +180,7 @@ export default {
 
 			this.raycaster.setFromCamera( this.end, this.camera );
 			// See if the ray from the camera into the world hits one of our meshes
-			var intersects = this.raycaster.intersectObjects( engine.getScene().children );
+			const intersects = this.raycaster.intersectObjects( engine.getScene().children );
 			// Toggle rotation bool for meshes that we clicked
 			if ( intersects.length > 0 ) {
 				if ( intersects[ 0 ].object.entityID ) {

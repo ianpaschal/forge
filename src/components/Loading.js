@@ -1,7 +1,7 @@
 import FS from "fs";
 import Path from "path";
 import engine from "../engine";
-var { app } = require( "electron" ).remote;
+const { app } = require( "electron" ).remote;
 
 export default {
 	name: "Loading",
