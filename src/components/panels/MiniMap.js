@@ -77,12 +77,12 @@ export default {
 			this.ctx.fillRect( 0, 0, this.canvas.width, this.canvas.height );
 
 			// Update positions of all player units and enemy units if visible
-			const entityIDs = this.player.getEntityIDs();
+			const entityIDs = this.player.getEntityUUIDs();
+
 			entityIDs.forEach( ( uuid ) => {
 				const pos = this.convertToScreen( engine.getEntity( uuid ).getData( "position" ) );
 				this.ctx.fillStyle = "#" + this.player.color.getHexString();
 				this.ctx.fillRect( Math.floor( pos.x ), Math.floor( pos.y ), window.devicePixelRatio, window.devicePixelRatio );
-
 			});
 
 			// Also, update the camera box;

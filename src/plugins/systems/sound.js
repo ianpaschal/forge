@@ -1,17 +1,17 @@
-import Aurora from "../../../aurora/src";
+import Aurora from "aurora";
 
-const props = {
+export default new Aurora.System({
 	name: "sound",
-	fixed: false
-};
-
-const init = function() {
-	this._scene = this._engine.getScene();
-	// Do nothing for now.
-};
-
-const update = function( time ) {
-	// Do nothing for now.
-};
-
-export default new Aurora.System( props, [], init, update );
+	fixed: false,
+	componentTypes: [],
+	init() {
+		this._scene = this._engine.getScene();
+		// Do nothing for now.
+	},
+	add( entity ) {
+		// Do nothing for now.
+	},
+	update( time ) {
+		// Do nothing for now.
+	}
+});

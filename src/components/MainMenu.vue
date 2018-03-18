@@ -5,13 +5,13 @@
 				<h1>FORGE</h1>
 				<h2>A really great game, dude.</h2>
 			</div>
-			<div id='menu-block' v-bind:style='{ width: menuWidth + "px" }'>
+			<div id='menu-block'>
 				<div id='main-menu' class='menu-list'>
 					<MenuButton
 						class='menu-button'
 						v-for='item in mainMenu'
 						v-bind:label='item.name'
-						v-on:click='buttonAction(e, item.action)'
+						v-on:click='buttonAction( item.action)'
 					/>
 				</div>
 				<div id='single-player-menu' class='menu-list' v-show='subMenuOpen'>
@@ -21,7 +21,7 @@
 						stagger='100'
 						v-bind:label='item.name'
 						v-bind:key='item.name'
-						v-on:click='buttonAction(e, item.action)'
+						v-on:click='buttonAction( item.action)'
 					/>
 				</div>
 			</div>
@@ -73,7 +73,7 @@
 			};
 		},
 		methods: {
-			buttonAction( e, action ) {
+			buttonAction( action ) {
 				action();
 			},
 			openSubMenu( menu ) {

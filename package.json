@@ -28,16 +28,16 @@
     "deepmerge": "^2.1.0",
     "three": "^0.87.1",
     "uuid": "^3.2.1",
-    "vue": "^2.0.1",
+    "vue": "^2.5.16",
     "vuex": "^3.0.0"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.1",
+    "babel-eslint": "^8.2.2",
     "css-loader": "^0.25.0",
-    "electron": "^1.8.2-beta.4",
+    "electron": "^1.8.4",
     "electron-builder": "^19.56.2",
     "electron-reload": "^1.0.2",
-    "eslint": "^4.17.0",
+    "eslint": "^4.19.0",
     "eslint-plugin-import": "^2.9.0",
     "file-loader": "^0.9.0",
     "grunt": "^1.0.2",
@@ -46,7 +46,8 @@
     "jsdoc": "^3.5.5",
     "load-grunt-tasks": "^3.5.2",
     "minami": "^1.2.3",
-    "vue-loader": "^9.5.1",
+    "vue-loader": "^14.2.1",
+    "vue-template-compiler": "^2.5.16",
     "webpack": "^2.1.0-beta.22"
   }
 }
