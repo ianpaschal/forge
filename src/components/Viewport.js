@@ -184,7 +184,8 @@ export default {
 			// Toggle rotation bool for meshes that we clicked
 			if ( intersects.length > 0 ) {
 				if ( intersects[ 0 ].object.entityID ) {
-					this.$store.commit( "selection", engine.getEntity( intersects[ 0 ].object.entityID ) );
+					const entity = engine.getEntity( intersects[ 0 ].object.entityID );
+					this.$store.commit( "selection", entity );
 					intersects[ 0 ].object.material.color = new Three.Color( 0xff0000 );
 				}
 			}

@@ -20,13 +20,16 @@ export default {
 			};
 		},
 		fillStyle() {
-			const percent = ( this.entity.getData( "resource" ).stone / 150 ) * 100;
+			// const percent = ( this.entity.getData( "resource" ).stone / 150 ) * 100;
+			const percent = 100;
 			let background;
 			if ( percent <= 20 ) {
 				background = "#e03131";
-			} else if ( percent <= 50 ) {
+			}
+			else if ( percent <= 50 ) {
 				background = "#ffd43b";
-			} else {
+			}
+			else {
 				background = "#94d82d";
 			}
 			return {

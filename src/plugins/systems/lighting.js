@@ -23,7 +23,7 @@ export default new Aurora.System({
 
 		light = new Three.AmbientLight( 0x666666 );
 		this._scene.add( light );
-		derp();
+		// derp();
 	},
 	add( entity ) {
 		// Do nothing for now.

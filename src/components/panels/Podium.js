@@ -3,7 +3,7 @@ export default {
 	components: {},
 	template: `
 		<div class='podium'>
-			<h1>Unit Class</h1>
+			<h1>{{entityType}}</h1>
 			<h2>Player</h2>
 			<div class='entity-icon'>
 
@@ -17,5 +17,16 @@ export default {
 
 
 		</div>
-	`
+	`,
+	computed: {
+		entity() {
+			return this.$store.state.selection[ 0 ];
+		},
+		entityType() {
+			if ( this.entity ) {
+				return this.entity.getName();
+			}
+			return "None";
+		}
+	}
 };

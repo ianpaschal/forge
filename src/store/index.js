@@ -64,11 +64,13 @@ const store = new Vuex.Store({
 		incPlayerID( state ) {
 			if ( state.activePlayerID == engine._players.length - 1 ) {
 				state.activePlayerID = 0;
-			} else {
+			}
+			else {
 				state.activePlayerID++;
 			}
 		},
 		selection( state, entity ) {
+			state.selection = [];
 			state.selection.push( entity );
 		},
 		pluginStack( state, stack ) {
