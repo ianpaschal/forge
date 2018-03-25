@@ -81,6 +81,9 @@ const store = new Vuex.Store({
 		}
 	},
 	actions: {
+		clearSelection( context ) {
+			context.state.selection = [];
+		},
 		switchPlayer( context ) {
 			context.commit( "incPlayerID" );
 			const id = context.state.activePlayerID;

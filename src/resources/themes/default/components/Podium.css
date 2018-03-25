@@ -13,7 +13,7 @@
 	font-family: Vollkorn, serif;
 	font-size: 14px;
 	font-weight: normal;
-	background-color: red;
+	/* background-color: red; */
 	text-align: center;
 	margin: 8px;
 }
@@ -21,7 +21,7 @@
 	font-size: 10px;
 	font-weight: normal;
 	line-height: 12px;
-	background-color: green;
+	/* background-color: green; */
 	text-align: center;
 	margin: 8px;
 }

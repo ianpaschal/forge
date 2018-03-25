@@ -187,6 +187,28 @@ export default {
 					const entity = engine.getEntity( intersects[ 0 ].object.entityID );
 					this.$store.commit( "selection", entity );
 					intersects[ 0 ].object.material.color = new Three.Color( 0xff0000 );
+					return;
+				}
+
+				if ( intersects[ 0 ].object.name === "ground" ) {
+					if ( this.$store.state.selection.length > 0 && e.button === 2 ) {
+						const entity = this.$store.state.selection[ 0 ];
+						entity.setTasks( [
+							{ action: "walk", target: {
+								x: intersects[ 0 ].point.x,
+								y: intersects[ 0 ].point.y,
+								z: intersects[ 0 ].point.z
+							} },
+							{
+								action: "idle", target: null
+							}
+						] );
+						return;
+					}
+					if ( this.$store.state.selection.length > 0 && e.button === 0 ) {
+						this.$store.dispatch( "clearSelection" );
+						return;
+					}
 				}
 			}
 		},
@@ -195,6 +217,7 @@ export default {
 				this.mouseDown = false;
 				// this.drawSelectionBox( 0, 0 );
 			}
+			console.log( e.button );
 		},
 		normalizeCenter( p, el ) {
 			return new Three.Vector2(
