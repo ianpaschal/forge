@@ -4,14 +4,15 @@
   "title": "Forge Engine",
   "version": "0.0.0",
   "description": "A real-time-strategy ECS sandbox.",
-  "main": "./src/main.js",
+  "main": "./dist/main.bundle.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
     "start": "electron .",
-    "pack": "webpack -d",
-    "dist": "electron-builder",
+    "webpack-dev": "webpack -d",
+    "webpack-prod": "webpack -p",
+    "build": "electron-builder",
     "docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
   },
   "repository": {
@@ -26,6 +27,7 @@
   "homepage": "https://github.com/ianpaschal/forge#readme",
   "dependencies": {
     "deepmerge": "^2.1.0",
+    "socket.io": "^2.1.0",
     "three": "^0.87.1",
     "uuid": "^3.2.1",
     "vue": "^2.5.16",
@@ -37,8 +39,10 @@
     "electron": "^1.8.4",
     "electron-builder": "^19.56.2",
     "electron-reload": "^1.0.2",
-    "eslint": "^4.19.0",
+    "eslint": "^4.19.1",
+    "eslint-plugin-html": "^4.0.3",
     "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-vue": "^4.5.0",
     "file-loader": "^0.9.0",
     "grunt": "^1.0.2",
     "grunt-eslint": "^20.1.0",
@@ -46,7 +50,7 @@
     "jsdoc": "^3.5.5",
     "load-grunt-tasks": "^3.5.2",
     "minami": "^1.2.3",
-    "vue-loader": "^14.2.1",
+    "vue-loader": "^14.2.2",
     "vue-template-compiler": "^2.5.16",
     "webpack": "^2.1.0-beta.22"
   }

@@ -1,4 +1,5 @@
 const Path = require( "path" );
+const Webpack = require( "webpack" );
 module.exports = {
 	watch: true,
 	target: "electron",
@@ -6,11 +7,14 @@ module.exports = {
 		__dirname: true,
 		__filename: true,
 	},
-	entry: "./src/play.js",
+	entry: {
+		play: "./src/play.js",
+		main: "./src/main.js"
+	},
 	output: {
-		path: __dirname + "/src/windows/packed",
-		publicPath: "packed/",
-		filename: "play.pack.js"
+		filename: "[name].bundle.js",
+		publicPath: "dist/",
+		path: __dirname + "/dist/",
 	},
 	devtool: "eval-source-map",
 	module: {
@@ -30,5 +34,8 @@ module.exports = {
 	},
 	resolve: {
 		alias: { vue: "vue/dist/vue.common.js" }
-	}
+	},
+	plugins: [
+		new Webpack.IgnorePlugin( /uws/ )
+	]
 };

@@ -17,38 +17,44 @@
 </template>
 
 <script>
-	import MenuButton from "./MenuButton.vue";
-	export default {
-		name: "Play",
-		components: {
-			MenuButton
+import MenuButton from "./MenuButton.vue";
+export default {
+	name: "Play",
+	components: {
+		MenuButton
+	},
+	data() {
+		return {
+			paused: false,
+			menu: [
+				{ name: "Resume Game",       action: this.close },
+				{ name: "Save Game",         action: () => {
+					this.$store.commit( "view", "MainMenu" );
+				} },
+				{ name: "Resign",            action: () => {
+					this.$store.commit( "view", "MainMenu" );
+				} },
+				{ name: "Exit to Main Menu", action: () => {
+					this.$store.commit( "view", "MainMenu" );
+				} },
+				{ name: "Exit to Desktop",   action: this.quit }
+			]
+		};
+	},
+	methods: {
+		buttonAction( e, action ) {
+			action();
 		},
-		data() {
-			return {
-				paused: false,
-				menu: [
-					{ name: "Resume Game",       action: this.close },
-					{ name: "Save Game",         action: () => { this.$store.commit( "view", "MainMenu" )}},
-					{ name: "Resign",            action: () => { this.$store.commit( "view", "MainMenu" )}},
-					{ name: "Exit to Main Menu", action: () => { this.$store.commit( "view", "MainMenu" )}},
-					{ name: "Exit to Desktop",   action: this.quit }
-				]
-			};
+		close() {
+			this.$emit( "unpause" );
 		},
-		methods: {
-			buttonAction( e, action ) {
-				action();
-			},
-			close() {
-				this.$emit( "unpause" );
-			},
-			quit() {
-				const remote = require('electron').remote;
-				let w = remote.getCurrentWindow();
-				w.close();
-			}
+		quit() {
+			const remote = require( "electron" ).remote;
+			const w = remote.getCurrentWindow();
+			w.close();
 		}
-	};
+	}
+};
 </script>
 
 <style scoped>

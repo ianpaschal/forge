@@ -24,7 +24,7 @@ window.onload = () => {
 					window.addEventListener( event, this.handleKeyboard, false );
 				}
 			});
-			this.$store.dispatch( "buildLoadStack" );
+			// this.$store.dispatch( "buildLoadStack" );
 		},
 		beforeDestroy() {
 			window.removeEventListener( "resize", this.getWindowWidth );

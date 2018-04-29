@@ -31,84 +31,101 @@
 </template>
 
 <script>
-	import MenuButton from "./MenuButton.vue";
-	import Modal from "./Modal.vue"
-	import engine from "../engine"
-	export default {
-		name: "MainMenu",
-		components: {
-			MenuButton,
-			Modal
+import MenuButton from "./MenuButton.vue";
+import Modal from "./Modal.vue";
+import engine from "../engine";
+export default {
+	name: "MainMenu",
+	components: {
+		MenuButton,
+		Modal
+	},
+	data() {
+		return {
+
+			subMenuOpen: false,
+			subMenuItems: [],
+			showModal: false,
+
+			mainMenu: [
+				{ name: "Single Player", action: () => {
+					this.openSubMenu( "singlePlayerMenu" );
+				} },
+				{ name: "Multiplayer",   action: () => {
+					this.openSubMenu( "multiPlayerMenu" );
+				} },
+				{ name: "Plugins",       action: () => {
+					this.$store.commit( "view", "Plugins" );
+				} },
+				{ name: "Preferences",   action: () => {
+					this.$store.commit( "view", "Preferences" );
+				} },
+				{ name: "Editor",        action: this.quit },
+				{ name: "Credits",       action: () => {
+					this.$store.commit( "view", "Credits" );
+				} },
+				{ name: "Quit Game",     action: () => {
+					this.showModal = true; 
+				} },
+			],
+			singlePlayerMenu: [
+				{ name: "Resume Game",   action: this.createGame },
+				{ name: "New Game",      action: this.createGame },
+				{ name: "Load Game",     action: this.createGame }
+			],
+			multiPlayerMenu: [
+				{ name: "LAN",           action: this.createGame },
+				{ name: "Internet",      action: () => {
+					this.$store.commit( "view", "NetworkConnect" );
+				} }
+			],
+			modalMessage: "Are you sure you want to quit?",
+			modalOptions: [
+				{ name: "Cancel",       action: () => {
+					this.showModal = false; 
+				} },
+				{ name: "Quit",         action: this.quit }
+			]
+		};
+	},
+	methods: {
+		buttonAction( action ) {
+			action();
 		},
-		data() {
-			return {
-
-				subMenuOpen: false,
-				subMenuItems: [],
-				showModal: false,
-
-				mainMenu: [
-					{ name: "Single Player", action: () => { this.openSubMenu( "singlePlayerMenu")} },
-					{ name: "Multiplayer",   action: () => { this.openSubMenu( "multiPlayerMenu")} },
-					{ name: "Plugins",       action: () => { this.$store.commit( "view", "Plugins")} },
-					{ name: "Preferences",   action: () => { this.$store.commit( "view", "Preferences")} },
-					{ name: "Editor",        action: this.quit },
-					{ name: "Credits",       action: () => { this.$store.commit( "view", "Credits")} },
-					{ name: "Quit Game",     action: () => { this.showModal = true }},
-				],
-				singlePlayerMenu: [
-					{ name: "Resume Game",   action: this.createGame },
-					{ name: "New Game",      action: this.createGame },
-					{ name: "Load Game",     action: this.createGame }
-				],
-				multiPlayerMenu: [
-					{ name: "LAN",           action: this.createGame },
-					{ name: "Internet",      action: this.createGame }
-				],
-				modalMessage: "Are you sure you want to quit?",
-				modalOptions: [
-					{ name: "Cancel",       action: () => { this.showModal = false }},
-					{ name: "Quit",         action: this.quit }
-				]
-			};
-		},
-		methods: {
-			buttonAction( action ) {
-				action();
-			},
-			openSubMenu( menu ) {
-				if (menu !== this.subMenuOpen) {
-					this.subMenuOpen = menu;
-					this.subMenuItems = this[menu];
-				} else {
-					this.subMenuOpen = false;
-					this.subMenuItems = [];
-				}
-			},
-			createGame() {
-				this.$store.commit( "view", "Loading" )
-				engine.init(
-					this.$store.state.pluginStack,
-					false,
-					( progress ) => {
-						this.$store.commit("loaded", progress);
-						console.log("Loading...", progress );
-					},
-					() => {
-						this.$store.commit("player", engine.getPlayer(0))
-						this.$store.commit( "view", "Play" );
-						engine.start();
-					}
-				);
-
-			},
-			quit() {
-				const remote = require('electron').remote;
-				let w = remote.getCurrentWindow();
-				w.close();
+		openSubMenu( menu ) {
+			if ( menu !== this.subMenuOpen ) {
+				this.subMenuOpen = menu;
+				this.subMenuItems = this[ menu ];
 			}
+			else {
+				this.subMenuOpen = false;
+				this.subMenuItems = [];
+			}
+		},
+			
+		createGame() {
+			this.$store.commit( "view", "Loading" );
+			engine.init(
+				this.$store.state.pluginStack,
+				false,
+				( progress ) => {
+					this.$store.commit( "loaded", progress );
+					console.log( "Loading...", progress );
+				},
+				() => {
+					this.$store.commit( "player", engine.getPlayer( 0 ) );
+					this.$store.commit( "view", "Play" );
+					engine.start();
+				}
+			);
+		},
+		quit() {
+			const remote = require( "electron" ).remote;
+			const w = remote.getCurrentWindow();
+			w.close();
 		}
 	}
+};
 </script>
 
 <style>

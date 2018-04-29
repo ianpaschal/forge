@@ -27,12 +27,13 @@ const store = new Vuex.Store({
 		},
 		activePlayerID: 1,
 		selection: [],
-		loaded: 0
+		loaded: 0,
+		pluginStack: [ "heathlands" ]
 	},
 	getters: {},
 	mutations: {
 		view( state, view ) {
-			const sfx = new Audio( "../resources/sounds/menu-select.wav" );
+			const sfx = new Audio( "../../resources/sounds/menu-select.wav" );
 			sfx.volume = 0.1;
 			sfx.play();
 			state.view = view;

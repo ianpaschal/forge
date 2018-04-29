@@ -1,7 +1,6 @@
 <template>
 	<div id='view-block' class='view frame-mid'>
 
-
 		<div class='centered-content'>
 			<div id='title-block'>
 				<h1>FORGE</h1>
@@ -30,59 +29,72 @@
 
 		</div>
 
-
 	</div>
 </template>
 
 <script>
 // const { dialog } = require( "electron" ).remote;
 // import { remote } from "electron";
-	import MenuButton from "./MenuButton.vue";
-	export default {
-		name: "MainMenu",
-		components: {
-			MenuButton
-		},
-		data() {
-			return {
+import MenuButton from "./MenuButton.vue";
+export default {
+	name: "MainMenu",
+	components: {
+		MenuButton
+	},
+	data() {
+		return {
 
-				menuOpen: false,
-				subMenuItems: [],
+			menuOpen: false,
+			subMenuItems: [],
 
-				mainMenu: [
-					{ name: "Single Player", action: () => { this.openSubMenu( "singlePlayerMenu")} },
-					{ name: "Multiplayer",   action: () => { this.openSubMenu( "multiPlayerMenu")} },
-					{ name: "Plugins",       action: () => { this.$store.commit( "view", "Plugins")} },
-					{ name: "Preferences",   action: () => { this.$store.commit( "view", "Preferences")} },
-					{ name: "Editor",        action: this.quit },
-					{ name: "Credits",       action: () => { this.$store.commit( "view", "Credits")} },
-					{ name: "Quit Game",     action: this.quit }
-				],
-				singlePlayerMenu: [
-					{ name: "Resume Game",   action: () => { this.$store.commit( "view", "Play")} },
-					{ name: "New Game",      action: () => { this.$store.commit("view", "Play")} },
-					{ name: "Load Game", action: "null" }
-				],
-				multiPlayerMenu: [
-					{ name: "LAN", action: "null" },
-					{ name: "Internet", action: "null" }
-				]
-			};
+			mainMenu: [
+				{ name: "Single Player", action: () => {
+					this.openSubMenu( "singlePlayerMenu" );
+				} },
+				{ name: "Multiplayer",   action: () => {
+					this.openSubMenu( "multiPlayerMenu" );
+				} },
+				{ name: "Plugins",       action: () => {
+					this.$store.commit( "view", "Plugins" );
+				} },
+				{ name: "Preferences",   action: () => {
+					this.$store.commit( "view", "Preferences" );
+				} },
+				{ name: "Editor",        action: this.quit },
+				{ name: "Credits",       action: () => {
+					this.$store.commit( "view", "Credits" );
+				} },
+				{ name: "Quit Game",     action: this.quit }
+			],
+			singlePlayerMenu: [
+				{ name: "Resume Game",   action: () => {
+					this.$store.commit( "view", "Play" );
+				} },
+				{ name: "New Game",      action: () => {
+					this.$store.commit( "view", "Play" );
+				} },
+				{ name: "Load Game", action: "null" }
+			],
+			multiPlayerMenu: [
+				{ name: "LAN", action: "null" },
+				{ name: "Internet", action: "null" }
+			]
+		};
+	},
+	methods: {
+		buttonAction( e, action ) {
+			action();
 		},
-		methods: {
-			buttonAction( e, action ) {
-				action();
-			},
-			openSubMenu(menu) {
-				this.menuOpen = true;
-				this.subMenuItems = this[menu]
-			},
-			quit() {
-				const remote = require('electron').remote;
-				let w = remote.getCurrentWindow();
-				w.close();
-			},
-			loadFile() {
+		openSubMenu( menu ) {
+			this.menuOpen = true;
+			this.subMenuItems = this[ menu ];
+		},
+		quit() {
+			const remote = require( "electron" ).remote;
+			const w = remote.getCurrentWindow();
+			w.close();
+		},
+		loadFile() {
 			/*
 				const paths = dialog.showOpenDialog({
 					defaultPath: "/Users/Ian/Desktop",
@@ -94,9 +106,9 @@
 				});
 				this.$store.dispatch( "loadFile", paths[ 0 ] );
 			*/
-			}
 		}
 	}
+};
 </script>
 
 <style scoped>

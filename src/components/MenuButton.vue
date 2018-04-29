@@ -14,7 +14,7 @@
 		},
 		methods: {
 			hover() {
-				const sfx = new Audio('../resources/sounds/button-hover.wav');
+				const sfx = new Audio('../../resources/sounds/button-hover.wav');
 				sfx.play();
 			}
 		}

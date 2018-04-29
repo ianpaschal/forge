@@ -1,9 +1,7 @@
-const { app, BrowserWindow, ipcMain } = require( "electron" );
-const Path = require( "path" );
-const URL = require( "url" );
-const { Fork } = require( "child_process" );
-
-const Three = require( "three" );
+import { app, BrowserWindow, ipcMain } from "electron";
+import Path from "path";
+import URL from "url";
+import io from "socket.io-client";
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -11,14 +9,12 @@ const windows = {};
 
 function createPlayWindow() {
 
-	console.log( app.getPath( "userData" ) );
-
 	// Create the browser window.
 	windows.play = new BrowserWindow({
 		minHeight: 600,
 		minWidth: 800,
-		width: 1024,
-		height: 768,
+		width: 800,
+		height: 600,
 		center: true,
 		resizable: true,
 		frame: true,
@@ -59,9 +55,38 @@ app.on( "activate", () => {
 	}
 });
 
-// Send simulation updates:
-const loopTimer = setInterval( () => {
-	windows.play.webContents.send( "info", {
-		msg: "Simulation update from main process."
+// Networking
+let socket;
+
+const id = "B54A95127A4B573F41E335FDBD339DCC2208FBFB1AE0B6FAB7599D6E2D6EC754";
+
+ipcMain.on( "connect", ( event, data ) => {
+	const url = "http://" + data + ":5000";
+	socket = io.connect( url );
+
+	socket.on( "connect", () => {
+		console.log( "Connected to the server at ", url );
+		socket.emit( "register", id );
+		windows.play.webContents.send( "connectSuccess" );
 	});
+
+	socket.on( "loadStack", ( stack ) => {
+		console.log( "GOT STACK", stack );
+		windows.play.webContents.send( "loadStack", stack );
+	});
+});
+ipcMain.on( "ready", () => {
+	socket.on( "state", ( data ) => {
+		console.log( data );
+	});
+});
+ipcMain.on( "closeSocket", () => {
+	socket.close();
+});
+
+/*
+// Send simulation updates:
+setInterval( () => {
+	socket.emit( "message", "world" );
 }, 2000 );
+*/

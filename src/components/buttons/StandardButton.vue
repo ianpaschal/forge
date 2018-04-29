@@ -5,20 +5,20 @@
 </template>
 
 <script>
-	export default {
-		props: ["label"],
-		data(){
-			return {
-				text: "Hola"
-			}
-		},
-		methods: {
-			hover() {
-				const sfx = new Audio('../resources/sounds/button-hover.wav');
-				sfx.play();
-			}
+export default {
+	props: [ "label" ],
+	data() {
+		return {
+			text: "Hola"
+		};
+	},
+	methods: {
+		hover() {
+			const sfx = new Audio( "../../resources/sounds/button-hover.wav" );
+			sfx.play();
 		}
 	}
+};
 </script>
 
 <style scoped>

@@ -4,7 +4,12 @@ module.exports = {
 		"es6": true,
 		"node": true
 	},
-	"plugins": [],
+	extends: [
+		"plugin:vue/essential"
+	],
+	"plugins": [
+		"html"
+	],
 	"parserOptions": {
 		"ecmaVersion": 6,
 		"sourceType": "module"

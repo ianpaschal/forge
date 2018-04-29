@@ -4,9 +4,9 @@ import Path from "path";
 import { remote } from "electron";
 import Aurora from "aurora";
 
-import lightingSystem from "../plugins/systems/lighting";
-import soundSystem from "../plugins/systems/sound";
-import resourceSystem from "../plugins/systems/resources";
+import lightingSystem from "./systems/lighting";
+import soundSystem from "./systems/sound";
+import resourceSystem from "./systems/resources";
 
 /* Does this file look small? It is. This pattern is copied from Vuex for
 	creating a central store. It's important that we create an instance and then
