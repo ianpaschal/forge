@@ -27,7 +27,7 @@
 <script>
 import * as Three from "three";
 import engine from "../engine";
-import Nimbus from "./Nimbus";
+import Nimbus from "./Nimbus.vue";
 
 export default {
 	name: "Viewport",

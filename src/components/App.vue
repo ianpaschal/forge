@@ -9,10 +9,10 @@
 <script>
 import MainMenu from "./MainMenu.vue";
 import NetworkConnect from "./NetworkConnect.vue";
-import Play from "./Play";
+import Play from "./Play.vue";
 import Plugins from "./Plugins.vue";
 import Preferences from "./Preferences.vue";
-import Loading from "./Loading";
+import Loading from "./Loading.vue";
 export default {
 	name: "App",
 	components: {

@@ -1,33 +1,37 @@
+<!-- Forge source code is distributed under the MIT license. -->
+
+<template>
+	<div
+		class='mini-map-wrapper'
+		v-bind:style='{
+			width: diameter + "px",
+			height: diameter + "px"
+		}'
+	>
+		<canvas id='mini-map'
+			v-bind:width='resolution'
+			v-bind:height='resolution'
+			@click='moveTo'
+			v-bind:style='{
+				position: "relative",
+				left: ((diameter - size) / 2)+"px",
+				top: ((diameter - size) / 2)+"px",
+				width: size+"px",
+				height: size+"px",
+				transform: "rotate(45deg)",
+				border: "1px solid white"
+			}'
+		></canvas>
+	</div>
+</template>
+
+<script>
 import * as Three from "three";
 import engine from "../../engine";
 
 export default {
 	name: "MiniMap",
 	components: {},
-	template: `
-		<div
-			class='mini-map-wrapper'
-			v-bind:style='{
-				width: diameter + "px",
-				height: diameter + "px"
-			}'
-		>
-			<canvas id='mini-map'
-				v-bind:width='resolution'
-				v-bind:height='resolution'
-				@click='moveTo'
-				v-bind:style='{
-					position: "relative",
-					left: ((diameter - size) / 2)+"px",
-					top: ((diameter - size) / 2)+"px",
-					width: size+"px",
-					height: size+"px",
-					transform: "rotate(45deg)",
-					border: "1px solid white"
-				}'
-			></canvas>
-		</div>
-	`,
 	data() {
 		return {
 			diameter: 256,
@@ -147,3 +151,6 @@ export default {
 		}
 	}
 };
+</script>
+
+<style></style>
