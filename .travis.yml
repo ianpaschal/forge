@@ -12,7 +12,7 @@ before_install:
 - cd aurora
 - npm install
 - npm link
-- cd ../forge-server
+- cd ../forge
 install:
 - npm install
 - npm link aurora
