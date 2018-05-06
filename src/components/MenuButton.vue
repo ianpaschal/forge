@@ -1,24 +1,27 @@
 <template>
-	<button class='menu-button' v-on:click='$emit("click")' v-on:mouseover='hover'>
+	<button class='menu-button'
+		v-on:click='$emit("click")'
+		v-on:mouseover='hover'
+	>
 		{{label}}
 	</button>
 </template>
 
 <script>
-	export default {
-		props: ["label"],
-		data(){
-			return {
-				text: "Hola"
-			}
-		},
-		methods: {
-			hover() {
-				const sfx = new Audio('../../resources/sounds/button-hover.wav');
-				sfx.play();
-			}
+export default {
+	props: [ "label" ],
+	data() {
+		return {
+			text: "Hola"
+		};
+	},
+	methods: {
+		hover() {
+			const sfx = new Audio( "../../resources/sounds/button-hover.wav" );
+			sfx.play();
 		}
 	}
+};
 </script>
 
 <style scoped>

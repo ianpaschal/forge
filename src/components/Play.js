@@ -1,3 +1,5 @@
+// Forge is distributed under the MIT license.
+
 import Viewport from "./Viewport";
 import Overlay from "./Overlay.vue";
 import Resources from "./panels/Resources";
@@ -5,6 +7,7 @@ import LeftPanel from "./panels/LeftPanel";
 import Podium from "./panels/Podium";
 import RightPanel from "./panels/RightPanel";
 import MiniMap from "./panels/MiniMap";
+
 export default {
 	name: "Play",
 	components: {
@@ -34,7 +37,7 @@ export default {
 				</LeftPanel>
 				<Podium></Podium>
 				<RightPanel></RightPanel>
-				<MiniMap></MiniMap>
+				<!--<MiniMap></MiniMap>-->
 
 
 			</div>
@@ -48,7 +51,8 @@ export default {
 	},
 	computed: {
 		playerName() {
-			return this.$store.state.player.name;
+			// return this.$store.state.player.name;
+			return "Steve";
 		},
 		selection() {
 			return this.$store.state.selection;

@@ -9,11 +9,12 @@
     "doc": "docs"
   },
   "scripts": {
+    "docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose",
+    "lint": "eslint --fix",
+    "pack:dev": "NODE_ENV=development webpack --config webpack/dev.config.js",
+    "pack:prod": "NODE_ENV=production webpack --config webpack/prod.config.js",
     "start": "electron .",
-    "webpack-dev": "webpack -d",
-    "webpack-prod": "webpack -p",
-    "build": "electron-builder",
-    "docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
+    "build": "electron-builder"
   },
   "repository": {
     "type": "git",

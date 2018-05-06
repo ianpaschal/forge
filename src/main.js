@@ -9,7 +9,7 @@ const windows = {};
 
 function createPlayWindow() {
 
-	// Create the browser window.
+	// Create the browser window
 	windows.play = new BrowserWindow({
 		minHeight: 600,
 		minWidth: 800,
@@ -22,17 +22,17 @@ function createPlayWindow() {
 	});
 	windows.play.setMenu( null );
 
-	// and load the index.html of the app.
+	// and load the index.html of the app
 	windows.play.loadURL( URL.format({
 		pathname: Path.join( app.getAppPath(), "src/windows/play.html" ),
 		protocol: "file:",
 		slashes: true
 	}) );
 
-	// Open the DevTools.
-	// windows.play.webContents.openDevTools();
+	// Open the DevTools
+	windows.play.webContents.openDevTools();
 
-	// Emitted when the window is closed:
+	// Emitted when the window is closed
 	windows.play.on( "closed", () => {
 		delete windows.play;
 	});
@@ -48,7 +48,7 @@ app.on( "window-all-closed", () => {
 	app.quit();
 });
 
-// Re-create window if somehow it went missing:
+// Re-create window if somehow it went missing
 app.on( "activate", () => {
 	if ( windows.play === null ) {
 		createPlayWindow();
@@ -77,7 +77,7 @@ ipcMain.on( "connect", ( event, data ) => {
 });
 ipcMain.on( "ready", () => {
 	socket.on( "state", ( data ) => {
-		console.log( data );
+		windows.play.webContents.send( "state", data );
 	});
 });
 ipcMain.on( "closeSocket", () => {

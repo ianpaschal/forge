@@ -5,6 +5,8 @@ import Vuex from "vuex";
 import FS from "fs";
 import Path from "path";
 import engine from "../engine";
+import { ipcRenderer } from "electron";
+
 const { app } = require( "electron" ).remote;
 
 Vue.use( Vuex );
@@ -14,6 +16,11 @@ Vue.util.defineReactive( engine, "loaded", 0 );
 
 const store = new Vuex.Store({
 	state: {
+
+		// Game state
+		last: {},
+		next: {},
+
 		loaded: engine.loaded,
 		view: "MainMenu",
 		camera: undefined,
@@ -32,6 +39,15 @@ const store = new Vuex.Store({
 	},
 	getters: {},
 	mutations: {
+
+		// Game state
+		last( state, data ) {
+			state.last = data;
+		},
+		next( state, data ) {
+			state.next = data;
+		},
+
 		view( state, view ) {
 			const sfx = new Audio( "../../resources/sounds/menu-select.wav" );
 			sfx.volume = 0.1;
@@ -82,6 +98,10 @@ const store = new Vuex.Store({
 		}
 	},
 	actions: {
+		updateGameState( context, states ) {
+			context.commit( "last", states[ 0 ] );
+			context.commit( "next", states[ 1 ] );
+		},
 		clearSelection( context ) {
 			context.state.selection = [];
 		},
@@ -128,6 +148,11 @@ const store = new Vuex.Store({
 			context.commit( "view", "MainMenu" );
 		}
 	}
+});
+
+ipcRenderer.on( "state", ( event, states ) => {
+	console.log( "STORE GOT A NEW STATE:", states );
+	store.dispatch( "updateGameState", states );
 });
 
 export default store;

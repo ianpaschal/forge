@@ -1,5 +1,7 @@
+<!-- Forge source code is distributed under the MIT license. -->
+
 <template>
-	<button class='menu-button' v-on:click='$emit("click")' v-on:mouseover='hover'>
+	<button class='menu-button' @click='$emit("click")' @mouseover='hover'>
 		{{label}}
 	</button>
 </template>

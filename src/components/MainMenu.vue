@@ -65,7 +65,7 @@ export default {
 					this.$store.commit( "view", "Credits" );
 				} },
 				{ name: "Quit Game",     action: () => {
-					this.showModal = true; 
+					this.showModal = true;
 				} },
 			],
 			singlePlayerMenu: [
@@ -82,7 +82,7 @@ export default {
 			modalMessage: "Are you sure you want to quit?",
 			modalOptions: [
 				{ name: "Cancel",       action: () => {
-					this.showModal = false; 
+					this.showModal = false;
 				} },
 				{ name: "Quit",         action: this.quit }
 			]
@@ -102,7 +102,7 @@ export default {
 				this.subMenuItems = [];
 			}
 		},
-			
+
 		createGame() {
 			this.$store.commit( "view", "Loading" );
 			engine.init(

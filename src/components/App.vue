@@ -1,3 +1,12 @@
+<!-- Forge source code is distributed under the MIT license. -->
+
+<template>
+	<div id='app'>
+		<component :is='view' class='view'/>
+	</div>
+</template>
+
+<script>
 import MainMenu from "./MainMenu.vue";
 import NetworkConnect from "./NetworkConnect.vue";
 import Play from "./Play";
@@ -14,11 +23,6 @@ export default {
 		Preferences,
 		Loading
 	},
-	template: `
-		<div id='app'>
-			<component :is='view' class='view'/>
-		</div>
-	`,
 	computed: {
 		view() {
 			return this.$store.state.view;
@@ -28,3 +32,6 @@ export default {
 		return {};
 	}
 };
+</script>
+
+<style scoped></style>

@@ -18,12 +18,12 @@
 </template>
 
 <script>
-import { ipcRenderer, remote } from "electron";
+import { ipcRenderer } from "electron";
 import engine from "../engine";
-import Modal from "./Modal.vue"
+import Modal from "./Modal.vue";
 import StandardButton from "./buttons/StandardButton.vue";
 export default {
-	name: 'NetworkConnect',
+	name: "NetworkConnect",
 	components: {
 		Modal,
 		StandardButton
@@ -34,12 +34,12 @@ export default {
 			modalVisible: false,
 			modalMessage: "",
 			modalOptions: [
-				{ name: "Manage", action: ()=>{
+				{ name: "Manage", action: () => {
 					this.$store.commit( "view", "Plugins" );
-				}},
-				{ name: "OK", action: ()=>{
+				} },
+				{ name: "OK", action:() => {
 					this.$store.commit( "view", "MainMenu" );
-				}}
+				} }
 			]
 		};
 	},
@@ -50,7 +50,7 @@ export default {
 		},
 		joinNetworkGame() {
 			const loadStack = engine.findPlugins();
-			console.log("OKAY GOING TO TRY AND LOAD");
+			console.log( "OKAY GOING TO TRY AND LOAD" );
 			this.$store.commit( "view", "Loading" );
 			engine.loadAssets(
 				loadStack,
@@ -58,7 +58,7 @@ export default {
 					console.log( "Loaded " + name + "." );
 				},
 				() => {
-					ipcRenderer.send("ready")
+					ipcRenderer.send( "ready" );
 					this.$store.commit( "view", "Play" );
 				}
 			);
@@ -71,9 +71,9 @@ export default {
 		});
 		ipcRenderer.on( "connectFailure", () => {
 			console.log( "WE FAILED!" );
-			ipcRenderer.send("closeSocket")
+			ipcRenderer.send( "closeSocket" );
 		});
-		ipcRenderer.on( "loadStack", (event, remoteStack)=>{
+		ipcRenderer.on( "loadStack", ( event, remoteStack ) => {
 			engine.setPluginStack( this.$store.state.pluginStack );
 			const loadStack = engine.findPlugins();
 
@@ -88,14 +88,14 @@ export default {
 					}
 				});
 			}
-			catch (error) {
-				console.error(error)
+			catch ( error ) {
+				console.error( error );
 				this.modalMessage = error;
 				this.modalVisible = true;
-				ipcRenderer.send("closeSocket")
+				ipcRenderer.send( "closeSocket" );
 			}
 			this.joinNetworkGame();
-		})
+		});
 	}
 };
 </script>

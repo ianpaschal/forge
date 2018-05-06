@@ -5,10 +5,7 @@ module.exports = {
 		"node": true
 	},
 	extends: [
-		"plugin:vue/essential"
-	],
-	"plugins": [
-		"html"
+		"plugin:vue/base"
 	],
 	"parserOptions": {
 		"ecmaVersion": 6,
