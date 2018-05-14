@@ -33,7 +33,8 @@ class ContentManager {
 					stackOrder.indexOf( b.name ) >= 0
 				) {
 					return stackOrder.indexOf( a.name ) > stackOrder.indexOf( b.name );
-				} else {
+				}
+				else {
 					if ( stackOrder.indexOf( a.name ) < 0 ) {
 						return true;
 					}

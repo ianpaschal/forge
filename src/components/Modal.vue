@@ -18,18 +18,18 @@
 </template>
 
 <script>
-	import StandardButton from "./buttons/StandardButton.vue";
-	export default {
-		name: "Play",
-		components: {
-			StandardButton
-		},
-		props: [ "message", "options" ],
-		data() {
-			return {};
-		},
-		methods: {}
-	};
+import StandardButton from "./buttons/StandardButton.vue";
+export default {
+	name: "Play",
+	components: {
+		StandardButton
+	},
+	props: [ "message", "options" ],
+	data() {
+		return {};
+	},
+	methods: {}
+};
 </script>
 
 <style scoped>

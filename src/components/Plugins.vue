@@ -26,29 +26,35 @@
 				</div>
 			</div>
 			<div class='buttons'>
-				<StandardButton v-bind:label='"Back"' @click='$store.commit("view", "MainMenu")'/>
-				<StandardButton v-bind:label='"Save"' @click='save'/>
+				<StandardButton
+					:label='"Back"'
+					@click='$store.commit("view", "MainMenu")'
+				/>
+				<StandardButton
+					:label='"Save"'
+					@click='save'
+				/>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-	import StandardButton from "./buttons/StandardButton.vue";
-	export default {
-		name: "Plugins",
-		components: {
-			StandardButton
-		},
-		data() {
-			return {};
-		},
-		methods: {
-			save() {
-				this.$store.dispatch("buildLoadStack");
-			}
+import StandardButton from "./buttons/StandardButton.vue";
+export default {
+	name: "Plugins",
+	components: {
+		StandardButton
+	},
+	data() {
+		return {};
+	},
+	methods: {
+		save() {
+			// this.$store.dispatch( "buildLoadStack" );
 		}
 	}
+};
 </script>
 
 <style scoped>

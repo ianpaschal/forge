@@ -4,15 +4,17 @@
   "title": "Forge Engine",
   "version": "0.0.0",
   "description": "A real-time-strategy ECS sandbox.",
-  "main": "./src/main.js",
+  "main": "./dist/main.bundle.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
+    "docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose",
+    "lint": "eslint --fix",
+    "pack:dev": "NODE_ENV=development webpack --config webpack/dev.config.js",
+    "pack:prod": "NODE_ENV=production webpack --config webpack/prod.config.js",
     "start": "electron .",
-    "pack": "webpack -d",
-    "dist": "electron-builder",
-    "docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
+    "build": "electron-builder"
   },
   "repository": {
     "type": "git",
@@ -26,6 +28,7 @@
   "homepage": "https://github.com/ianpaschal/forge#readme",
   "dependencies": {
     "deepmerge": "^2.1.0",
+    "socket.io": "^2.1.0",
     "three": "^0.87.1",
     "uuid": "^3.2.1",
     "vue": "^2.5.16",
@@ -37,8 +40,10 @@
     "electron": "^1.8.4",
     "electron-builder": "^19.56.2",
     "electron-reload": "^1.0.2",
-    "eslint": "^4.19.0",
+    "eslint": "^4.19.1",
+    "eslint-plugin-html": "^4.0.3",
     "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-vue": "^4.5.0",
     "file-loader": "^0.9.0",
     "grunt": "^1.0.2",
     "grunt-eslint": "^20.1.0",
@@ -46,8 +51,10 @@
     "jsdoc": "^3.5.5",
     "load-grunt-tasks": "^3.5.2",
     "minami": "^1.2.3",
-    "vue-loader": "^14.2.1",
+    "uglifyjs-webpack-plugin": "^1.2.5",
+    "vue-loader": "^14.2.2",
     "vue-template-compiler": "^2.5.16",
-    "webpack": "^2.1.0-beta.22"
+    "webpack": "^2.1.0-beta.22",
+    "webpack-merge": "^4.1.2"
   }
 }

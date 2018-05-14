@@ -4,7 +4,9 @@ module.exports = {
 		"es6": true,
 		"node": true
 	},
-	"plugins": [],
+	extends: [
+		"plugin:vue/base"
+	],
 	"parserOptions": {
 		"ecmaVersion": 6,
 		"sourceType": "module"

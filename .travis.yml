@@ -1,0 +1,24 @@
+language: node_js
+node_js:
+- '6'
+cache:
+  directories:
+    - node_modules
+before_install:
+- git config credential.helper "store --file=.git/credentials"
+- echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+- cd ..
+- git clone https://github.com/ianpaschal/aurora.git aurora
+- cd aurora
+- npm install
+- npm link
+- cd ../forge
+install:
+- npm install
+- npm link aurora
+script:
+- npm run lint
+- npm run pack:prod
+env:
+  global:
+    secure: Oc2uYF4VZl/xnoldbgPl9bbIC7+TfpL3mJSsfDquSCc6wa/xqu7MNmjR8gX9ojMulPm48Px7KQXvPCmj+IBWtL79+JHpsnnRNYsnbSwb69kxA8BbVgKFanSub37RjVSWMi815kg8iV2tDdlxzE5FtRIklt3nwpWiTDWB0xBaN84xsrT8Rzb/D2bfyKxLHBOa8dqCYZ3RK+Zp7GNxpQPiLF1fPfLGyZlc3U0jpdq5s6s/FmKZENBTUJF1H5Wxvi+KpBiAUbVc5Mi/ySOTtcFBHqyyU7yf+mhTibW2qlASEEEDUxLMZA8jVaXy2oHc/AYpAjsMxhwei1gO/fzwmoqIL+geYMFd1V9AEFvap1fZWiiXBw6nb2FQCXWfYl8oEJWnc6n7YMBBl6ARwxzZeSCrzYowWt8NEb+KnUaQRcPHEzl0O4JnpguQ3Pm3/RT068B1sknVnenuj+txjSlWqwB1xrcuVLhex4wIA70OJGtrC7PPJ27Fd+AwhOs1mVWcAoy892aHJtxP88zGEmK3cXCIAxWr3EAoHlG215AtzoW8ONrsa/U6dIaHiwPuG3F62ymu3/MEgbVzVrXpmRPwK0wT9MSvRiEHY/PxHRG6J1NfC+4gQxXTcjl43sezHnUeOaFlzOkg9QltWHTacUKjTMVoxK3K+mtYSWwHoQLqBKuOz20=

@@ -1,12 +1,17 @@
+<template>
+	<div class='nimbus' :style='style'>
+		<div class='fill' :style='fillStyle'></div>
+	</div>
+</template>
+
+<script>
 import engine from "../engine";
 import * as Three from "three";
 export default {
 	name: "Nimbus",
 	template: `
-		<div class='nimbus' :style='style'>
-			<div class='fill' :style='fillStyle'></div>
-		</div>
-	`,
+
+		`,
 	props: [ "entity" ],
 	computed: {
 		camera() {
@@ -66,3 +71,6 @@ export default {
 		};
 	}
 };
+</script>
+
+<style></style>

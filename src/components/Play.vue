@@ -1,10 +1,37 @@
-import Viewport from "./Viewport";
+<!-- Forge source code is distributed under the MIT license. -->
+
+<template>
+	<div id='play'>
+		<Viewport></Viewport>
+
+		<div class='frame-top'>
+			<button @click='switchPlayer'>Cycle</button>
+			{{playerName}}
+
+		</div>
+		<div class='frame-bottom'>
+			<Resources></Resources>
+			<LeftPanel>
+				<p v-if='selection.length > 0'>{{selection[0]}}</p>
+			</LeftPanel>
+			<Podium></Podium>
+			<RightPanel></RightPanel>
+			<!--<MiniMap></MiniMap>-->
+
+		</div>
+		<Overlay v-if='paused' @unpause='togglePause'/>
+	</div>
+</template>
+
+<script>
+import Viewport from "./Viewport.vue";
 import Overlay from "./Overlay.vue";
-import Resources from "./panels/Resources";
-import LeftPanel from "./panels/LeftPanel";
-import Podium from "./panels/Podium";
-import RightPanel from "./panels/RightPanel";
-import MiniMap from "./panels/MiniMap";
+import Resources from "./panels/Resources.vue";
+import LeftPanel from "./panels/LeftPanel.vue";
+import Podium from "./panels/Podium.vue";
+import RightPanel from "./panels/RightPanel.vue";
+import MiniMap from "./panels/MiniMap.vue";
+
 export default {
 	name: "Play",
 	components: {
@@ -16,31 +43,6 @@ export default {
 		RightPanel,
 		MiniMap
 	},
-	template: `
-		<div id='play'>
-			<Viewport></Viewport>
-
-
-
-			<div class='frame-top'>
-				<button @click='switchPlayer'>Cycle</button>
-				{{playerName}}
-
-			</div>
-			<div class='frame-bottom'>
-				<Resources></Resources>
-				<LeftPanel>
-					<p v-if='selection.length > 0'>{{selection[0]}}</p>
-				</LeftPanel>
-				<Podium></Podium>
-				<RightPanel></RightPanel>
-				<MiniMap></MiniMap>
-
-
-			</div>
-			<Overlay v-if='paused' @unpause='togglePause'/>
-		</div>
-	`,
 	data() {
 		return {
 			paused: false
@@ -48,7 +50,8 @@ export default {
 	},
 	computed: {
 		playerName() {
-			return this.$store.state.player.name;
+			// return this.$store.state.player.name;
+			return "Steve";
 		},
 		selection() {
 			return this.$store.state.selection;
@@ -103,3 +106,6 @@ export default {
 		}
 	}
 };
+</script>
+
+<style></style>

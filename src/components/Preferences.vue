@@ -5,12 +5,12 @@
 </template>
 
 <script>
-	export default {
-		name: "Preferences",
-		data() {
-			return {};
-		}
+export default {
+	name: "Preferences",
+	data() {
+		return {};
 	}
+};
 </script>
 
 <style>

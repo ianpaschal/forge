@@ -16,6 +16,7 @@ pids
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 bin/*
+dist/*
 !src/build
 src/windows/packed
 

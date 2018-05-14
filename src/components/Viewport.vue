@@ -1,28 +1,39 @@
+<!-- Forge source code is distributed under the MIT license. -->
+
+<template>
+	<div id='viewport'
+		@mousemove='onMouseMove'
+		@mousedown='onMouseDown'
+	>
+		<canvas id='layer3D'></canvas>
+		<div id='layer2D'>
+			<!--
+			<rect
+				id='selectionBox'
+				x="100" y="100"
+				width="0" height="0"
+				stroke="white" fill='transparent'
+			/>
+			-->
+			<Nimbus
+				v-for='(entity, index) in selection'
+				:entity='entity'
+				:key='index'
+			></Nimbus>
+		</div>
+	</div>
+</template>
+
+<script>
 import * as Three from "three";
 import engine from "../engine";
-import Nimbus from "./Nimbus";
+import Nimbus from "./Nimbus.vue";
 
 export default {
 	name: "Viewport",
 	components: {
 		Nimbus
 	},
-	template: `
-		<div id='viewport'
-			@mousemove='onMouseMove'
-			@mousedown='onMouseDown'
-		>
-			<canvas id='layer3D'></canvas>
-			<div id='layer2D'>
-				<!--<rect id='selectionBox' x="100" y="100" width="0" height="0" stroke="white" fill='transparent'/> -->
-				<Nimbus
-					v-for='(entity, index) in selection'
-					:entity='entity'
-					:key='index'
-				></Nimbus>
-			</div>
-		</div>
-	`,
 	data() {
 		return {
 			mouse: { x:0, y:0 },
@@ -120,14 +131,17 @@ export default {
 			}
 
 			for ( let i = 0; i < this.selection.length; i++ ) {
-				this.screenPositions[ i ] = this.getScreenPosition( this.selection[ i ], this.$el );
+				this.screenPositions[ i ] = this.getScreenPosition(
+					this.selection[ i ],
+					this.$el
+				);
 			}
 
 			this.renderer.render( engine.getScene(), this.camera );
 			requestAnimationFrame( this.update );
 		},
 		onMouseMove( e ) {
-			const scope = this;
+			// const scope = this;
 			this.mouse.set( e.clientX, e.clientY );
 			if ( this.mouseDown ) {
 				/*
@@ -135,9 +149,12 @@ export default {
 					should not care (or know about) the actual viewport DOM element's
 					dimensions.
 				*/
-				this.start = this.normalizeCenter( this.dragStart, this.renderer.domElement );
+				this.start = this.normalizeCenter(
+					this.dragStart,
+					this.renderer.domElement
+				);
 				this.end = this.normalizeCenter( this.mouse, this.renderer.domElement );
-
+				/*
 				// Get the min and max x and y from current mouse and start mouse
 				const max = new Three.Vector2(
 					Math.max( this.end.x, this.start.x ),
@@ -150,7 +167,7 @@ export default {
 				// Get a list of entity IDs which are intersected
 				// this.selected = engine.getSelection( max, min, this.camera );
 				// Draw the selection rectangle
-				/*
+
 				this.selected.forEach(( point ) => {
 					const screenPoint = scope.normalizeCorner( point, scope.$el );
 					const el = document.createElementNS( "http://www.w3.org/2000/svg", "circle" );
@@ -180,7 +197,9 @@ export default {
 
 			this.raycaster.setFromCamera( this.end, this.camera );
 			// See if the ray from the camera into the world hits one of our meshes
-			const intersects = this.raycaster.intersectObjects( engine.getScene().children );
+			const intersects = this.raycaster.intersectObjects(
+				engine.getScene().children
+			);
 			// Toggle rotation bool for meshes that we clicked
 			if ( intersects.length > 0 ) {
 				if ( intersects[ 0 ].object.entityID ) {
@@ -232,7 +251,8 @@ export default {
 			);
 		},
 		getScreenPosition( entity ) {
-			const worldPosition = new Three.Vector3().copy( entity.getData( "position" ) );
+			const worldPosition = new Three.Vector3();
+			worldPosition.copy( entity.getData( "position" ) );
 			const proj = worldPosition.clone().project( this.camera );
 			return this.normalizeCorner( proj, this.$el );
 		},
@@ -260,3 +280,6 @@ _resize( e ) {
 	this._renderer.setSize( window.innerWidth, window.innerHeight );
 }
 */
+</script>
+
+<style></style>
