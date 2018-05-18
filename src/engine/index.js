@@ -2,13 +2,13 @@
 
 import Path from "path";
 import { ipcRenderer, remote } from "electron";
-import Aurora from "aurora";
+import { Engine, utils } from "aurora";
 import lightingSystem from "./systems/lighting";
 import soundSystem from "./systems/sound";
 import resourceSystem from "./systems/resources";
 
 const pluginsDir = Path.join( remote.app.getPath( "userData" ), "Plugins" );
-const engine = new Aurora.Engine();
+const engine = new Engine();
 
 engine.registerPluginLocation( pluginsDir );
 
@@ -36,7 +36,7 @@ engine.setOnUpdateStart( () => {
 	const time = engine.getLastTickTime();
 
 	// Create a new state object out of two other states and a timestamp
-	const state = Aurora.utils.interpolate( states.last, states.next, time );
+	const state = utils.interpolate( states.last, states.next, time );
 
 	// Apply state data to the engine (client is now up-to-date with master)
 	engine.applyState( state );

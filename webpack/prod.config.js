@@ -5,14 +5,14 @@ const UglifyJsPlugin = require( "uglifyjs-webpack-plugin" );
 
 module.exports = merge( baseConfig, {
 	output: {
-		filename: "[name].min.js",
+		filename: "[name].bundle.min.js",
 		path: Path.resolve( __dirname, "../dist/" ),
 		publicPath: "dist/"
 	},
 	plugins: [
 		// Minify JS
 		new UglifyJsPlugin({
-			sourceMap: false
+			sourceMap: true
 		})
 	]
 });

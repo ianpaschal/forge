@@ -1,9 +1,7 @@
 // Aurora is distributed under the MIT license.
 
 import * as Three from "three";
-import Path from "path";
-import DecalGeometry from "../utils/DecalGeometry";
-import System from "../core/System";
+import { System } from "aurora";
 
 export default new System({
 	name: "graphics",

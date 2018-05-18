@@ -5,8 +5,9 @@ const baseConfig = require( "./base.config.js" );
 module.exports = merge( baseConfig, {
 	watch: true,
 	output: {
-		filename: "[name].js",
+		filename: "[name].bundle.js",
 		path: Path.resolve( __dirname, "../dist/" ),
 		publicPath: "dist/"
-	}
+	},
+	devtool: "source-map"
 });

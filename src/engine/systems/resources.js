@@ -1,7 +1,7 @@
 import * as Three from "three";
-import Aurora from "aurora";
+import { System } from "aurora";
 
-export default new Aurora.System({
+export default new System({
 	name: "resource",
 	fixed: false,
 	componentTypes: [],

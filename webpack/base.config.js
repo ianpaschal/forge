@@ -1,7 +1,7 @@
 const Webpack = require( "webpack" );
 
 module.exports = {
-	target: "node",
+	target: "electron",
 	node: {
 		__dirname: true,
 		__filename: true,
@@ -34,4 +34,23 @@ module.exports = {
 		] ),
 		new Webpack.IgnorePlugin( /uws/ )
 	],
+
+	/* Webpack tries to resolve electron module with the installed node_modules.
+		But the electron module is resolved in Electron itself at runtime. So, you
+		have to exclude particular module from webpack bundling like this: */
+	/*
+	externals: [
+		( function () {
+			const IGNORES = [
+				"electron"
+			];
+			return function ( context, request, callback ) {
+				if ( IGNORES.indexOf( request ) >= 0 ) {
+					return callback( null, "require('" + request + "')" );
+				}
+				return callback();
+			};
+		})()
+	]
+	*/
 };

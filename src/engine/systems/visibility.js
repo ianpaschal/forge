@@ -1,6 +1,6 @@
 // Aurora is distributed under the MIT license.
 
-import System from "../core/System";
+import { System } from "aurora";
 import * as Three from "three";
 
 export default new System({

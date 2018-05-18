@@ -1,11 +1,11 @@
 import * as Three from "three";
-import Aurora from "aurora";
+import { System } from "aurora";
 
 function derp() {
 	console.log( "DO EXTERNAL THING" );
 }
 
-export default new Aurora.System({
+export default new System({
 	name: "lighting",
 	fixed: false,
 	componentTypes: [],

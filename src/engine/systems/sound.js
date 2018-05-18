@@ -1,6 +1,6 @@
-import Aurora from "aurora";
+import { System } from "aurora";
 
-export default new Aurora.System({
+export default new System({
 	name: "sound",
 	fixed: false,
 	componentTypes: [],
