@@ -1,13 +1,13 @@
-// Forge is distributed under the MIT license.
+// Forge source code is distributed under the MIT license.
 
 import Vue from "vue";
 import Vuex from "vuex";
 import FS from "fs";
 import Path from "path";
 import engine from "../engine";
-import { ipcRenderer } from "electron";
+import { ipcRenderer, remote } from "electron";
 
-const { app } = require( "electron" ).remote;
+const { app } = remote;
 
 Vue.use( Vuex );
 
@@ -150,9 +150,25 @@ const store = new Vuex.Store({
 	}
 });
 
-ipcRenderer.on( "state", ( event, states ) => {
-	console.log( "STORE GOT A NEW STATE:", states );
-	store.dispatch( "updateGameState", states );
+// Events from main.js
+ipcRenderer.on( "loadStack", ( e, data ) => {
+	console.log( "Stack:", data );
+	// Load the stack
+	engine.loadAssets(
+		data,
+		() => {},
+		() => {
+			ipcRenderer.send( "ready" );
+			store.commit( "player", engine.getPlayer( 0 ) );
+			store.commit( "view", "Play" );
+			engine.start();
+		}
+	);
+});
+
+ipcRenderer.on( "state", ( e, data ) => {
+	engine.last = data[ 0 ];
+	engine.next = data[ 1 ];
 });
 
 export default store;

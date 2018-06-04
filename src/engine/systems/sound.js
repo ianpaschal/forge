@@ -1,3 +1,5 @@
+// Forge source code is distributed under the MIT license.
+
 import { System } from "aurora";
 
 export default new System({

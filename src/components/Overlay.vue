@@ -1,3 +1,5 @@
+<!-- Forge source code is distributed under the MIT license. -->
+
 <template>
 	<div class='overlay view'>
 

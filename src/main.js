@@ -1,3 +1,5 @@
+// Forge source code is distributed under the MIT license.
+
 import { app, BrowserWindow, ipcMain } from "electron";
 import Path from "path";
 import URL from "url";
@@ -60,33 +62,31 @@ let socket;
 
 const id = "B54A95127A4B573F41E335FDBD339DCC2208FBFB1AE0B6FAB7599D6E2D6EC754";
 
-ipcMain.on( "connect", ( event, data ) => {
+ipcMain.on( "connect", ( e, data ) => {
 	const url = "http://" + data + ":5000";
 	socket = io.connect( url );
 
 	socket.on( "connect", () => {
 		console.log( "Connected to the server at ", url );
 		socket.emit( "register", id );
+		console.log( "Update 'connectSuccess' from server." );
 		windows.play.webContents.send( "connectSuccess" );
 	});
 
-	socket.on( "loadStack", ( stack ) => {
-		console.log( "GOT STACK", stack );
-		windows.play.webContents.send( "loadStack", stack );
+	socket.on( "loadStack", ( data ) => {
+		console.log( "Update 'loadStack' from server." );
+		windows.play.webContents.send( "loadStack", data );
 	});
 });
+
+// Don't start accepting states until client is ready
 ipcMain.on( "ready", () => {
 	socket.on( "state", ( data ) => {
+		console.log( "Update 'state' from server." );
 		windows.play.webContents.send( "state", data );
 	});
 });
+
 ipcMain.on( "closeSocket", () => {
 	socket.close();
 });
-
-/*
-// Send simulation updates:
-setInterval( () => {
-	socket.emit( "message", "world" );
-}, 2000 );
-*/

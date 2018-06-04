@@ -1,3 +1,5 @@
+// Forge source code is distributed under the MIT license.
+
 import * as Three from "three";
 import { System } from "aurora";
 

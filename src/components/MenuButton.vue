@@ -1,3 +1,5 @@
+<!-- Forge source code is distributed under the MIT license. -->
+
 <template>
 	<button class='menu-button'
 		v-on:click='$emit("click")'

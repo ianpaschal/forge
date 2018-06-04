@@ -1,4 +1,4 @@
-// Forge is distributed under the MIT license.
+// Forge source code is distributed under the MIT license.
 
 import Vue from "vue";
 import store from "./store";

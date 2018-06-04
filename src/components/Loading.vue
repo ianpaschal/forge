@@ -1,3 +1,5 @@
+<!-- Forge source code is distributed under the MIT license. -->
+
 <template>
 	<div id='loading'>
 		<h1>Loading... {{loaded}}</h1>

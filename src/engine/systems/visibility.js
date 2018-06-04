@@ -1,4 +1,4 @@
-// Aurora is distributed under the MIT license.
+// Forge source code is distributed under the MIT license.
 
 import { System } from "aurora";
 import * as Three from "three";

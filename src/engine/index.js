@@ -1,8 +1,8 @@
-// Forge is distributed under the MIT license.
+// Forge source code is distributed under the MIT license.
 
 import Path from "path";
-import { ipcRenderer, remote } from "electron";
-import { Engine, utils } from "aurora";
+import { remote } from "electron";
+import { Engine } from "aurora";
 import lightingSystem from "./systems/lighting";
 import soundSystem from "./systems/sound";
 import resourceSystem from "./systems/resources";
@@ -18,16 +18,8 @@ const systems = [
 	resourceSystem,
 	soundSystem
 ];
-
 systems.forEach( ( system ) => {
 	engine.registerSystem( system );
-});
-
-const states = {};
-
-ipcRenderer.on( "states", ( data ) => {
-	states.next = data.next;
-	states.last = data.last;
 });
 
 engine.setOnUpdateStart( () => {
@@ -35,11 +27,17 @@ engine.setOnUpdateStart( () => {
 		added to it by the time we perform the update. */
 	const time = engine.getLastTickTime();
 
-	// Create a new state object out of two other states and a timestamp
-	const state = utils.interpolate( states.last, states.next, time );
+	// Find next state after current time
+	const nextState = engine._states.find( ( state ) => {
+		return state.timestamp > time;
+	});
+	// Trim states so only the first state's timestamp is older or equal to time
+	engine._states.splice( 0, engine._states.indexOf( nextState ) - 1 );
 
-	// Apply state data to the engine (client is now up-to-date with master)
-	engine.applyState( state );
+	// Apply the oldest state, and add any time past it to the accumulator
+	const lastState = engine._states[ 0 ];
+	engine.applyState( lastState );
+	engine._accumulator += time - lastState.timestamp;
 
 	// Now do typical graphics and such...
 	return;
