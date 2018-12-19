@@ -4,18 +4,17 @@
   "title": "Forge",
   "version": "0.0.1",
   "description": "A real-time-strategy ECS sandbox.",
-	"author": "Ian Paschal",
+  "author": "Ian Paschal",
   "license": "MIT",
-
-	"homepage": "https://github.com/ianpaschal/forge#readme",
-	"repository": {
+  "homepage": "https://github.com/ianpaschal/forge#readme",
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/ianpaschal/forge.git"
   },
   "bugs": {
     "url": "https://github.com/ianpaschal/forge/issues"
   },
-	"keywords": [
+  "keywords": [
     "entity-component-system",
     "game-engine",
     "javascript",
@@ -24,14 +23,14 @@
     "real-time-strategy",
     "rts"
   ],
-	"scripts": {
+  "scripts": {
     "build": "electron-builder",
     "docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose",
     "lint": "eslint --fix",
     "pack:dev": "NODE_ENV=development webpack --config webpack/dev.config.js",
     "pack:prod": "NODE_ENV=production webpack --config webpack/prod.config.js",
-		"prestart": "NODE_ENV=development webpack --config webpack/dev.config.js",
-    "start": "electron .",
+    "prestart": "NODE_ENV=development webpack --config webpack/dev.config.js",
+    "start": "electron ."
   },
   "main": "./dist/main.bundle.js",
   "directories": {
@@ -48,7 +47,7 @@
   "devDependencies": {
     "babel-eslint": "^8.2.3",
     "css-loader": "^0.25.0",
-    "electron": "^1.8.4",
+    "electron": "^2.0.8",
     "electron-builder": "^19.56.2",
     "electron-reload": "^1.0.2",
     "eslint": "^4.19.1",
@@ -56,7 +55,7 @@
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-vue": "^4.5.0",
     "file-loader": "^0.9.0",
-    "grunt": "^1.0.2",
+    "grunt": "^1.0.3",
     "grunt-eslint": "^20.1.0",
     "grunt-jsdoc": "^2.2.1",
     "jsdoc": "^3.5.5",
