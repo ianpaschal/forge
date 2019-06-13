@@ -4,18 +4,17 @@
   "title": "Forge",
   "version": "0.0.1",
   "description": "A real-time-strategy ECS sandbox.",
-	"author": "Ian Paschal",
+  "author": "Ian Paschal",
   "license": "MIT",
-
-	"homepage": "https://github.com/ianpaschal/forge#readme",
-	"repository": {
+  "homepage": "https://github.com/ianpaschal/forge#readme",
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/ianpaschal/forge.git"
   },
   "bugs": {
     "url": "https://github.com/ianpaschal/forge/issues"
   },
-	"keywords": [
+  "keywords": [
     "entity-component-system",
     "game-engine",
     "javascript",
@@ -24,14 +23,14 @@
     "real-time-strategy",
     "rts"
   ],
-	"scripts": {
+  "scripts": {
     "build": "electron-builder",
     "docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose",
     "lint": "eslint --fix",
     "pack:dev": "NODE_ENV=development webpack --config webpack/dev.config.js",
     "pack:prod": "NODE_ENV=production webpack --config webpack/prod.config.js",
-		"prestart": "NODE_ENV=development webpack --config webpack/dev.config.js",
-    "start": "electron .",
+    "prestart": "NODE_ENV=development webpack --config webpack/dev.config.js",
+    "start": "electron ."
   },
   "main": "./dist/main.bundle.js",
   "directories": {
@@ -46,17 +45,17 @@
     "vuex": "^3.0.0"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.3",
-    "css-loader": "^0.25.0",
-    "electron": "^1.8.4",
-    "electron-builder": "^19.56.2",
-    "electron-reload": "^1.0.2",
-    "eslint": "^4.19.1",
+    "babel-eslint": "^10.0.1",
+    "css-loader": "^3.0.0",
+    "electron": "^5.0.3",
+    "electron-builder": "^20.43.0",
+    "electron-reload": "^1.4.0",
+    "eslint": "^5.16.0",
     "eslint-plugin-html": "^4.0.3",
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-vue": "^4.5.0",
     "file-loader": "^0.9.0",
-    "grunt": "^1.0.2",
+    "grunt": "^1.0.4",
     "grunt-eslint": "^20.1.0",
     "grunt-jsdoc": "^2.2.1",
     "jsdoc": "^3.5.5",
@@ -65,7 +64,7 @@
     "uglifyjs-webpack-plugin": "^1.2.5",
     "vue-loader": "^14.2.2",
     "vue-template-compiler": "^2.5.16",
-    "webpack": "^2.1.0-beta.22",
+    "webpack": "^4.34.0",
     "webpack-merge": "^4.1.2"
   }
 }
