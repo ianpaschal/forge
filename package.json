@@ -58,7 +58,7 @@
     "grunt": "^1.0.4",
     "grunt-eslint": "^20.1.0",
     "grunt-jsdoc": "^2.2.1",
-    "jsdoc": "^3.5.5",
+    "jsdoc": "^3.6.3",
     "load-grunt-tasks": "^3.5.2",
     "minami": "^1.2.3",
     "uglifyjs-webpack-plugin": "^1.2.5",
