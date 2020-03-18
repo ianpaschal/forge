@@ -59,7 +59,7 @@
     "grunt-eslint": "^20.1.0",
     "grunt-jsdoc": "^2.2.1",
     "jsdoc": "^3.5.5",
-    "load-grunt-tasks": "^3.5.2",
+    "load-grunt-tasks": "^5.1.0",
     "minami": "^1.2.3",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "vue-loader": "^14.2.2",
